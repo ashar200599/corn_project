@@ -1,12 +1,62 @@
-import React, { useState } from 'react';
-import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
+import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile } from './lib/firebase';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
+  const [user, setUser] = useState<User | null>(null);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('app-theme');
+    return (saved as 'dark' | 'light') || 'dark';
+  });
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+      setUser(u);
+      if (u) {
+        try {
+          await syncUserProfile(u);
+        } catch (error) {
+          console.error("Error syncing profile:", error);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result.user) {
+        await syncUserProfile(result.user);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    setIsAccountMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+    } else {
+      root.classList.remove('light');
+    }
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   
   // Filtering state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,79 +70,144 @@ export default function App() {
   const countries = Array.from(new Set(DISHES.map(d => d.country)));
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#fafafa] relative">
+    <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
-      <header className="min-nav py-4 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30">
+      <header className="bg-app-surface border-b-4 border-app-border py-6 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md hover:bg-[#eaeaea] transition-colors"
+            className="md:hidden p-2 rounded-md hover:bg-app-border transition-colors text-game-accent"
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="hidden md:flex p-2 rounded-md hover:bg-[#eaeaea] transition-colors text-[#666666]"
+            className="hidden md:flex p-2 rounded-md hover:bg-app-border transition-colors text-app-text-muted"
           >
             <Menu size={20} />
           </button>
 
-          <div className="flex items-center gap-2">
-            <ChefHat className="text-[#111111] w-6 h-6 hidden sm:block" />
-            <h1 className="text-xl font-bold tracking-tight text-[#111111]">
-              Flavor Heritage
-            </h1>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
+              <span className="text-2xl">🌽</span>
+            </div>
+            <div>
+              <div className="text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
+                CORN
+              </div>
+              <div className="text-base font-mono text-game-green flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 bg-game-green animate-pulse"></span>
+                WORLD: KITCHEN
+              </div>
+            </div>
           </div>
         </div>
-        <nav className="hidden md:flex gap-2">
-          <TabButton 
-            active={activeTab === 'dashboard'} 
-            onClick={() => setActiveTab('dashboard')}
-            icon={<Info size={16} />}
-            label="Dishes"
-          />
-          <TabButton 
-            active={activeTab === 'scanner'} 
-            onClick={() => setActiveTab('scanner')}
-            icon={<Camera size={16} />}
-            label="Scanner"
-          />
-          <TabButton 
-            active={activeTab === 'generator'} 
-            onClick={() => setActiveTab('generator')}
-            icon={<ScrollText size={16} />}
-            label="Generator"
-          />
-        </nav>
+        <div className="flex items-center gap-4">
+          <nav className="hidden lg:flex gap-2">
+            <TabButton 
+              active={activeTab === 'dashboard'} 
+              onClick={() => setActiveTab('dashboard')}
+              icon={<Library size={16} />}
+              label="Library"
+            />
+            <TabButton 
+              active={activeTab === 'scanner'} 
+              onClick={() => setActiveTab('scanner')}
+              icon={<Search size={16} />}
+              label="Identify"
+            />
+            <TabButton 
+              active={activeTab === 'generator'} 
+              onClick={() => setActiveTab('generator')}
+              icon={<Hammer size={16} />}
+              label="Crafting"
+            />
+          </nav>
+
+          <button 
+            onClick={toggleTheme}
+            className="p-2.5 rounded-none border border-app-border bg-app-surface hover:border-game-accent text-app-text-muted hover:text-game-accent transition-all shadow-sm"
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
+          {/* User Account Section */}
+          <div className="relative">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                  className="flex items-center gap-2 p-1.5 border-2 border-app-border bg-app-bg hover:border-game-accent transition-all group"
+                >
+                  <img 
+                    src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=00f2ff&color=0a0a0c`} 
+                    alt="Profile" 
+                    className="w-8 h-8 object-cover border border-app-border group-hover:border-game-accent"
+                    referrerPolicy="no-referrer"
+                  />
+                  <span className="hidden md:block text-xs font-bold uppercase tracking-widest px-2">
+                    {user.displayName?.split(' ')[0]}
+                  </span>
+                </button>
+
+                {isAccountMenuOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-app-surface border-4 border-app-border shadow-[8px_8px_0_rgba(0,0,0,0.5)] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="p-4 border-b-2 border-app-border">
+                      <div className="text-[10px] font-mono text-game-accent uppercase tracking-[0.2em] mb-1">User Identity</div>
+                      <div className="text-sm font-black text-app-text-main truncate">{user.displayName}</div>
+                      <div className="text-[10px] text-app-text-muted truncate mt-1">{user.email}</div>
+                    </div>
+                    <div className="p-2">
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold uppercase tracking-wider text-game-magenta hover:bg-game-magenta/10 transition-colors"
+                      >
+                        <LogOut size={16} /> Disconnect
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button 
+                onClick={handleLogin}
+                className="game-btn game-btn-outline py-2 px-4 flex items-center gap-2 text-xs"
+              >
+                <LogIn size={16} /> Link account
+              </button>
+            )}
+          </div>
+        </div>
       </header>
 
       {/* Hamburger / Navigation Sidebar */}
       {isMenuOpen && (
         <>
           <div 
-            className="fixed inset-0 bg-black/20 z-20 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 z-20 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(false)}
           />
-          <div className="fixed top-[65px] md:top-[73px] left-0 bottom-0 w-64 bg-white z-30 shadow-[4px_0_24px_rgba(0,0,0,0.05)] p-6 overflow-y-auto border-r border-[#eaeaea] animate-in slide-in-from-left duration-300">
-            <h2 className="text-lg font-semibold tracking-tight text-[#111111] mb-6">Categories</h2>
+          <div className="fixed top-[65px] md:top-[73px] left-0 bottom-0 w-64 bg-app-surface z-30 shadow-2xl p-6 overflow-y-auto border-r border-app-border animate-in slide-in-from-left duration-300">
+            <h2 className="text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
             
-            <div className="space-y-8">
+            <div className="space-y-10">
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666666] mb-3">By Country</h3>
-                <ul className="space-y-1">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
+                <ul className="space-y-3">
                   <li>
                     <button 
                       onClick={() => { setActiveCountry(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeCountry === null ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCountry === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      All Countries
+                      Global All
                     </button>
                   </li>
                   {countries.map(c => (
                     <li key={c}>
                       <button 
                         onClick={() => { setActiveCountry(c); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeCountry === c ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                        className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCountry === c ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                       >
                         {c}
                       </button>
@@ -102,50 +217,50 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666666] mb-3">By Category</h3>
-                <ul className="space-y-1">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
+                <ul className="space-y-3">
                   <li>
                     <button 
                       onClick={() => { setActiveCategory(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeCategory === null ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      All Categories
+                      Total Class
                     </button>
                   </li>
                   <li>
                     <button 
                       onClick={() => { setActiveCategory('Food'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeCategory === 'Food' ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === 'Food' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      Food
+                      Food Units
                     </button>
                   </li>
                   <li>
                     <button 
                       onClick={() => { setActiveCategory('Beverage'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeCategory === 'Beverage' ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === 'Beverage' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      Beverages
+                      Beverage Units
                     </button>
                   </li>
                 </ul>
               </div>
 
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-[#666666] mb-3">By Style</h3>
-                <ul className="space-y-1">
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
+                <ul className="space-y-3">
                   <li>
                     <button 
                       onClick={() => { setActiveStyle(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeStyle === null ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      All Styles
+                      All Tiers
                     </button>
                   </li>
                   <li>
                     <button 
                       onClick={() => { setActiveStyle('Traditional'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeStyle === 'Traditional' ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === 'Traditional' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
                       Traditional
                     </button>
@@ -153,9 +268,9 @@ export default function App() {
                   <li>
                     <button 
                       onClick={() => { setActiveStyle('Modern'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${activeStyle === 'Modern' ? 'bg-[#111111] text-white font-medium' : 'hover:bg-[#fafafa] text-[#666666]'}`}
+                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === 'Modern' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
                     >
-                      Modern
+                      Modern Spec
                     </button>
                   </li>
                 </ul>
@@ -204,9 +319,11 @@ export default function App() {
         />
       </div>
 
-      {selectedDish && (
-        <RecipeModal dish={selectedDish} onClose={() => setSelectedDish(null)} />
-      )}
+      <AnimatePresence>
+        {selectedDish && (
+          <RecipeModal dish={selectedDish} onClose={() => setSelectedDish(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -215,7 +332,7 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button 
       onClick={onClick}
-      className={`min-btn gap-2 ${active ? 'min-btn-primary' : 'min-btn-ghost'} rounded-lg transition-all`}
+      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-2`}
     >
       {icon}
       <span>{label}</span>
@@ -227,110 +344,166 @@ function MobileNavButton({ active, onClick, icon, label }: { active: boolean, on
   return (
     <button 
       onClick={onClick}
-      className={`flex flex-col items-center gap-1 p-2 rounded-lg ${active ? 'text-[#111111] font-medium' : 'text-[#666666]'}`}
+      className={`flex flex-col items-center gap-1 p-2 rounded-none transition-all ${active ? 'text-game-accent scale-110 shadow-[0_-10px_20px_rgba(0,242,255,0.1)]' : 'text-app-text-muted'}`}
     >
       {icon}
-      <span className="text-[10px] uppercase tracking-wider">{label}</span>
+      <span className="text-xs font-black uppercase tracking-widest">{label}</span>
+      {active && <div className="w-1.5 h-1.5 bg-game-accent rounded-full mt-1"></div>}
     </button>
   );
 }
 
 function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish; isFavorite: boolean; onToggleFavorite: (e: React.MouseEvent) => void; onClick: () => void }) {
   const [showHealth, setShowHealth] = React.useState(false);
+  const [healthLoading, setHealthLoading] = React.useState(false);
+  const [aiHealthData, setAiHealthData] = React.useState<string | null>(null);
+
+  const handleHealthClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextShow = !showHealth;
+    setShowHealth(nextShow);
+
+    if (nextShow && !aiHealthData && !healthLoading) {
+      setHealthLoading(true);
+      try {
+        const ingredientNames = dish.ingredients 
+          ? dish.ingredients.map(i => i.name) 
+          : dish.scientificNames.map(s => s.ingredient);
+        const insights = await getHealthInsights(dish.name, ingredientNames);
+        setAiHealthData(insights);
+      } catch (error) {
+        console.error("Failed to fetch health insights:", error);
+      } finally {
+        setHealthLoading(false);
+      }
+    }
+  };
 
   return (
     <div 
-      className="min-card group cursor-pointer flex flex-col h-full"
+      className="game-card group cursor-pointer flex flex-col h-full"
       onClick={onClick}
     >
       {/* Image Container with Hover Overlay for Scientific Names */}
-      <div className="relative h-56 w-full overflow-hidden bg-[#fafafa]">
+      <div className="relative h-56 w-full overflow-hidden bg-app-bg/40">
         <img 
           src={dish.image} 
           alt={dish.name} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[30%] group-hover:grayscale-0" 
         />
-        <div className="absolute inset-0 bg-[#111111]/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6">
-          <h4 className="text-white text-sm font-medium mb-4 uppercase tracking-widest">Ingredient List</h4>
-          <ul className="space-y-2 w-full text-center">
-            {dish.scientificNames.map((sn, idx) => (
-              <li key={idx} className="text-sm">
-                <span className="text-white/80">{sn.ingredient}</span>
-                <div className="text-white font-mono text-xs opacity-70 italic mt-0.5">{sn.name}</div>
-              </li>
-            ))}
-          </ul>
+        <div className="absolute inset-0 bg-app-surface/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6 text-center border-b border-game-accent/20">
+          <h4 className="text-game-accent text-sm font-black mb-3 uppercase tracking-[0.3em]">Codename</h4>
+          {dish.scientificNames.length > 0 && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <span className="text-app-text-main text-xl font-bold block">{dish.scientificNames[0].ingredient}</span>
+              <div className="text-app-text-main font-mono text-sm mt-2 tracking-widest bg-app-bg/60 px-3 py-2 border-l-4 border-game-accent">
+                {dish.scientificNames[0].name}
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Rarity/Category Tag */}
+        <div className="absolute top-4 left-4 px-3 py-1 bg-app-surface border-4 border-app-border text-base font-bold text-game-accent uppercase tracking-widest">
+          {dish.category === 'Food' ? 'STACK: FOOD' : 'STACK: POTION'}
         </div>
       </div>
 
-      <div className="p-5 flex-1 flex flex-col relative bg-white">
-        <div className="absolute -top-6 right-5 bg-white w-12 h-12 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] flex items-center justify-center text-2xl border border-[#eaeaea]">
+      <div className="p-6 flex-1 flex flex-col relative">
+        <div className="absolute -top-10 right-6 bg-app-surface w-16 h-16 flex items-center justify-center text-4xl border-4 border-app-border shadow-[4px_4px_0_rgba(0,0,0,0.5)] group-hover:border-game-accent transition-colors">
           {dish.emoji}
         </div>
 
         <div className="mt-2 space-y-1">
-          <h3 className="font-semibold text-lg text-[#111111] truncate pr-14">{dish.name}</h3>
-          <div className="text-xs text-[#666666] flex items-center gap-2">
-            <span>{dish.country}</span>
-            <span className="w-1 h-1 rounded-full bg-[#cccccc]"></span>
-            <span>{dish.style} {dish.category}</span>
+          <h3 className="font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
+            {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
+          </h3>
+          <div className="text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
+            <span className="text-game-magenta">BIOME:</span> {dish.country}
+            <span className="w-2 h-2 bg-app-border"></span>
+            <span className="text-game-accent">TIER:</span> {dish.style}
           </div>
         </div>
         
-        <p className="text-sm text-[#666666] mt-4 line-clamp-2 leading-relaxed flex-1">
+        <p className="text-lg text-app-text-muted mt-4 line-clamp-2 leading-tight flex-1 font-medium bg-black/40 p-3 border-l-4 border-app-border">
           {dish.desc}
         </p>
 
-        <div className="mt-4 pt-4 border-t border-[#eaeaea] flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#111111] group-hover:text-blue-600 transition-colors">View Recipe &rarr;</span>
-            <div className="flex items-center gap-2">
+        <div className="mt-4 pt-4 border-t-4 border-app-border flex items-center justify-between">
+            <span className="text-base font-bold uppercase tracking-widest text-app-text-muted group-hover:text-game-accent transition-all flex items-center gap-2">
+              <Pickaxe size={18} className="text-game-accent" />
+              Mine Data
+            </span>
+            <div className="flex items-center gap-3">
               <button 
                 onClick={onToggleFavorite}
-                className={`p-1.5 rounded-full transition-colors ${isFavorite ? 'text-red-500 hover:text-red-600 bg-red-50' : 'text-[#999999] hover:text-[#666666] bg-[#fafafa] hover:bg-[#eaeaea]'}`}
-                title="Toggle Favorite"
+                className={`p-2 transition-all border-4 ${isFavorite ? 'text-game-magenta border-game-magenta bg-game-magenta/10 shadow-[4px_4px_0_rgba(255,85,255,0.2)]' : 'text-app-text-muted border-app-border hover:border-app-text-muted hover:text-game-accent bg-black/40'}`}
+                title="Add to Chest"
               >
-                <Heart size={16} fill={isFavorite ? "currentColor" : "none"} />
+                <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
               </button>
               <button 
-                onClick={(e) => { e.stopPropagation(); setShowHealth(!showHealth); }}
-                className="text-xs flex items-center gap-1 font-medium text-red-600 hover:text-red-700 px-2 py-1 rounded bg-red-50 hover:bg-red-100 transition-colors"
+                onClick={handleHealthClick}
+                className={`text-base font-bold uppercase tracking-widest flex items-center gap-2 px-4 py-2 transition-all border-4 ${showHealth ? 'bg-game-magenta text-white border-game-magenta shadow-[4px_4px_0_rgba(255,85,255,0.3)]' : 'text-game-magenta bg-game-magenta/5 border-game-magenta/30 hover:bg-game-magenta/20'}`}
               >
-                <HeartPulse size={14} /> Health
+                <Sword size={18} /> Stats
               </button>
             </div>
         </div>
 
         {showHealth && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-[#333] space-y-3 cursor-default" onClick={(e) => e.stopPropagation()}>
+          <div className="mt-4 p-5 bg-black/60 border-4 border-app-border text-sm text-app-text-main space-y-6 animate-in slide-in-from-top-2" onClick={(e) => e.stopPropagation()}>
             <div>
-              <span className="block font-semibold text-blue-700 text-xs uppercase tracking-wider mb-1 flex items-center gap-1">Nutrition</span>
-              <div className="grid grid-cols-4 gap-2 text-xs opacity-80 leading-relaxed mt-2 text-center">
-                <div className="bg-blue-100/50 p-2 rounded">
-                  <span className="block font-bold">Cal</span>
-                  <span>{dish.nutrition.calories}</span>
+              <span className="block font-bold text-game-accent text-base uppercase tracking-widest mb-3 flex items-center gap-3">
+                <span className="w-3 h-5 bg-game-accent"></span>
+                Item Attributes
+              </span>
+              <div className="grid grid-cols-2 gap-4 text-base font-bold">
+                <div className="bg-app-surface border-4 border-app-border p-3 flex justify-between">
+                  <span className="text-app-text-muted uppercase">Hunger</span>
+                  <span className="text-app-text-main">{dish.nutrition.calories} <span className="text-sm">PTS</span></span>
                 </div>
-                <div className="bg-blue-100/50 p-2 rounded">
-                  <span className="block font-bold">Prot</span>
-                  <span>{dish.nutrition.protein}</span>
+                <div className="bg-app-surface border-4 border-app-border p-3 flex justify-between">
+                  <span className="text-app-text-muted uppercase">Str</span>
+                  <span className="text-app-text-main">{dish.nutrition.protein} <span className="text-sm">G</span></span>
                 </div>
-                <div className="bg-blue-100/50 p-2 rounded">
-                  <span className="block font-bold">Carb</span>
-                  <span>{dish.nutrition.carbohydrates}</span>
+                <div className="bg-app-surface border-4 border-app-border p-3 flex justify-between">
+                  <span className="text-app-text-muted uppercase">Spd</span>
+                  <span className="text-app-text-main">{dish.nutrition.carbohydrates} <span className="text-sm">G</span></span>
                 </div>
-                <div className="bg-blue-100/50 p-2 rounded">
-                  <span className="block font-bold">Fat</span>
-                  <span>{dish.nutrition.fat}</span>
+                <div className="bg-app-surface border-4 border-app-border p-3 flex justify-between">
+                  <span className="text-app-text-muted uppercase">Arm</span>
+                  <span className="text-app-text-main">{dish.nutrition.fat} <span className="text-sm">G</span></span>
                 </div>
               </div>
             </div>
-            <div>
-              <span className="block font-semibold text-green-700 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><HeartPulse size={12}/> Benefits</span>
-              <p className="text-xs opacity-80 leading-relaxed">{dish.healthBenefits}</p>
-            </div>
-            {dish.excessRisks && (
-              <div>
-                <span className="block font-semibold text-red-700 text-xs uppercase tracking-wider mb-1 flex items-center gap-1"><XCircle size={12}/> Excess Risks</span>
-                <p className="text-xs opacity-80 leading-relaxed">{dish.excessRisks}</p>
+
+            {healthLoading ? (
+              <div className="flex items-center gap-4 py-3 font-bold text-base text-game-accent uppercase tracking-widest">
+                <div className="w-5 h-5 border-4 border-game-accent border-t-transparent animate-spin"></div>
+                <span className="animate-pulse">Consulting the Ancient Tomes...</span>
+              </div>
+            ) : aiHealthData ? (
+              <div className="markdown-body text-base border-t-4 border-app-border pt-6 leading-tight">
+                <Markdown>{aiHealthData}</Markdown>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div>
+                  <span className="block font-bold text-game-green text-base uppercase tracking-widest mb-2 flex items-center gap-3">
+                    <span className="w-3 h-5 bg-game-green"></span>
+                    Enchantments
+                  </span>
+                  <p className="text-lg opacity-100 leading-tight pl-4 border-l-4 border-game-green/40 italic">{dish.healthBenefits}</p>
+                </div>
+                {dish.excessRisks && (
+                  <div>
+                    <span className="block font-bold text-game-magenta text-base uppercase tracking-widest mb-2 flex items-center gap-3">
+                      <span className="w-3 h-5 bg-game-magenta"></span>
+                      Curse Afflictions
+                    </span>
+                    <p className="text-lg opacity-100 leading-tight pl-4 border-l-4 border-game-magenta/40 italic text-app-text-muted">{dish.excessRisks}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -359,7 +532,7 @@ function Dashboard({
 }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [excludeQuery, setExcludeQuery] = React.useState('');
-  const [activeTag, setActiveTag] = React.useState<string | null>(null);
+  const [activeTags, setActiveTags] = React.useState<string[]>([]);
   const [favorites, setFavorites] = React.useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('favorites');
@@ -385,7 +558,7 @@ function Dashboard({
     if (activeCountry && d.country !== activeCountry) return false;
     if (activeStyle && d.style !== activeStyle) return false;
     if (activeCategory && d.category !== activeCategory) return false;
-    if (activeTag && (!d.tags || !d.tags.includes(activeTag))) return false;
+    if (activeTags.length > 0 && (!d.tags || !activeTags.every(tag => d.tags!.includes(tag)))) return false;
     
     if (excludeQuery) {
       const excludedTerms = excludeQuery.toLowerCase().split(',').map(t => t.trim()).filter(Boolean);
@@ -413,32 +586,36 @@ function Dashboard({
 
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
-      <div className="space-y-4 max-w-2xl">
-        <h2 className="text-3xl font-bold tracking-tight text-[#111111]">Explore Global Flavors</h2>
-        <p className="text-[#666666] leading-relaxed">
-          Discover curated recipes focusing on health and heritage. View detailed nutritional profiles and prepare dishes with intelligence.
+      <div className="space-y-4 max-w-4xl border-l-[8px] border-game-accent pl-6 bg-app-surface/30 py-6">
+        <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
+          CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
+        </h2>
+        <p className="text-app-text-muted text-xl leading-snug font-medium">
+          <strong className="text-game-accent">Craft Own Recipe and Nutrition (CORN)</strong>. 
+          A sophisticated algorithm-driven system designed to help you synthesize legacy recipes, 
+          track nutritional vitals, and discover the culinary heritage of the global biomes.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
         {/* Search Bar */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999999]" size={20} />
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-game-accent" size={24} />
             <input 
               type="text" 
-              placeholder="Search recipes, ingredients, country, or style..." 
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#eaeaea] bg-white focus:outline-none focus:ring-2 focus:ring-[#111111] transition-all"
+              placeholder="SEARCH LIBRARY (Recipe, Ingredient, Biome...)" 
+              className="w-full pl-14 pr-4 py-5 bg-app-surface border-4 border-app-border text-app-text-main text-lg font-bold uppercase tracking-widest focus:outline-none focus:border-game-accent transition-all placeholder:text-app-text-muted/50"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="relative flex-1">
-            <XCircle className="absolute left-3 top-1/2 -translate-y-1/2 text-red-400" size={20} />
+          <div className="relative flex-[0.7] group">
+            <XCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-game-magenta" size={24} />
             <input 
               type="text" 
-              placeholder="Exclude ingredients (e.g. peanut, pork)..." 
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-red-100 bg-red-50/50 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all placeholder:text-red-300"
+              placeholder="RESTRICTED MATERIALS (e.g. peanut, pork)" 
+              className="w-full pl-14 pr-4 py-5 bg-app-surface border-4 border-app-border text-game-magenta text-lg font-bold uppercase tracking-widest focus:outline-none focus:border-game-magenta transition-all placeholder:text-game-magenta/30"
               value={excludeQuery}
               onChange={(e) => setExcludeQuery(e.target.value)}
             />
@@ -446,100 +623,115 @@ function Dashboard({
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-[#eaeaea] shadow-sm">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#666666]">Country:</span>
-          <select 
-            className="text-sm border border-[#eaeaea] bg-[#fafafa] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#111111]"
-            value={activeCountry || ''}
-            onChange={(e) => setActiveCountry(e.target.value || null)}
-          >
-            <option value="">All</option>
-            {countries.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#666666]">Tag:</span>
-          <select 
-            className="text-sm border border-[#eaeaea] bg-[#fafafa] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#111111]"
-            value={activeTag || ''}
-            onChange={(e) => setActiveTag(e.target.value || null)}
-          >
-            <option value="">All</option>
-            {allTags.map(t => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#666666]">Style:</span>
-          <div className="flex bg-[#fafafa] border border-[#eaeaea] rounded-lg p-1">
-            <button 
-              onClick={() => setActiveStyle(null)}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${!activeStyle ? 'bg-white shadow border border-[#eaeaea] text-[#111111]' : 'text-[#666666] hover:bg-[#eaeaea]'}`}
+        <div className="flex flex-wrap items-center gap-8 bg-app-surface/50 p-8 border-4 border-app-border relative">
+          <div className="absolute top-0 right-0 p-3 text-sm font-mono text-game-accent uppercase tracking-[0.2em] bg-app-surface border-l-4 border-b-4 border-app-border">Filter Set Loaded</div>
+          <div className="flex flex-col gap-2">
+            <span className="text-sm font-bold text-app-text-main uppercase tracking-[0.2em]">Biome</span>
+            <select 
+              className="text-sm bg-app-surface border-4 border-app-border text-game-accent font-bold px-4 py-3 focus:outline-none focus:border-game-accent uppercase tracking-wider cursor-pointer hover:bg-app-border"
+              value={activeCountry || ''}
+              onChange={(e) => setActiveCountry(e.target.value || null)}
             >
-              All
-            </button>
-            {styles.map(s => (
-              <button 
-                key={s}
-                onClick={() => setActiveStyle(s as any)}
-                className={`px-3 py-1 text-sm rounded-md transition-colors ${activeStyle === s ? 'bg-white shadow border border-[#eaeaea] text-[#111111]' : 'text-[#666666] hover:bg-[#eaeaea]'}`}
-              >
-                {s}
-              </button>
-            ))}
+              <option value="">ALL BIOMES</option>
+              {countries.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#666666]">Category:</span>
-          <div className="flex bg-[#fafafa] border border-[#eaeaea] rounded-lg p-1">
-            <button 
-              onClick={() => setActiveCategory(null)}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${!activeCategory ? 'bg-white shadow border border-[#eaeaea] text-[#111111]' : 'text-[#666666] hover:bg-[#eaeaea]'}`}
+          <div className="flex flex-col gap-2 w-full lg:w-auto">
+            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Tag Module Cluster</span>
+            <div className="flex flex-wrap gap-2 bg-app-bg/40 border-4 border-app-border p-3 max-h-32 overflow-y-auto min-w-[300px]">
+              {allTags.map(t => {
+                const isActive = activeTags.includes(t);
+                return (
+                  <button
+                    key={t}
+                    onClick={() => {
+                      setActiveTags(prev => 
+                        isActive ? prev.filter(tag => tag !== t) : [...prev, t]
+                      );
+                    }}
+                    className={`px-3 py-1 text-xs font-black uppercase tracking-widest border-2 transition-all flex items-center gap-2 ${isActive ? 'bg-game-accent border-game-accent text-app-bg' : 'border-app-border text-app-text-muted hover:border-game-accent/50'}`}
+                  >
+                    {isActive && <div className="w-1.5 h-1.5 bg-app-bg"></div>}
+                    {t}
+                  </button>
+                );
+              })}
+              {activeTags.length === 0 && (
+                <div className="text-[10px] font-mono text-app-text-muted/50 uppercase tracking-widest italic py-1">No tags active. Global scan enabled.</div>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Tier</span>
+            <div className="flex bg-app-bg/40 border-4 border-app-border p-1">
+              <button 
+                onClick={() => setActiveStyle(null)}
+                className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${!activeStyle ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+              >
+                ALL
+              </button>
+              {styles.map(s => (
+                <button 
+                  key={s}
+                  onClick={() => setActiveStyle(s as any)}
+                  className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${activeStyle === s ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                >
+                  {s.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Class</span>
+            <div className="flex bg-app-bg/40 border-4 border-app-border p-1">
+              <button 
+                onClick={() => setActiveCategory(null)}
+                className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${!activeCategory ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+              >
+                ALL
+              </button>
+              {categories.map(c => (
+                <button 
+                  key={c}
+                  onClick={() => setActiveCategory(c as any)}
+                  className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${activeCategory === c ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                >
+                  {c.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 mt-auto pb-1">
+            <button
+              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+              className={`flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest border-4 transition-all ${showFavoritesOnly ? 'bg-game-magenta border-game-magenta text-white' : 'bg-app-surface border-app-border text-app-text-muted hover:text-app-text-main'}`}
             >
-              All
+              <Heart size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
+              Loot Table
             </button>
-            {categories.map(c => (
-              <button 
-                key={c}
-                onClick={() => setActiveCategory(c as any)}
-                className={`px-3 py-1 text-sm rounded-md transition-colors ${activeCategory === c ? 'bg-white shadow border border-[#eaeaea] text-[#111111]' : 'text-[#666666] hover:bg-[#eaeaea]'}`}
-              >
-                {c}
-              </button>
-            ))}
           </div>
+          
+          {(activeCountry || activeStyle || activeCategory || activeTags.length > 0 || searchQuery || excludeQuery || showFavoritesOnly) && (
+            <button 
+              onClick={() => { setActiveCountry(null); setActiveStyle(null); setActiveCategory(null); setActiveTags([]); setSearchQuery(''); setExcludeQuery(''); setShowFavoritesOnly(false); }}
+              className="ml-auto text-sm font-bold uppercase tracking-[0.2em] text-game-magenta hover:bg-game-magenta/10 px-6 py-3 border-4 border-game-magenta transition-all"
+            >
+              Reset Matrix
+            </button>
+          )}
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors border ${showFavoritesOnly ? 'bg-red-50 text-red-600 border-red-200' : 'bg-[#fafafa] text-[#666666] border-[#eaeaea]'}`}
-          >
-            <Heart size={16} fill={showFavoritesOnly ? "currentColor" : "none"} />
-            Favorites
-          </button>
-        </div>
-        
-        {(activeCountry || activeStyle || activeCategory || activeTag || searchQuery || excludeQuery || showFavoritesOnly) && (
-          <button 
-            onClick={() => { setActiveCountry(null); setActiveStyle(null); setActiveCategory(null); setActiveTag(null); setSearchQuery(''); setExcludeQuery(''); setShowFavoritesOnly(false); }}
-            className="ml-auto text-sm text-red-600 hover:text-red-700 font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
-          >
-            Clear Filters
-          </button>
-        )}
-      </div>
       </div>
 
       {filteredDishes.length === 0 ? (
-        <div className="text-center p-12 text-[#666666]">
-          No dishes found for this category.
+        <div className="text-center p-20 bg-app-surface/20 border border-dashed border-app-border font-mono text-app-text-muted uppercase tracking-[0.3em]">
+          Zero records found in selected sector.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredDishes.map((dish, i) => (
             <DishCard 
               key={i} 
@@ -618,50 +810,54 @@ function Scanner() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="space-y-4">
-        <h2 className="text-3xl font-bold tracking-tight text-[#111111]">Ingredient Scanner</h2>
-        <p className="text-[#666666] leading-relaxed">Upload a photo to receive a complete breakdown of ingredients, scientific terms, and nutritional analysis.</p>
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div className="space-y-4 border-l-4 border-game-accent pl-6 bg-app-surface/30 py-4">
+        <h2 className="text-4xl font-bold tracking-tighter text-app-text-main uppercase">Visual Analyzer</h2>
+        <p className="text-app-text-muted leading-relaxed font-medium">Upload raw visual data for neural breakdown. Our AI will decrypt the molecular structure, scientific classification, and nutritional potential of the target object.</p>
       </div>
 
-      <div className="min-card p-6 md:p-8">
+      <div className="game-card p-6 md:p-10">
         <div 
-          className={`min-h-[300px] rounded-xl flex flex-col items-center justify-center relative border border-dashed transition-colors ${
+          className={`min-h-[350px] flex flex-col items-center justify-center relative border border-dashed transition-all ${
             isDragging 
-              ? 'border-[#111111] bg-[#f0f0f0]' 
-              : 'border-[#cccccc] bg-[#fafafa] hover:bg-[#f5f5f5]'
+              ? 'border-game-accent bg-game-accent/5' 
+              : 'border-app-border bg-app-bg/40 hover:bg-app-bg/60'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
+          <div className="absolute top-2 left-2 text-sm font-mono text-game-accent uppercase tracking-[0.2em]">Scanner Input Zone</div>
            {image ? (
-            <div className="space-y-6 flex flex-col items-center w-full p-6">
-              <img src={image} className="max-h-64 object-contain rounded-lg shadow-sm border border-[#eaeaea]" alt="Uploaded food" />
-              <div className="flex gap-3">
+            <div className="space-y-8 flex flex-col items-center w-full p-6">
+              <div className="relative">
+                <img src={image} className="max-h-72 object-contain border-4 border-app-border shadow-[4px_4px_0_rgba(0,0,0,0.5)]" alt="Visual data" />
+                <div className="absolute top-0 left-0 w-full h-[4px] bg-game-accent animate-scanline"></div>
+              </div>
+              <div className="flex gap-6">
                 <button 
                   onClick={() => setImage(null)} 
-                  className="min-btn min-btn-outline"
+                  className="game-btn game-btn-outline"
                 >
-                  Clear
+                  Reject
                 </button>
                 <button 
                   onClick={handleAnalyze} 
                   disabled={loading}
-                  className="min-btn min-btn-primary flex items-center gap-2 disabled:opacity-50"
+                  className="game-btn game-btn-primary flex items-center gap-3 disabled:opacity-50"
                 >
-                  {loading ? 'Analyzing...' : <><Search size={16} /> Scan Ingredients</>}
+                  {loading ? 'Processing...' : <><Search size={22} /> Decrypt</>}
                 </button>
               </div>
             </div>
           ) : (
-            <label className="cursor-pointer flex flex-col items-center gap-4 text-[#666666] hover:text-[#111111] transition-colors p-12 text-center w-full h-full">
-              <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-[#eaeaea] flex items-center justify-center">
-                <Camera size={24} className="text-[#111111]" />
+            <label className="cursor-pointer flex flex-col items-center gap-8 text-app-text-main hover:text-game-accent transition-all p-12 text-center w-full h-full">
+              <div className="w-24 h-24 bg-app-surface shadow-[4px_4px_0_rgba(0,0,0,0.5)] border-4 border-app-border flex items-center justify-center group transition-colors group-hover:border-game-accent">
+                <Camera size={48} className="text-app-text-main group-hover:text-game-accent" />
               </div>
-              <div>
-                <span className="font-medium block text-[#111111]">Click to upload</span>
-                <span className="text-sm">or drag and drop an image</span>
+              <div className="space-y-3">
+                <span className="font-bold text-2xl block uppercase tracking-widest">Transmit Visual Data</span>
+                <span className="text-lg font-mono uppercase tracking-[0.2em]">Upload or Drop Stream</span>
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
             </label>
@@ -670,18 +866,18 @@ function Scanner() {
       </div>
 
       {loading && (
-         <div className="flex flex-col items-center justify-center py-16 space-y-4">
-            <div className="w-6 h-6 border-2 border-[#111111] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[#666666] text-sm animate-pulse">Processing image data...</p>
+         <div className="flex flex-col items-center justify-center py-20 space-y-6">
+            <div className="w-12 h-12 border-4 border-game-accent border-t-transparent animate-spin"></div>
+            <p className="text-game-accent font-mono text-xl animate-pulse tracking-[0.3em] uppercase">Neural Network Synchronizing...</p>
          </div>
       )}
 
       {result && !loading && (
-        <div className="min-card p-6 md:p-8 animate-in slide-in-from-bottom-4">
-          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-             <Info size={20} className="text-[#666666]" /> Analysis Report
+        <div className="game-card p-6 md:p-10 animate-in slide-in-from-bottom-4">
+          <h3 className="text-xl font-bold mb-8 flex items-center gap-3 text-app-text-main uppercase tracking-widest border-b border-app-border pb-4">
+             <Info size={22} className="text-game-accent" /> Intelligence Report
           </h3>
-          <div className="markdown-body overflow-x-auto">
+          <div className="markdown-body font-medium leading-relaxed bg-app-bg/20 p-6 border border-app-border">
             <Markdown remarkPlugins={[remarkGfm]}>{result}</Markdown>
           </div>
         </div>
@@ -695,6 +891,14 @@ function Generator() {
   const [preferences, setPreferences] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const sampleIngredients = ['Chicken', 'Rice', 'Garlic', 'Tofu', 'Spinach', 'Corn', 'Egg', 'Chili'];
+
+  const handleSampleClick = (item: string) => {
+    const current = ingredients.trim();
+    if (current.toLowerCase().includes(item.toLowerCase())) return;
+    setIngredients(current ? `${current}, ${item}` : item);
+  };
 
   const handleGenerate = async () => {
     if (!ingredients) return;
@@ -710,60 +914,76 @@ function Generator() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="space-y-4">
-        <h2 className="text-3xl font-bold tracking-tight text-[#111111]">Recipe Generator</h2>
-        <p className="text-[#666666] leading-relaxed">Turn available ingredients into healthy, personalized meals.</p>
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div className="space-y-4 border-l-4 border-game-accent pl-6 bg-app-surface/30 py-4">
+        <h2 className="text-4xl font-bold tracking-tighter text-app-text-main uppercase">Crafting Forge</h2>
+        <p className="text-app-text-muted leading-relaxed font-medium">Synthesize new items using available raw components. Optimize the output vectors by providing secondary preference metrics.</p>
       </div>
 
-      <div className="min-card p-6 md:p-8 space-y-8">
-        
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#111111]">Available Ingredients</label>
+      <div className="game-card p-6 md:p-10 space-y-8">
+                <div className="space-y-8 text-left">
+          <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <label className="text-base font-bold text-game-accent uppercase tracking-[0.2em] flex items-center gap-3">
+                <span className="w-3 h-3 bg-game-accent"></span>
+                Raw Materials Inventory
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {sampleIngredients.map(item => (
+                  <button 
+                    key={item}
+                    onClick={() => handleSampleClick(item)}
+                    className="text-sm font-bold uppercase tracking-wider px-3 py-2 bg-game-accent/10 border-2 border-game-accent/40 text-game-accent hover:bg-game-accent hover:text-app-bg transition-all"
+                  >
+                    + {item}
+                  </button>
+                ))}
+              </div>
+            </div>
             <textarea 
               value={ingredients}
               onChange={(e) => setIngredients(e.target.value)}
-              placeholder="e.g., chicken breast, garlic, rice, spinach..."
-              className="w-full h-32 p-4 rounded-xl border border-[#eaeaea] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent resize-none text-sm transition-all"
+              placeholder="Input ingredients (e.g., chicken breast, garlic, rice...)" 
+              className="w-full h-48 p-6 bg-app-bg/40 border-4 border-app-border text-app-text-main text-lg font-bold focus:outline-none focus:border-game-accent transition-all resize-none placeholder:text-app-text-muted/40"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#111111] flex items-center gap-2">
-              <HeartPulse size={16} className="text-[#666666]" /> Health Preferences
+          <div className="space-y-4">
+            <label className="text-base font-bold text-game-magenta uppercase tracking-[0.2em] flex items-center gap-3">
+              <span className="w-3 h-3 bg-game-magenta"></span>
+              Buff Preferences
             </label>
             <input 
               value={preferences}
               onChange={(e) => setPreferences(e.target.value)}
               type="text" 
-              placeholder="e.g., low sodium, high protein, diabetic friendly..."
-              className="w-full p-4 rounded-xl border border-[#eaeaea] bg-[#fafafa] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent text-sm transition-all"
+              placeholder="e.g., maximum protein, low sodium, keto-optimized..." 
+              className="w-full p-6 bg-app-bg/40 border-4 border-app-border text-game-magenta text-lg font-bold focus:outline-none focus:border-game-magenta transition-all placeholder:text-game-magenta/40"
             />
           </div>
 
           <button 
             onClick={handleGenerate}
             disabled={loading || !ingredients}
-            className="min-btn min-btn-primary w-full py-3 disabled:opacity-50"
+            className="game-btn game-btn-primary w-full py-6 text-2xl disabled:opacity-50"
           >
-            {loading ? 'Processing...' : 'Generate AI Recipe'}
+            {loading ? 'Synthesizing...' : 'Run Forge Algorithm'}
           </button>
         </div>
 
       </div>
 
       {loading && (
-         <div className="flex flex-col items-center justify-center py-16 space-y-4">
-            <div className="w-6 h-6 border-2 border-[#111111] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[#666666] text-sm animate-pulse">Compiling recipe...</p>
+         <div className="flex flex-col items-center justify-center py-20 space-y-6">
+            <div className="w-12 h-12 border-4 border-game-accent border-t-transparent animate-spin"></div>
+            <p className="text-game-accent font-mono text-xl animate-pulse tracking-[0.3em] uppercase">Compiling Blueprint...</p>
          </div>
       )}
 
       {result && !loading && (
-        <div className="min-card p-6 md:p-8 animate-in slide-in-from-bottom-4">
-          <h3 className="text-xl font-semibold mb-6">Generated Recipe</h3>
-          <div className="markdown-body overflow-x-auto">
+        <div className="game-card p-6 md:p-10 animate-in slide-in-from-bottom-4">
+          <h3 className="text-xl font-bold mb-8 text-app-text-main uppercase tracking-widest border-b border-app-border pb-4">Synthesis Result</h3>
+          <div className="markdown-body font-medium leading-relaxed bg-app-bg/20 p-6 border border-app-border">
             <Markdown remarkPlugins={[remarkGfm]}>{result}</Markdown>
           </div>
         </div>
@@ -777,19 +997,37 @@ function RecipeModal({ dish, onClose }: { dish: Dish, onClose: () => void }) {
   const [priceData, setPriceData] = useState<string | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
   const [healthData, setHealthData] = useState<string | null>(null);
-  const [isClosing, setIsClosing] = useState(false);
+  
+  const modalRef = React.useRef<HTMLDivElement>(null);
+  const previousFocus = React.useRef<HTMLElement | null>(null);
 
   React.useEffect(() => {
+    // Lock scroll
     document.body.style.overflow = 'hidden';
+    
+    // Save previous focus
+    previousFocus.current = document.activeElement as HTMLElement;
+    
+    // Set focus to the modal
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+
+    // Escape key handler
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+      // Return focus
+      if (previousFocus.current) {
+        previousFocus.current.focus();
+      }
     };
-  }, []);
-
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(onClose, 300); // Wait for transition out
-  };
+  }, [onClose]);
 
   const handleCheckPrice = async () => {
     try {
@@ -820,181 +1058,222 @@ function RecipeModal({ dish, onClose }: { dish: Dish, onClose: () => void }) {
   };
 
   return (
-    <div 
-      className={`modal-backdrop transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100 animate-in fade-in'}`} 
-      onClick={handleClose}
+    <motion.div 
+      className="modal-backdrop"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
     >
-      <div 
-        className={`modal-content transition-all duration-300 ${isClosing ? 'opacity-0 scale-95' : 'opacity-100 scale-100 animate-in zoom-in-95'}`} 
+      <motion.div 
+        ref={modalRef}
+        className="modal-content"
+        tabIndex={-1}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
         onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
         
         {/* Header Image Area */}
-        <div className="relative h-64 md:h-80 w-full">
+        <div className="relative h-64 md:h-80 w-full overflow-hidden border-b border-game-accent/30">
           <img 
             src={dish.image} 
             alt={dish.name} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover grayscale-[20%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/40 to-transparent"></div>
           
           <button 
-            onClick={handleClose}
-            className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white transition-colors"
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 bg-app-surface border-4 border-app-border hover:border-game-accent hover:text-game-accent transition-all text-app-text-main z-10"
+            aria-label="Close modal"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
 
-          <div className="absolute bottom-0 left-0 p-6 md:p-8 text-white w-full">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-3xl">{dish.emoji}</span>
+          <div className="absolute bottom-0 left-0 p-8 text-app-text-main w-full">
+            <div className="flex items-center gap-4 mb-4">
+              <span className="text-5xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)]" role="img" aria-label="dish-emoji">{dish.emoji}</span>
               <div className="flex gap-2">
-                <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded text-[10px] font-medium uppercase tracking-wider">{dish.country}</span>
-                <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded text-[10px] font-medium uppercase tracking-wider">{dish.style}</span>
+                <span className="px-4 py-2 bg-game-magenta border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.country}</span>
+                <span className="px-4 py-2 bg-game-accent border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.style}</span>
               </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{dish.name}</h2>
-            <p className="text-white/80 max-w-2xl text-sm leading-relaxed">{dish.desc}</p>
+            <h2 id="modal-title" className="text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
+              {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
+            </h2>
+            <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent">
+              {dish.desc}
+            </p>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 md:p-8 bg-white">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="p-8 bg-app-bg">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Left Column: Recipe Guide */}
-            <div className="lg:col-span-8 order-2 lg:order-1">
-              <div className="p-6 md:p-8 bg-white border border-[#eaeaea] rounded-xl h-full">
-                <h3 className="text-lg font-semibold border-b border-[#eaeaea] pb-4 mb-6 flex items-center gap-2">
-                  <ChefHat className="text-[#111111]" size={20} /> Recipe Guide
-                </h3>
-                <div className="markdown-body overflow-x-auto">
-                  <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Health & Science */}
-            <div className="lg:col-span-4 order-1 lg:order-2 space-y-6">
-              
-              <div className="p-5 bg-white border border-[#eaeaea] rounded-xl flex flex-col gap-4">
-                <div>
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-[#111111] border-b border-[#eaeaea] pb-3 mb-4">
-                    Ingredients
-                  </h3>
-                  <ul className="space-y-3">
-                    {(dish.ingredients || []).map((ing, idx) => (
-                       <li key={idx} className="flex flex-col">
-                        <span className="text-sm font-medium text-[#111111]">
-                          {ing.quantity} {ing.unit} {ing.name}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {dish.variations && dish.variations.length > 0 && (
-                  <div className="pt-4 border-t border-[#eaeaea]">
-                    <h3 className="text-sm font-semibold uppercase tracking-wider text-[#111111] border-b border-[#eaeaea] pb-3 mb-4">
-                      Variations
+            {/* Main Content Area: Ingredients & Recipe */}
+            <div className="lg:col-span-9 order-2 lg:order-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Ingredients Column */}
+                <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
+                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Material Deck</div>
+                  <div>
+                    <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
+                      <span className="w-3 h-3 bg-game-accent"></span>
+                      Resource Components
                     </h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {dish.variations.map((v, idx) => (
-                        <li key={idx} className="text-sm text-[#666666]">
-                          {v}
+                    <ul className="space-y-4">
+                      {(dish.ingredients || []).map((ing, idx) => (
+                        <li key={idx} className="flex flex-col bg-black/40 p-4 border-l-4 border-app-border hover:border-game-accent transition-colors">
+                          <span className="text-lg font-bold text-app-text-main uppercase tracking-wide leading-tight">
+                            {ing.quantity} {ing.unit} {ing.name}
+                          </span>
                         </li>
                       ))}
                     </ul>
                   </div>
-                )}
 
-                <div className="pt-4 border-t border-[#eaeaea]">
-                  <h3 className="text-sm font-semibold text-[#111111] mb-2">Market Price Checker</h3>
-                  <p className="text-xs text-[#666666] mb-3">Find estimated online market prices for these ingredients.</p>
+                  {dish.variations && dish.variations.length > 0 && (
+                    <div className="pt-6 border-t-4 border-app-border">
+                      <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-accent border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3">
+                        <span className="w-3 h-3 bg-game-accent"></span>
+                        Sub-Modules
+                      </h3>
+                      <ul className="space-y-3">
+                        {dish.variations.map((v, idx) => (
+                          <li key={idx} className="text-base text-app-text-muted flex items-start gap-2 before:content-['•'] before:text-game-accent">
+                            {v}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Recipe Column */}
+                <div className="p-8 bg-app-surface border-4 border-app-border relative">
+                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
+                  <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
+                    <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
+                  </h3>
+                  <div className="markdown-body text-app-text-main text-lg leading-snug">
+                    <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Intelligence & Systems */}
+            <div className="lg:col-span-3 order-1 lg:order-2 space-y-10">
+              
+              <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
+                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
+                <div className="pt-2">
+                  <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-3 flex items-center gap-2">
+                     <Search size={18} className="text-game-accent" /> Market Value
+                  </h3>
+                  <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">Query live market clusters for ingredient credits estimation.</p>
                   
                   {!priceData && (
                     <button 
                       onClick={handleCheckPrice}
                       disabled={priceLoading}
-                      className="w-full py-2 bg-[#111111] text-white rounded-lg text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50"
+                      className="game-btn game-btn-outline w-full py-4 text-base"
                     >
-                      {priceLoading ? 'Searching...' : 'Check Ingredient Prices'}
+                      {priceLoading ? 'Searching...' : 'Scan Market'}
                     </button>
                   )}
 
                   {priceLoading && !priceData && (
-                    <div className="flex justify-center mt-4">
-                      <div className="w-5 h-5 border-2 border-[#111111] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex justify-center mt-6">
+                      <div className="w-8 h-8 border-4 border-game-accent border-t-transparent rounded-full animate-spin"></div>
                     </div>
                   )}
 
                   {priceData && (
-                    <div className="mt-4 p-4 bg-[#fafafa] rounded-lg border border-[#eaeaea] text-sm markdown-body overflow-x-auto">
+                    <div className="mt-6 p-6 bg-app-bg/40 border-4 border-app-border text-base font-medium markdown-body">
                       <Markdown remarkPlugins={[remarkGfm]}>{priceData}</Markdown>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="p-5 bg-[#fafafa] border border-[#eaeaea] rounded-xl space-y-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-[#111111] flex items-center gap-2 border-b border-[#eaeaea] pb-3">
-                  <HeartPulse className="text-[#666666]" size={16} /> Health Impact
+              <div className="p-8 bg-app-surface border-4 border-app-border space-y-8 relative">
+                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-magenta uppercase tracking-widest">System Health</div>
+                <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-magenta flex items-center gap-4 border-b-4 border-app-border pb-4">
+                  <HeartPulse className="text-game-magenta" size={24} /> OS Vitals
                 </h3>
                 
-                <div className="space-y-4 text-sm">
+                <div className="space-y-8 text-lg">
                   <div>
-                    <h4 className="font-medium text-[#111111] mb-2">Nutrition</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <div className="bg-[#fafafa] p-3 rounded-lg border border-[#eaeaea] text-center">
-                        <span className="block text-xs uppercase tracking-wider text-[#666666] mb-1">Calories</span>
-                        <span className="font-semibold text-[#111111]">{dish.nutrition.calories}</span>
+                    <h4 className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em] mb-4">Core Attributes</h4>
+                    <div className="grid grid-cols-2 gap-4 font-mono">
+                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Energy</span>
+                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.calories}</span>
                       </div>
-                      <div className="bg-[#fafafa] p-3 rounded-lg border border-[#eaeaea] text-center">
-                        <span className="block text-xs uppercase tracking-wider text-[#666666] mb-1">Protein</span>
-                        <span className="font-semibold text-[#111111]">{dish.nutrition.protein}</span>
+                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Power</span>
+                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.protein}</span>
                       </div>
-                      <div className="bg-[#fafafa] p-3 rounded-lg border border-[#eaeaea] text-center">
-                        <span className="block text-xs uppercase tracking-wider text-[#666666] mb-1">Carbs</span>
-                        <span className="font-semibold text-[#111111]">{dish.nutrition.carbohydrates}</span>
+                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Fuel</span>
+                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.carbohydrates}</span>
                       </div>
-                      <div className="bg-[#fafafa] p-3 rounded-lg border border-[#eaeaea] text-center">
-                        <span className="block text-xs uppercase tracking-wider text-[#666666] mb-1">Fat</span>
-                        <span className="font-semibold text-[#111111]">{dish.nutrition.fat}</span>
+                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Buffer</span>
+                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.fat}</span>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium text-[#111111] mb-1">Benefits</h4>
-                    <p className="text-[#666666] leading-relaxed">{dish.healthBenefits}</p>
+                    <h4 className="text-sm font-bold text-green-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                       <span className="w-3 h-3 bg-green-400 animate-pulse"></span>
+                       Active Buffs
+                    </h4>
+                    <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-green-400">{dish.healthBenefits}</p>
                   </div>
-                  <div>
-                    <h4 className="font-medium text-[#111111] mb-1">Excessive Risks</h4>
-                    <p className="text-[#666666] leading-relaxed">{dish.excessRisks}</p>
-                  </div>
+                  {dish.excessRisks && (
+                    <div>
+                      <h4 className="text-sm font-bold text-game-magenta uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                        <span className="w-3 h-3 bg-game-magenta animate-pulse"></span>
+                        Critical Failures
+                      </h4>
+                      <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-game-magenta">{dish.excessRisks}</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-4 border-t border-[#eaeaea] mt-4">
-                  <h3 className="text-sm font-semibold text-[#111111] mb-2 flex items-center gap-2"><HeartPulse size={16} className="text-red-500" /> AI Insights</h3>
-                  <p className="text-xs text-[#666666] mb-3">AI-powered analysis of benefits, risks, and chronic illness prevention.</p>
+                <div className="pt-8 border-t-4 border-app-border mt-6">
+                  <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-4 flex items-center gap-4"><HeartPulse size={24} className="text-game-magenta" /> Neural Insights</h3>
+                  <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">AI-driven predictive analysis on bio-synchronization and legacy disease mitigation.</p>
                   
                   {!healthData && (
                     <button 
                       onClick={handleCheckHealth}
                       disabled={healthLoading}
-                      className="w-full py-2 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 border border-red-200"
+                      className="game-btn game-btn-primary w-full py-5 uppercase tracking-[0.2em] text-xl"
                     >
-                      {healthLoading ? 'Analyzing...' : 'Analyze Nutritional Profile'}
+                      {healthLoading ? 'Analyzing...' : 'Run Bio-Diagnostics'}
                     </button>
                   )}
 
                   {healthLoading && !healthData && (
-                    <div className="flex justify-center mt-4">
-                      <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                    <div className="flex justify-center mt-6">
+                      <div className="w-10 h-10 border-4 border-game-magenta border-t-transparent animate-spin"></div>
                     </div>
                   )}
 
                   {healthData && (
-                    <div className="mt-4 p-4 bg-white rounded-lg border border-[#eaeaea] shadow-sm text-sm markdown-body overflow-x-auto">
+                    <div className="mt-8 p-8 bg-app-bg/40 border-4 border-app-border text-lg font-medium markdown-body">
                       <Markdown remarkPlugins={[remarkGfm]}>{healthData}</Markdown>
                     </div>
                   )}
@@ -1005,7 +1284,7 @@ function RecipeModal({ dish, onClose }: { dish: Dish, onClose: () => void }) {
 
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

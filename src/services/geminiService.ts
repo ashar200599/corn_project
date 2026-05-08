@@ -103,7 +103,7 @@ Format the response using clean Markdown with clear headings and bullet points.`
 export const generateRecipeFromIngredients = async (ingredients: string, preferences: string) => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.1-pro-preview',
+      model: 'gemini-3-flash-preview',
       contents: `Available ingredients: ${ingredients}. User preferences: ${preferences}. Please generate a recipe.`,
       config: {
         systemInstruction: RECIPE_GENERATION_PROMPT,

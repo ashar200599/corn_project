@@ -1,0 +1,36 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public profile information for a user",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["displayName", "createdAt"]
+    },
+    "Favorite": {
+      "title": "Favorite Recipe",
+      "description": "A recipe saved by the user",
+      "type": "object",
+      "properties": {
+        "recipeId": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["recipeId", "addedAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profile document"
+    },
+    "users/{userId}/favorites/{recipeId}": {
+      "schema": "Favorite",
+      "description": "User's favorite recipes"
+    }
+  }
+}
