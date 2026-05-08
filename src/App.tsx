@@ -1,3 +1,4 @@
+console.log('App.tsx is evaluating...');
 import React, { useState, useEffect } from 'react';
 import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -101,12 +102,12 @@ export default function App() {
             <div className="w-10 h-10 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
               <span className="text-2xl">🌽</span>
             </div>
-            <div>
-              <div className="text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
+            <div className="font-game">
+              <div className="text-2xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
                 CORN
               </div>
-              <div className="text-base font-mono text-game-green flex items-center gap-2 mt-1">
-                <span className="w-2 h-2 bg-game-green animate-pulse"></span>
+              <div className="text-lg font-mono text-game-green flex items-center gap-2 mt-1">
+                <span className="w-2.5 h-2.5 bg-game-green animate-pulse"></span>
                 WORLD: KITCHEN
               </div>
             </div>
@@ -205,11 +206,11 @@ export default function App() {
             onClick={() => setIsMenuOpen(false)}
           />
           <div className="fixed top-[65px] md:top-[73px] left-0 bottom-0 w-64 bg-app-surface z-30 shadow-2xl p-6 overflow-y-auto border-r border-app-border animate-in slide-in-from-left duration-300">
-            <h2 className="text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
+            <h2 className="font-game text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
             
             <div className="space-y-10">
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
+                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -233,7 +234,7 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
+                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -263,7 +264,7 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
+                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -297,7 +298,7 @@ export default function App() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 mb-20 md:mb-0">
+      <main className="flex-1 max-w-none w-full p-4 md:p-8 mb-20 md:mb-0">
         {activeTab === 'dashboard' && (
           <Dashboard 
             activeCountry={activeCountry} 
@@ -308,6 +309,7 @@ export default function App() {
             setActiveCategory={setActiveCategory}
             onSelectDish={setSelectedDish} 
             vitals={vitals}
+            setActiveTab={setActiveTab}
           />
         )}
         {activeTab === 'scanner' && <Scanner />}
@@ -460,10 +462,10 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
         </div>
 
         <div className="mt-2 space-y-1">
-          <h3 className="font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
+          <h3 className="font-game font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
             {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
           </h3>
-          <div className="text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
+          <div className="font-game text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
             <span className="text-game-magenta">BIOME:</span> {dish.country}
             <span className="w-2 h-2 bg-app-border"></span>
             <span className="text-game-accent">TIER:</span> {dish.style}
@@ -567,7 +569,8 @@ function Dashboard({
   setActiveStyle,
   setActiveCategory,
   onSelectDish,
-  vitals
+  vitals,
+  setActiveTab
 }: { 
   activeCountry: string | null, 
   activeStyle: string | null, 
@@ -576,11 +579,21 @@ function Dashboard({
   setActiveStyle: (s: 'Traditional' | 'Modern' | null) => void,
   setActiveCategory: (c: 'Food' | 'Beverage' | null) => void,
   onSelectDish: (d: Dish) => void,
-  vitals: any
+  vitals: any,
+  setActiveTab: (t: 'dashboard' | 'scanner' | 'generator') => void
 }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [excludeQuery, setExcludeQuery] = React.useState('');
   const [activeTags, setActiveTags] = React.useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  const heroImages = React.useMemo(() => DISHES.map(d => d.image), []);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
   const [favorites, setFavorites] = React.useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('favorites');
@@ -633,26 +646,51 @@ function Dashboard({
   const allTags = Array.from(new Set(DISHES.flatMap(d => d.tags || []))).sort();
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-500">
-      <div className="space-y-4 max-w-4xl border-l-[8px] border-game-accent pl-6 bg-app-surface/30 py-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
-            CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
-          </h2>
-          <div className="flex flex-wrap items-center gap-6 px-4 py-3 bg-app-bg/40 border-2 border-app-border">
-            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
-            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
-            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
+    <div className="space-y-12 animate-in fade-in duration-700">
+      {/* Hero Banner Section */}
+      <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 mb-16 relative z-0">
+        <div className="hero-banner relative">
+          <AnimatePresence mode="wait">
+            <motion.img 
+              key={currentImageIndex}
+              src={heroImages[currentImageIndex]} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5 }}
+              alt="Featured Recipe" 
+              className="absolute inset-0 w-full h-full object-cover grayscale-[20%] transition-all duration-1000 scale-105"
+            />
+          </AnimatePresence>
+          <div className="hero-overlay">
+            <div className="space-y-6 max-w-2xl">
+              <div className="inline-block px-4 py-1 bg-game-accent text-app-bg font-game font-bold text-sm uppercase tracking-[0.3em]">
+                Latest Patch v1.25
+              </div>
+              <h2 className="text-7xl md:text-8xl font-game font-black tracking-tight text-white uppercase leading-none drop-shadow-[4px_4px_0_rgba(0,0,0,0.8)]">
+                CORN <span className="text-game-accent">SYSTEM</span>
+              </h2>
+              <p className="text-xl md:text-2xl text-white leading-tight font-medium bg-[#0a0a0c]/90 p-8 border-l-8 border-game-accent shadow-[10px_10px_0_rgba(0,0,0,0.5)]">
+                Experience the next evolution in <strong className="text-game-accent font-black">Culinary Synthesis</strong>. 
+                Discover traditional biomes and modernize your nutritional inventory with neural-powered insights.
+              </p>
+              <div className="flex flex-row gap-4 pt-4">
+                <button 
+                  onClick={() => setActiveTab('generator')}
+                  className="game-btn game-btn-primary px-8 py-3 text-2xl shadow-[0_0_20px_rgba(124,163,55,0.4)] text-white"
+                >
+                  Quick Forge
+                </button>
+                <button className="game-btn game-btn-outline px-8 py-3 text-2xl flex items-center gap-3 text-[#373737]">
+                  <ScrollText size={22} /> Patch Notes
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <p className="text-app-text-muted text-xl leading-snug font-medium">
-          <strong className="text-game-accent">Craft Own Recipe and Nutrition (CORN)</strong>. 
-          A sophisticated algorithm-driven system designed to help you synthesize legacy recipes, 
-          track nutritional vitals, and discover the culinary heritage of the global biomes.
-        </p>
       </div>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-10 px-4 md:px-0">
         {/* Search Bar */}
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1 group">
@@ -1188,7 +1226,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
     >
       <motion.div 
         ref={modalRef}
-        className="modal-content"
+        className="modal-content !max-w-6xl"
         tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1220,12 +1258,12 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
           <div className="absolute bottom-0 left-0 p-8 text-app-text-main w-full">
             <div className="flex items-center gap-4 mb-4">
               <span className="text-5xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)]" role="img" aria-label="dish-emoji">{dish.emoji}</span>
-              <div className="flex gap-2">
+              <div className="flex gap-2 font-game">
                 <span className="px-4 py-2 bg-game-magenta border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.country}</span>
                 <span className="px-4 py-2 bg-game-accent border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.style}</span>
               </div>
             </div>
-            <h2 id="modal-title" className="text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
+            <h2 id="modal-title" className="font-game text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
               {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
             </h2>
             <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent">
