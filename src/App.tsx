@@ -5,11 +5,13 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
-import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile } from './lib/firebase';
+import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
   const [user, setUser] = useState<User | null>(null);
+  const [vitals, setVitals] = useState({ health: 100, shield: 50, attack: 10 });
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('app-theme');
@@ -22,6 +24,14 @@ export default function App() {
       if (u) {
         try {
           await syncUserProfile(u);
+          const userRef = doc(db, 'users', u.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            if (data.vitals) {
+              setVitals(data.vitals);
+            }
+          }
         } catch (error) {
           console.error("Error syncing profile:", error);
         }
@@ -103,6 +113,12 @@ export default function App() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <div className="hidden xl:flex items-center gap-8 px-6 py-2 bg-app-bg/60 border-2 border-app-border">
+            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
+            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
+            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
+          </div>
+
           <nav className="hidden lg:flex gap-2">
             <TabButton 
               active={activeTab === 'dashboard'} 
@@ -291,6 +307,7 @@ export default function App() {
             setActiveStyle={setActiveStyle}
             setActiveCategory={setActiveCategory}
             onSelectDish={setSelectedDish} 
+            vitals={vitals}
           />
         )}
         {activeTab === 'scanner' && <Scanner />}
@@ -321,7 +338,12 @@ export default function App() {
 
       <AnimatePresence>
         {selectedDish && (
-          <RecipeModal dish={selectedDish} onClose={() => setSelectedDish(null)} />
+          <RecipeModal 
+            dish={selectedDish} 
+            onClose={() => setSelectedDish(null)} 
+            vitals={vitals} 
+            onVitalsUpdate={setVitals} 
+          />
         )}
       </AnimatePresence>
     </div>
@@ -337,6 +359,30 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
       {icon}
       <span>{label}</span>
     </button>
+  );
+}
+
+function VitalBar({ icon, label, value, max, color }: { icon: React.ReactNode, label: string, value: number, max: number, color: string }) {
+  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  return (
+    <div className="flex items-center gap-3 w-32">
+      <div className="flex flex-col gap-1 w-full">
+        <div className="flex justify-between items-center text-[10px] font-black tracking-widest leading-none">
+          <div className="flex items-center gap-1">
+            {icon}
+            <span className="text-app-text-muted">{label}</span>
+          </div>
+          <span className="text-app-text-main">{Math.round(value)}</span>
+        </div>
+        <div className="h-2 bg-app-bg border border-app-border relative overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            className={`h-full ${color} transition-all duration-500`}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -520,7 +566,8 @@ function Dashboard({
   setActiveCountry,
   setActiveStyle,
   setActiveCategory,
-  onSelectDish 
+  onSelectDish,
+  vitals
 }: { 
   activeCountry: string | null, 
   activeStyle: string | null, 
@@ -528,7 +575,8 @@ function Dashboard({
   setActiveCountry: (c: string | null) => void,
   setActiveStyle: (s: 'Traditional' | 'Modern' | null) => void,
   setActiveCategory: (c: 'Food' | 'Beverage' | null) => void,
-  onSelectDish: (d: Dish) => void 
+  onSelectDish: (d: Dish) => void,
+  vitals: any
 }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [excludeQuery, setExcludeQuery] = React.useState('');
@@ -587,9 +635,16 @@ function Dashboard({
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
       <div className="space-y-4 max-w-4xl border-l-[8px] border-game-accent pl-6 bg-app-surface/30 py-6">
-        <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
-          CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
-        </h2>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
+            CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
+          </h2>
+          <div className="flex flex-wrap items-center gap-6 px-4 py-3 bg-app-bg/40 border-2 border-app-border">
+            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
+            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
+            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
+          </div>
+        </div>
         <p className="text-app-text-muted text-xl leading-snug font-medium">
           <strong className="text-game-accent">Craft Own Recipe and Nutrition (CORN)</strong>. 
           A sophisticated algorithm-driven system designed to help you synthesize legacy recipes, 
@@ -992,11 +1047,76 @@ function Generator() {
   );
 }
 
-function RecipeModal({ dish, onClose }: { dish: Dish, onClose: () => void }) {
+function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, onClose: () => void, vitals: any, onVitalsUpdate: (v: any) => void }) {
   const [priceLoading, setPriceLoading] = useState(false);
   const [priceData, setPriceData] = useState<string | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
   const [healthData, setHealthData] = useState<string | null>(null);
+
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [synthesisMessage, setSynthesisMessage] = useState<{ text: string, type: 'plus' | 'minus' | 'buff' } | null>(null);
+
+  const handleSynthesize = async () => {
+    setIsSynthesizing(true);
+    
+    // Synthesis Logic
+    const newVitals = { ...vitals };
+    let message = "";
+    let type: 'plus' | 'minus' | 'buff' = 'plus';
+
+    const calories = parseInt(dish.nutrition.calories) || 0;
+    const fat = parseInt(dish.nutrition.fat) || 0;
+    const protein = parseInt(dish.nutrition.protein) || 0;
+
+    const isHealthy = calories < 550 && fat < 25;
+    const isJunk = calories > 900 || fat > 45;
+    const isProtein = protein > 35;
+    const isBeverage = dish.category === 'Beverage';
+
+    if (isHealthy) {
+      newVitals.health = Math.min(100, vitals.health + 10);
+      newVitals.shield = Math.min(100, vitals.shield + 5);
+      message = "VITALITY RESTORED: +10 HP, +5 SHD";
+      type = 'plus';
+    } else if (isJunk) {
+      newVitals.health = Math.max(1, vitals.health - 15);
+      message = "TOXICITY DETECTED: -15 HP (LIPID OVERLOAD)";
+      type = 'minus';
+    } else {
+      newVitals.health = Math.min(100, vitals.health + 5);
+      message = "NUTRIENTIAL GAIN: +5 HP";
+      type = 'plus';
+    }
+
+    if (isProtein) {
+      newVitals.attack = Math.min(99, vitals.attack + 2);
+      message += " | ATK BOOSTED!";
+      type = 'buff';
+    }
+
+    if (isBeverage) {
+      newVitals.shield = Math.min(100, vitals.shield + 15);
+      message += " | SHIELD RECHARGED!";
+      type = 'buff';
+    }
+
+    setSynthesisMessage({ text: message, type });
+    onVitalsUpdate(newVitals);
+
+    // Persist to Firebase if logged in
+    if (auth.currentUser) {
+      try {
+        await updateUserVitals(auth.currentUser.uid, newVitals);
+      } catch (err) {
+        console.error("Failed to persist vitals:", err);
+      }
+    }
+
+    setTimeout(() => {
+      setIsSynthesizing(false);
+      setTimeout(() => setSynthesisMessage(null), 3000);
+    }, 1500);
+  };
   
   const modalRef = React.useRef<HTMLDivElement>(null);
   const previousFocus = React.useRef<HTMLElement | null>(null);
@@ -1277,6 +1397,34 @@ function RecipeModal({ dish, onClose }: { dish: Dish, onClose: () => void }) {
                       <Markdown remarkPlugins={[remarkGfm]}>{healthData}</Markdown>
                     </div>
                   )}
+                </div>
+
+                <div className="pt-8 border-t-4 border-app-border">
+                  <h3 className="text-base font-bold text-game-accent uppercase tracking-widest mb-4 flex items-center gap-4"><Pickaxe size={24} /> Synthesis Node</h3>
+                  <p className="text-sm text-app-text-muted mb-6 leading-relaxed">Execute the synthesis algorithm to incorporate this blueprint into your bio-matrix.</p>
+                  
+                  <div className="relative">
+                    <button 
+                      onClick={handleSynthesize}
+                      disabled={isSynthesizing}
+                      className={`game-btn w-full py-6 text-2xl uppercase tracking-[0.3em] font-black transition-all ${isSynthesizing ? 'bg-app-border text-app-text-muted' : 'game-btn-primary border-4 shadow-[0_0_20px_rgba(0,242,255,0.2)] hover:scale-[1.02]'}`}
+                    >
+                      {isSynthesizing ? 'Processing...' : 'Synthesize Item'}
+                    </button>
+                    
+                    <AnimatePresence>
+                      {synthesisMessage && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className={`absolute -top-16 left-0 right-0 p-3 text-center text-sm font-black uppercase tracking-widest border-2 ${synthesisMessage.type === 'plus' ? 'bg-game-green/20 border-game-green text-game-green' : synthesisMessage.type === 'minus' ? 'bg-game-magenta/20 border-game-magenta text-game-magenta' : 'bg-game-accent/20 border-game-accent text-game-accent'}`}
+                        >
+                          {synthesisMessage.text}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
 

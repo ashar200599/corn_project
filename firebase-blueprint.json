@@ -8,7 +8,15 @@
         "displayName": { "type": "string" },
         "photoURL": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
-        "lastLogin": { "type": "string", "format": "date-time" }
+        "lastLogin": { "type": "string", "format": "date-time" },
+        "vitals": {
+          "type": "object",
+          "properties": {
+            "health": { "type": "number" },
+            "shield": { "type": "number" },
+            "attack": { "type": "number" }
+          }
+        }
       },
       "required": ["displayName", "createdAt"]
     },

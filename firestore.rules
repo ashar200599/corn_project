@@ -30,9 +30,15 @@ service cloud.firestore {
     // Validation Blueprints
     function isValidUser(data) {
       return data.keys().hasAll(['displayName', 'createdAt']) &&
-             data.keys().size() <= 4 &&
+             data.keys().size() <= 5 &&
              data.displayName is string && data.displayName.size() <= 100 &&
-             (data.get('photoURL', '') == '' || (data.photoURL is string && data.photoURL.size() <= 500));
+             (data.get('photoURL', '') == '' || (data.photoURL is string && data.photoURL.size() <= 500)) &&
+             (data.get('vitals', null) == null || (
+               data.vitals is map && 
+               data.vitals.get('health', 0) is number &&
+               data.vitals.get('shield', 0) is number &&
+               data.vitals.get('attack', 0) is number
+             ));
     }
 
     function isValidFavorite(data) {
@@ -53,7 +59,7 @@ service cloud.firestore {
                       isValidUser(incoming()) && 
                       incoming().createdAt == existing().createdAt &&
                       (
-                        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'lastLogin'])
+                        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'lastLogin', 'vitals'])
                       ) &&
                       incoming().lastLogin == request.time;
 

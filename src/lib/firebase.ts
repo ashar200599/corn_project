@@ -18,12 +18,35 @@ export async function syncUserProfile(user: User) {
       photoURL: user.photoURL || '',
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp(),
+      vitals: {
+        health: 100,
+        shield: 50,
+        attack: 10
+      }
     });
   } else {
-    await setDoc(userRef, {
-      lastLogin: serverTimestamp(),
-    }, { merge: true });
+    const data = userSnap.data();
+    const updateData: any = { lastLogin: serverTimestamp() };
+    
+    // Ensure vitals exist for legacy users
+    if (!data.vitals) {
+      updateData.vitals = {
+        health: 100,
+        shield: 50,
+        attack: 10
+      };
+    }
+    
+    await setDoc(userRef, updateData, { merge: true });
   }
+}
+
+export async function updateUserVitals(uid: string, vitals: { health: number, shield: number, attack: number }) {
+  const userRef = doc(db, 'users', uid);
+  await setDoc(userRef, {
+    vitals,
+    lastLogin: serverTimestamp()
+  }, { merge: true });
 }
 
 export { signInWithPopup, signOut, onAuthStateChanged };
