@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn } from 'lucide-react';
+import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn, PlusCircle, MinusCircle, Zap, Shield, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -10,6 +10,11 @@ import { doc, getDoc } from 'firebase/firestore';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
+  const [synthesisHistory, setSynthesisHistory] = useState<{dishName: string, message: string, timestamp: number}[]>([]);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [isMarketplaceModalOpen, setIsMarketplaceModalOpen] = useState(false);
+  const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [vitals, setVitals] = useState({ health: 100, shield: 50, attack: 10 });
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
@@ -46,8 +51,10 @@ export default function App() {
       if (result.user) {
         await syncUserProfile(result.user);
       }
-    } catch (error) {
-      console.error("Login failed:", error);
+    } catch (error: any) {
+      if (error?.code !== 'auth/popup-closed-by-user') {
+        console.error("Login failed:", error);
+      }
     }
   };
 
@@ -82,7 +89,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
-      <header className="bg-app-surface border-b-4 border-app-border py-6 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex items-center flex-wrap gap-4 justify-between sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -113,13 +120,13 @@ export default function App() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <div className="hidden xl:flex items-center gap-8 px-6 py-2 bg-app-bg/60 border-2 border-app-border">
-            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
-            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
-            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
+          <div className="flex items-center gap-4 px-3 py-1.5 bg-app-bg/60 border-2 border-app-border">
+            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" tooltip="Overall physical wellness." />
+            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" tooltip="Culinary preparation efficiency." />
+            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" tooltip="Defense against nutritional risks." />
           </div>
 
-          <nav className="hidden lg:flex gap-2">
+          <nav className="hidden md:flex gap-2">
             <TabButton 
               active={activeTab === 'dashboard'} 
               onClick={() => setActiveTab('dashboard')}
@@ -205,93 +212,30 @@ export default function App() {
             onClick={() => setIsMenuOpen(false)}
           />
           <div className="fixed top-[65px] md:top-[73px] left-0 bottom-0 w-64 bg-app-surface z-30 shadow-2xl p-6 overflow-y-auto border-r border-app-border animate-in slide-in-from-left duration-300">
-            <h2 className="text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
+            <h2 className="text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Menu</h2>
             
-            <div className="space-y-10">
-              <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
-                <ul className="space-y-3">
-                  <li>
-                    <button 
-                      onClick={() => { setActiveCountry(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCountry === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Global All
-                    </button>
-                  </li>
-                  {countries.map(c => (
-                    <li key={c}>
-                      <button 
-                        onClick={() => { setActiveCountry(c); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                        className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCountry === c ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                      >
-                        {c}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
-                <ul className="space-y-3">
-                  <li>
-                    <button 
-                      onClick={() => { setActiveCategory(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Total Class
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      onClick={() => { setActiveCategory('Food'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === 'Food' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Food Units
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      onClick={() => { setActiveCategory('Beverage'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeCategory === 'Beverage' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Beverage Units
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
-                <ul className="space-y-3">
-                  <li>
-                    <button 
-                      onClick={() => { setActiveStyle(null); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === null ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      All Tiers
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      onClick={() => { setActiveStyle('Traditional'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === 'Traditional' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Traditional
-                    </button>
-                  </li>
-                  <li>
-                    <button 
-                      onClick={() => { setActiveStyle('Modern'); setIsMenuOpen(false); setActiveTab('dashboard'); }}
-                      className={`w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all border-4 ${activeStyle === 'Modern' ? 'bg-game-accent text-app-bg border-game-accent' : 'border-app-border text-app-text-muted hover:text-white hover:bg-app-border'}`}
-                    >
-                      Modern Spec
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <ul className="space-y-4">
+              <li>
+                <button onClick={() => {setIsHistoryModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
+                  Synthesize History
+                </button>
+              </li>
+              <li>
+                <a href="https://www.tokopedia.com/" target="_blank" onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
+                  Marketplace
+                </a>
+              </li>
+              <li>
+                <button onClick={() => {setIsInstructionsModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
+                  Instructions
+                </button>
+              </li>
+              <li>
+                <button onClick={() => {setIsAboutModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
+                  About
+                </button>
+              </li>
+            </ul>
           </div>
         </>
       )}
@@ -310,8 +254,8 @@ export default function App() {
             vitals={vitals}
           />
         )}
-        {activeTab === 'scanner' && <Scanner />}
-        {activeTab === 'generator' && <Generator />}
+        {activeTab === 'scanner' && <Scanner onGenerate={(dish) => { setSelectedDish(dish); setActiveTab('dashboard'); }} />}
+        {activeTab === 'generator' && <Generator onGenerate={(dish) => { setSelectedDish(dish); setActiveTab('dashboard'); }} />}
       </main>
 
       {/* Mobile Nav */}
@@ -336,6 +280,65 @@ export default function App() {
         />
       </div>
 
+      {isHistoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+            <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Synthesis History</h2>
+            {synthesisHistory.length === 0 ? <p className="text-app-text-muted">No history found.</p> : (
+              <ul className="space-y-4">
+                {synthesisHistory.slice().reverse().map((entry, i) => (
+                  <li key={i} className="p-4 border-2 border-app-border bg-app-bg/50">
+                    <div className="font-bold text-game-accent">{entry.dishName}</div>
+                    <div className="text-sm text-app-text-main">{entry.message}</div>
+                    <div className="text-xs text-app-text-muted mt-1">{new Date(entry.timestamp).toLocaleString()}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button onClick={() => setIsHistoryModalOpen(false)} className="mt-8 game-btn game-btn-primary">Close</button>
+          </div>
+        </div>
+      )}
+      
+      {isMarketplaceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-lg text-center">
+             <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Marketplace</h2>
+             <p className="text-app-text-main mb-8">Access our generated marketplace for rare cooking materials.</p>
+             <a href="https://marketplace.corn-kitchen.gen" target="_blank" className="game-btn game-btn-primary block w-full py-4 text-center">Open Marketplace</a>
+             <button onClick={() => setIsMarketplaceModalOpen(false)} className="mt-4 w-full game-btn game-btn-outline">Close</button>
+          </div>
+        </div>
+      )}
+
+      {isInstructionsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-2xl text-left">
+            <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Instructions</h2>
+            <ol className="text-app-text-main space-y-4 list-decimal list-inside">
+               <li><strong>Connect/Login:</strong> Sync your profile for persistent stats.</li>
+               <li><strong>Dashboard:</strong> Browse dishes, filter by region/category.</li>
+               <li><strong>Scanner:</strong> Use visual data to identify ingredients.</li>
+               <li><strong>Generator:</strong> Forge new recipes from your inventory.</li>
+               <li><strong>Synthesize:</strong> Cook selected recipes to gain buffs and increase status.</li>
+            </ol>
+            <button onClick={() => setIsInstructionsModalOpen(false)} className="mt-8 w-full game-btn game-btn-primary">Got it</button>
+          </div>
+        </div>
+      )}
+
+      {isAboutModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-lg text-center">
+             <img src="https://image.pollinations.ai/prompt/technological%20generative%20cooking%20kitchen%20robot%20high%20quality?width=400&height=200&nologo=true" alt="About Corn" className="mb-6 border-2 border-app-border" />
+             <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">About CORN</h2>
+             <p className="text-app-text-main mb-8">CORN World Kitchen is a generative cooking assistant.</p>
+             <p className="text-app-text-muted mb-8 text-sm">Version 0.1-patch (C-Alpha)</p>
+             <button onClick={() => setIsAboutModalOpen(false)} className="game-btn game-btn-primary">Close</button>
+          </div>
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedDish && (
           <RecipeModal 
@@ -343,6 +346,7 @@ export default function App() {
             onClose={() => setSelectedDish(null)} 
             vitals={vitals} 
             onVitalsUpdate={setVitals} 
+            onSynthesize={(dishName, message) => setSynthesisHistory(prev => [...prev, {dishName, message, timestamp: Date.now()}])}
           />
         )}
       </AnimatePresence>
@@ -354,18 +358,54 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button 
       onClick={onClick}
-      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-2`}
+      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-2 px-3 py-2 md:px-4 md:py-2`}
     >
-      {icon}
-      <span>{label}</span>
+      <span className="flex items-center gap-1 md:gap-2">
+        {icon}
+        <span className="text-xs md:text-sm font-bold uppercase tracking-widest">{label}</span>
+      </span>
     </button>
   );
 }
 
-function VitalBar({ icon, label, value, max, color }: { icon: React.ReactNode, label: string, value: number, max: number, color: string }) {
+function HeroSlideshow() {
+  const images = DISHES.slice(0, 5).map(d => d.image);
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative w-full h-[400px] overflow-hidden border-b-4 border-app-border mb-12">
+      <AnimatePresence mode='wait'>
+        <motion.img
+          key={index}
+          src={images[index]}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </AnimatePresence>
+      <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/50 to-transparent flex items-end p-8">
+        <div className="max-w-4xl">
+           <h1 className="text-6xl font-black text-white uppercase tracking-tighter shadow-lg">CORN Library</h1>
+           <p className="text-xl text-white mt-2 shadow-lg">Synthesize legacy recipes and track nutrition.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VitalBar({ icon, label, value, max, color, tooltip }: { icon: React.ReactNode, label: string, value: number, max: number, color: string, tooltip?: string }) {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
   return (
-    <div className="flex items-center gap-3 w-32">
+    <div className="flex items-center gap-3 w-32" title={tooltip}>
       <div className="flex flex-col gap-1 w-full">
         <div className="flex justify-between items-center text-[10px] font-black tracking-widest leading-none">
           <div className="flex items-center gap-1">
@@ -426,83 +466,70 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
   };
 
   return (
+      
     <div 
-      className="game-card group cursor-pointer flex flex-col h-full"
+      className="game-card relative group cursor-pointer flex flex-col h-full overflow-hidden"
       onClick={onClick}
     >
-      {/* Image Container with Hover Overlay for Scientific Names */}
-      <div className="relative h-56 w-full overflow-hidden bg-app-bg/40">
+      {/* Image Container */}
+      <div className="relative h-40 w-full overflow-hidden bg-app-bg/40">
         <img 
           src={dish.image} 
           alt={dish.name} 
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[30%] group-hover:grayscale-0" 
         />
-        <div className="absolute inset-0 bg-app-surface/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6 text-center border-b border-game-accent/20">
-          <h4 className="text-game-accent text-sm font-black mb-3 uppercase tracking-[0.3em]">Codename</h4>
-          {dish.scientificNames.length > 0 && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <span className="text-app-text-main text-xl font-bold block">{dish.scientificNames[0].ingredient}</span>
-              <div className="text-app-text-main font-mono text-sm mt-2 tracking-widest bg-app-bg/60 px-3 py-2 border-l-4 border-game-accent">
-                {dish.scientificNames[0].name}
-              </div>
-            </div>
-          )}
-        </div>
         {/* Rarity/Category Tag */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-app-surface border-4 border-app-border text-base font-bold text-game-accent uppercase tracking-widest">
+        <div className="absolute top-2 left-2 px-2 py-1 bg-app-surface border-2 border-app-border text-[10px] font-bold text-game-accent uppercase tracking-widest">
           {dish.category === 'Food' ? 'STACK: FOOD' : 'STACK: POTION'}
         </div>
       </div>
 
-      <div className="p-6 flex-1 flex flex-col relative">
-        <div className="absolute -top-10 right-6 bg-app-surface w-16 h-16 flex items-center justify-center text-4xl border-4 border-app-border shadow-[4px_4px_0_rgba(0,0,0,0.5)] group-hover:border-game-accent transition-colors">
+      <div className="p-4 flex-1 flex flex-col relative w-full overflow-hidden">
+        <div className="absolute -top-6 right-2 bg-app-surface w-10 h-10 flex items-center justify-center text-2xl border-2 border-app-border">
           {dish.emoji}
         </div>
 
-        <div className="mt-2 space-y-1">
-          <h3 className="font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
+        <div className="mt-2 text-left">
+          <h3 className="font-bold text-lg text-app-text-main uppercase tracking-tight truncate pr-10 group-hover:text-game-accent transition-colors">
             {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
           </h3>
-          <div className="text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
-            <span className="text-game-magenta">BIOME:</span> {dish.country}
-            <span className="w-2 h-2 bg-app-border"></span>
-            <span className="text-game-accent">TIER:</span> {dish.style}
+          <div className="text-[10px] font-bold text-app-text-muted flex items-center flex-wrap gap-1 uppercase tracking-widest mt-1">
+            <span className="text-game-magenta">{dish.country}</span>
+            <span className="text-game-accent">| {dish.style}</span>
           </div>
         </div>
         
-        <p className="text-lg text-app-text-muted mt-4 line-clamp-2 leading-tight flex-1 font-medium bg-black/40 p-3 border-l-4 border-app-border">
-          {dish.desc}
-        </p>
-
-        <div className="mt-4 pt-4 border-t-4 border-app-border flex items-center justify-between">
-            <span className="text-base font-bold uppercase tracking-widest text-app-text-muted group-hover:text-game-accent transition-all flex items-center gap-2">
-              <Pickaxe size={18} className="text-game-accent" />
-              Mine Data
-            </span>
-            <div className="flex items-center gap-3">
+        <div className="mt-3 pt-3 border-t-2 border-app-border flex items-center justify-end">
+            <div className="flex items-center gap-1">
               <button 
                 onClick={onToggleFavorite}
-                className={`p-2 transition-all border-4 ${isFavorite ? 'text-game-magenta border-game-magenta bg-game-magenta/10 shadow-[4px_4px_0_rgba(255,85,255,0.2)]' : 'text-app-text-muted border-app-border hover:border-app-text-muted hover:text-game-accent bg-black/40'}`}
+                className={`p-1.5 transition-all border-2 ${isFavorite ? 'text-game-magenta border-game-magenta bg-game-magenta/10' : 'text-app-text-muted border-app-border hover:border-app-text-muted hover:text-game-accent bg-black/40'}`}
                 title="Add to Chest"
               >
-                <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+                <Heart size={14} fill={isFavorite ? "currentColor" : "none"} />
               </button>
               <button 
                 onClick={handleHealthClick}
-                className={`text-base font-bold uppercase tracking-widest flex items-center gap-2 px-4 py-2 transition-all border-4 ${showHealth ? 'bg-game-magenta text-white border-game-magenta shadow-[4px_4px_0_rgba(255,85,255,0.3)]' : 'text-game-magenta bg-game-magenta/5 border-game-magenta/30 hover:bg-game-magenta/20'}`}
+                className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 px-2 py-1.5 transition-all border-2 ${showHealth ? 'bg-game-magenta text-white border-game-magenta' : 'text-game-magenta bg-game-magenta/5 border-game-magenta/30 hover:bg-game-magenta/20'}`}
               >
-                <Sword size={18} /> Stats
+                <Sword size={12} /> Stats
               </button>
             </div>
         </div>
 
         {showHealth && (
-          <div className="mt-4 p-5 bg-black/60 border-4 border-app-border text-sm text-app-text-main space-y-6 animate-in slide-in-from-top-2" onClick={(e) => e.stopPropagation()}>
-            <div>
-              <span className="block font-bold text-game-accent text-base uppercase tracking-widest mb-3 flex items-center gap-3">
-                <span className="w-3 h-5 bg-game-accent"></span>
-                Item Attributes
-              </span>
+          <div className="absolute inset-0 z-20 p-5 bg-app-surface border-4 border-app-border text-sm text-app-text-main overflow-y-auto animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+            {/* Close hint */}
+            <div className="absolute top-2 right-2 text-game-accent cursor-pointer" onClick={handleHealthClick}>
+               <X size={20} />
+            </div>
+            <div className="space-y-6">
+              <div>
+                <span className="block font-bold text-game-accent text-base uppercase tracking-widest mb-3 flex items-center gap-3">
+                  <span className="w-3 h-5 bg-game-accent"></span>
+                  Item Attributes
+                </span>
+              </div>
               <div className="grid grid-cols-2 gap-4 text-base font-bold">
                 <div className="bg-app-surface border-4 border-app-border p-3 flex justify-between">
                   <span className="text-app-text-muted uppercase">Hunger</span>
@@ -634,23 +661,7 @@ function Dashboard({
 
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
-      <div className="space-y-4 max-w-4xl border-l-[8px] border-game-accent pl-6 bg-app-surface/30 py-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
-            CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
-          </h2>
-          <div className="flex flex-wrap items-center gap-6 px-4 py-3 bg-app-bg/40 border-2 border-app-border">
-            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
-            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
-            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
-          </div>
-        </div>
-        <p className="text-app-text-muted text-xl leading-snug font-medium">
-          <strong className="text-game-accent">Craft Own Recipe and Nutrition (CORN)</strong>. 
-          A sophisticated algorithm-driven system designed to help you synthesize legacy recipes, 
-          track nutritional vitals, and discover the culinary heritage of the global biomes.
-        </p>
-      </div>
+      <HeroSlideshow />
 
       <div className="flex flex-col gap-8">
         {/* Search Bar */}
@@ -802,10 +813,9 @@ function Dashboard({
   );
 }
 
-function Scanner() {
+function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   const [image, setImage] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>('');
-  const [result, setResult] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
@@ -816,7 +826,6 @@ function Scanner() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
-        setResult(''); // Clear previous results
       };
       reader.readAsDataURL(file);
     }
@@ -856,9 +865,15 @@ function Scanner() {
       // Remove data:image/jpeg;base64, prefix
       const base64Data = image.split(',')[1];
       const res = await analyzeFoodImage(base64Data, mimeType);
-      setResult(res);
+      if (res) {
+        const dish: Dish = JSON.parse(res);
+        dish.id = 'scan-' + Date.now();
+        dish.image = image;
+        onGenerate(dish);
+      }
     } catch (e) {
-      setResult("Error analyzing image. Please try again.");
+      console.error(e);
+      alert("Error analyzing image. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -927,24 +942,13 @@ function Scanner() {
          </div>
       )}
 
-      {result && !loading && (
-        <div className="game-card p-6 md:p-10 animate-in slide-in-from-bottom-4">
-          <h3 className="text-xl font-bold mb-8 flex items-center gap-3 text-app-text-main uppercase tracking-widest border-b border-app-border pb-4">
-             <Info size={22} className="text-game-accent" /> Intelligence Report
-          </h3>
-          <div className="markdown-body font-medium leading-relaxed bg-app-bg/20 p-6 border border-app-border">
-            <Markdown remarkPlugins={[remarkGfm]}>{result}</Markdown>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-function Generator() {
+function Generator({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   const [ingredients, setIngredients] = useState('');
   const [preferences, setPreferences] = useState('');
-  const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
 
   const sampleIngredients = ['Chicken', 'Rice', 'Garlic', 'Tofu', 'Spinach', 'Corn', 'Egg', 'Chili'];
@@ -960,9 +964,15 @@ function Generator() {
     setLoading(true);
     try {
       const res = await generateRecipeFromIngredients(ingredients, preferences);
-      setResult(res);
+      if (res) {
+        const dish: Dish = JSON.parse(res);
+        dish.id = 'gen-' + Date.now();
+        dish.image = `https://image.pollinations.ai/prompt/delicious%20food%20photography%20of%20${encodeURIComponent(dish.name)}?width=800&height=400&nologo=true`;
+        onGenerate(dish);
+      }
     } catch (e) {
-      setResult("Error generating recipe. Please try again.");
+      console.error(e);
+      alert("Error generating recipe. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -1035,19 +1045,11 @@ function Generator() {
          </div>
       )}
 
-      {result && !loading && (
-        <div className="game-card p-6 md:p-10 animate-in slide-in-from-bottom-4">
-          <h3 className="text-xl font-bold mb-8 text-app-text-main uppercase tracking-widest border-b border-app-border pb-4">Synthesis Result</h3>
-          <div className="markdown-body font-medium leading-relaxed bg-app-bg/20 p-6 border border-app-border">
-            <Markdown remarkPlugins={[remarkGfm]}>{result}</Markdown>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, onClose: () => void, vitals: any, onVitalsUpdate: (v: any) => void }) {
+function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { dish: Dish, onClose: () => void, vitals: any, onVitalsUpdate: (v: any) => void, onSynthesize: (dishName: string, message: string) => void }) {
   const [priceLoading, setPriceLoading] = useState(false);
   const [priceData, setPriceData] = useState<string | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
@@ -1100,6 +1102,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
       type = 'buff';
     }
 
+    onSynthesize(dish.name, message);
     setSynthesisMessage({ text: message, type });
     onVitalsUpdate(newVitals);
 
@@ -1228,208 +1231,177 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
             <h2 id="modal-title" className="text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
               {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
             </h2>
-            <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent">
+            <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent mb-4">
               {dish.desc}
             </p>
+
+            <div className="flex gap-4 font-mono text-xs uppercase tracking-widest text-white">
+              {dish.servings && <div className="bg-black/60 px-4 py-2 border border-white/20">Servings: {dish.servings}</div>}
+              {dish.prepTime && <div className="bg-black/60 px-4 py-2 border border-white/20">Prep: {dish.prepTime} min</div>}
+              {dish.cookTime && <div className="bg-black/60 px-4 py-2 border border-white/20">Cook: {dish.cookTime} min</div>}
+            </div>
           </div>
         </div>
 
         {/* Content Body */}
         <div className="p-8 bg-app-bg">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="flex flex-col gap-10">
             
-            {/* Main Content Area: Ingredients & Recipe */}
-            <div className="lg:col-span-9 order-2 lg:order-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* Ingredients Column */}
-                <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
-                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Material Deck</div>
-                  <div>
-                    <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
-                      <span className="w-3 h-3 bg-game-accent"></span>
-                      Resource Components
-                    </h3>
-                    <ul className="space-y-4">
-                      {(dish.ingredients || []).map((ing, idx) => (
-                        <li key={idx} className="flex flex-col bg-black/40 p-4 border-l-4 border-app-border hover:border-game-accent transition-colors">
-                          <span className="text-lg font-bold text-app-text-main uppercase tracking-wide leading-tight">
-                            {ing.quantity} {ing.unit} {ing.name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {dish.variations && dish.variations.length > 0 && (
-                    <div className="pt-6 border-t-4 border-app-border">
-                      <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-accent border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3">
-                        <span className="w-3 h-3 bg-game-accent"></span>
-                        Sub-Modules
-                      </h3>
-                      <ul className="space-y-3">
-                        {dish.variations.map((v, idx) => (
-                          <li key={idx} className="text-base text-app-text-muted flex items-start gap-2 before:content-['•'] before:text-game-accent">
-                            {v}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                {/* Recipe Column */}
-                <div className="p-8 bg-app-surface border-4 border-app-border relative">
-                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
-                  <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
-                    <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
-                  </h3>
-                  <div className="markdown-body text-app-text-main text-lg leading-snug">
-                    <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
-                  </div>
+            {/* Ingredients & Recipe */}
+            <div className="flex-1 space-y-8">
+              {/* How to Craft Section */}
+              <div className="p-8 bg-app-surface border-4 border-app-border">
+                <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
+                  <Pickaxe className="text-game-accent" size={24} /> How to Craft
+                </h3>
+                <div className="markdown-body text-app-text-main text-lg leading-snug">
+                  <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Intelligence & Systems */}
-            <div className="lg:col-span-3 order-1 lg:order-2 space-y-10">
-              
+            <div className="w-full space-y-10">
               <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
-                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
-                <div className="pt-2">
-                  <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-3 flex items-center gap-2">
-                     <Search size={18} className="text-game-accent" /> Market Value
-                  </h3>
-                  <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">Query live market clusters for ingredient credits estimation.</p>
-                  
-                  {!priceData && (
-                    <button 
-                      onClick={handleCheckPrice}
-                      disabled={priceLoading}
-                      className="game-btn game-btn-outline w-full py-4 text-base"
-                    >
-                      {priceLoading ? 'Searching...' : 'Scan Market'}
-                    </button>
-                  )}
-
-                  {priceLoading && !priceData && (
-                    <div className="flex justify-center mt-6">
-                      <div className="w-8 h-8 border-4 border-game-accent border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-
-                  {priceData && (
-                    <div className="mt-6 p-6 bg-app-bg/40 border-4 border-app-border text-base font-medium markdown-body">
-                      <Markdown remarkPlugins={[remarkGfm]}>{priceData}</Markdown>
-                    </div>
-                  )}
-                </div>
+                 {/* ...rest of existing right column code... */}
+                 <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
+                 <div className="pt-2">
+                   <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <Search size={18} className="text-game-accent" /> Market Value
+                   </h3>
+                   <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">Query live market clusters for ingredient credits estimation.</p>
+                   
+                   {!priceData && (
+                     <button 
+                       onClick={handleCheckPrice}
+                       disabled={priceLoading}
+                       className="game-btn game-btn-outline w-full py-4 text-base"
+                     >
+                       {priceLoading ? 'Searching...' : 'Scan Market'}
+                     </button>
+                   )}
+ 
+                   {priceLoading && !priceData && (
+                     <div className="flex justify-center mt-6">
+                       <div className="w-8 h-8 border-4 border-game-accent border-t-transparent rounded-full animate-spin"></div>
+                     </div>
+                   )}
+ 
+                   {priceData && (
+                     <div className="mt-6 p-6 bg-app-bg/40 border-4 border-app-border text-base font-medium markdown-body overflow-x-auto">
+                       <Markdown remarkPlugins={[remarkGfm]}>{priceData}</Markdown>
+                     </div>
+                   )}
+                 </div>
               </div>
-
+              
               <div className="p-8 bg-app-surface border-4 border-app-border space-y-8 relative">
-                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-magenta uppercase tracking-widest">System Health</div>
-                <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-magenta flex items-center gap-4 border-b-4 border-app-border pb-4">
-                  <HeartPulse className="text-game-magenta" size={24} /> OS Vitals
-                </h3>
-                
-                <div className="space-y-8 text-lg">
-                  <div>
-                    <h4 className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em] mb-4">Core Attributes</h4>
-                    <div className="grid grid-cols-2 gap-4 font-mono">
-                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Energy</span>
-                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.calories}</span>
-                      </div>
-                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Power</span>
-                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.protein}</span>
-                      </div>
-                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Fuel</span>
-                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.carbohydrates}</span>
-                      </div>
-                      <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                        <span className="text-sm uppercase text-app-text-main mb-1 font-black">Buffer</span>
-                        <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.fat}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-green-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
-                       <span className="w-3 h-3 bg-green-400 animate-pulse"></span>
-                       Active Buffs
-                    </h4>
-                    <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-green-400">{dish.healthBenefits}</p>
-                  </div>
-                  {dish.excessRisks && (
-                    <div>
-                      <h4 className="text-sm font-bold text-game-magenta uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
-                        <span className="w-3 h-3 bg-game-magenta animate-pulse"></span>
-                        Critical Failures
-                      </h4>
-                      <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-game-magenta">{dish.excessRisks}</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-8 border-t-4 border-app-border mt-6">
-                  <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-4 flex items-center gap-4"><HeartPulse size={24} className="text-game-magenta" /> Neural Insights</h3>
-                  <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">AI-driven predictive analysis on bio-synchronization and legacy disease mitigation.</p>
-                  
-                  {!healthData && (
-                    <button 
-                      onClick={handleCheckHealth}
-                      disabled={healthLoading}
-                      className="game-btn game-btn-primary w-full py-5 uppercase tracking-[0.2em] text-xl"
-                    >
-                      {healthLoading ? 'Analyzing...' : 'Run Bio-Diagnostics'}
-                    </button>
-                  )}
-
-                  {healthLoading && !healthData && (
-                    <div className="flex justify-center mt-6">
-                      <div className="w-10 h-10 border-4 border-game-magenta border-t-transparent animate-spin"></div>
-                    </div>
-                  )}
-
-                  {healthData && (
-                    <div className="mt-8 p-8 bg-app-bg/40 border-4 border-app-border text-lg font-medium markdown-body">
-                      <Markdown remarkPlugins={[remarkGfm]}>{healthData}</Markdown>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-8 border-t-4 border-app-border">
-                  <h3 className="text-base font-bold text-game-accent uppercase tracking-widest mb-4 flex items-center gap-4"><Pickaxe size={24} /> Synthesis Node</h3>
-                  <p className="text-sm text-app-text-muted mb-6 leading-relaxed">Execute the synthesis algorithm to incorporate this blueprint into your bio-matrix.</p>
-                  
-                  <div className="relative">
-                    <button 
-                      onClick={handleSynthesize}
-                      disabled={isSynthesizing}
-                      className={`game-btn w-full py-6 text-2xl uppercase tracking-[0.3em] font-black transition-all ${isSynthesizing ? 'bg-app-border text-app-text-muted' : 'game-btn-primary border-4 shadow-[0_0_20px_rgba(0,242,255,0.2)] hover:scale-[1.02]'}`}
-                    >
-                      {isSynthesizing ? 'Processing...' : 'Synthesize Item'}
-                    </button>
-                    
-                    <AnimatePresence>
-                      {synthesisMessage && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className={`absolute -top-16 left-0 right-0 p-3 text-center text-sm font-black uppercase tracking-widest border-2 ${synthesisMessage.type === 'plus' ? 'bg-game-green/20 border-game-green text-game-green' : synthesisMessage.type === 'minus' ? 'bg-game-magenta/20 border-game-magenta text-game-magenta' : 'bg-game-accent/20 border-game-accent text-game-accent'}`}
-                        >
-                          {synthesisMessage.text}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
-
+                 {/* ...rest of existing right column code... */}
+                 <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-magenta uppercase tracking-widest">System Health</div>
+                 <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-magenta flex items-center gap-4 border-b-4 border-app-border pb-4">
+                   <HeartPulse className="text-game-magenta" size={24} /> OS Vitals
+                 </h3>
+                 
+                 <div className="space-y-8 text-lg">
+                   <div>
+                     <h4 className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em] mb-4">Core Attributes</h4>
+                     <div className="grid grid-cols-2 gap-4 font-mono">
+                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Energy</span>
+                         <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.calories}</span>
+                       </div>
+                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Power</span>
+                         <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.protein}</span>
+                       </div>
+                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Fuel</span>
+                         <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.carbohydrates}</span>
+                       </div>
+                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Buffer</span>
+                         <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.fat}</span>
+                       </div>
+                     </div>
+                   </div>
+                   <div>
+                     <h4 className="text-sm font-bold text-green-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                        <span className="w-3 h-3 bg-green-400 animate-pulse"></span>
+                        Active Buffs
+                     </h4>
+                     <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-green-400">{dish.healthBenefits}</p>
+                   </div>
+                   {dish.excessRisks && (
+                     <div>
+                       <h4 className="text-sm font-bold text-game-magenta uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                         <span className="w-3 h-3 bg-game-magenta animate-pulse"></span>
+                         Critical Failures
+                       </h4>
+                       <p className="text-base text-app-text-muted leading-relaxed font-medium bg-black/40 p-4 border-l-4 border-game-magenta">{dish.excessRisks}</p>
+                     </div>
+                   )}
+                 </div>
+                 
+                 <div className="pt-8 border-t-4 border-app-border mt-6">
+                   <h3 className="text-base font-bold text-app-text-main uppercase tracking-widest mb-4 flex items-center gap-4"><HeartPulse size={24} className="text-game-magenta" /> Neural Insights</h3>
+                   <p className="text-sm text-app-text-muted mb-5 leading-relaxed font-medium">AI-driven predictive analysis on bio-synchronization and legacy disease mitigation.</p>
+                   
+                   {!healthData && (
+                     <button 
+                       onClick={handleCheckHealth}
+                       disabled={healthLoading}
+                       className="game-btn game-btn-primary w-full py-5 uppercase tracking-[0.2em] text-xl"
+                     >
+                       {healthLoading ? 'Analyzing...' : 'Run Bio-Diagnostics'}
+                     </button>
+                   )}
+ 
+                   {healthLoading && !healthData && (
+                     <div className="flex justify-center mt-6">
+                       <div className="w-10 h-10 border-4 border-game-magenta border-t-transparent animate-spin"></div>
+                     </div>
+                   )}
+ 
+                   {healthData && (
+                     <div className="mt-8 p-8 bg-app-bg/40 border-4 border-app-border text-lg font-medium markdown-body">
+                       <Markdown remarkPlugins={[remarkGfm]}>{healthData}</Markdown>
+                     </div>
+                   )}
+                 </div>
+ 
+                 <div className="pt-8 border-t-4 border-app-border">
+                   <h3 className="text-base font-bold text-game-accent uppercase tracking-widest mb-4 flex items-center gap-4"><Pickaxe size={24} /> Synthesis Node</h3>
+                   <p className="text-sm text-app-text-muted mb-6 leading-relaxed">Execute the synthesis algorithm to incorporate this blueprint into your bio-matrix. (updated)</p>
+                   
+                   <div className="relative">
+                     <button 
+                       onClick={handleSynthesize}
+                       disabled={isSynthesizing}
+                       className={`game-btn w-full py-6 text-2xl uppercase tracking-[0.3em] font-black transition-all ${isSynthesizing ? 'bg-app-border text-app-text-muted' : 'game-btn-primary border-4 shadow-[0_0_20px_rgba(0,242,255,0.2)] hover:scale-[1.02]'}`}
+                     >
+                       {isSynthesizing ? 'Processing...' : 'Synthesize Item'}
+                     </button>
+                     
+                     <AnimatePresence>
+                       {synthesisMessage && (
+                         <motion.div 
+                           initial={{ opacity: 0, y: 10 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           exit={{ opacity: 0, y: -10 }}
+                           className={`absolute -top-20 left-0 right-0 p-4 text-center text-sm font-black uppercase tracking-widest border-4 ${synthesisMessage.type === 'plus' ? 'bg-game-green/90 border-game-green text-white' : synthesisMessage.type === 'minus' ? 'bg-game-magenta/90 border-game-magenta text-white' : 'bg-game-accent/90 border-game-accent text-white'}`}
+                         >                            <div className="flex flex-col items-center gap-2">
+                              {synthesisMessage.type === 'plus' && <PlusCircle size={32} />}
+                              {synthesisMessage.type === 'minus' && <MinusCircle size={32} />}
+                              {synthesisMessage.type === 'buff' && <Zap size={32} />}
+                              <span className="text-xl font-black">{synthesisMessage.text}</span>
+                            </div>
+                         </motion.div>
+                       )}
+                     </AnimatePresence>
+                   </div>
+                 </div>
+               </div>
             </div>
-
           </div>
         </div>
       </motion.div>

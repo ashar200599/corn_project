@@ -10,23 +10,59 @@ Given an image of a food or ingredients, perform the following:
 3. Provide a detailed recipe based on what you see, including:
    - Ingredient list (with estimated amounts)
    - Step-by-step instructions
-   - Estimated nutritional information (Calories, Macros)
 4. List the health benefits for these ingredients.
 5. List related diseases or negative effects that could be caused by excessive intake of this food/beverage.
-6. Provide an estimated online market price for these ingredients (or standard supermarket cost).
-Format the response cleanly in Markdown.
+
+Return your response strictly as a JSON object matching this TypeScript interface without any markdown blocks:
+{
+  name: string; // The appetizing name of the dish
+  desc: string; // A short description
+  emoji: string; // A relevant single unicode emoji
+  country: string; // Origin country (or "Unknown")
+  style: "Traditional" | "Modern";
+  category: "Food" | "Beverage";
+  scientificNames: { ingredient: string; name: string; }[];
+  recipe: string; // Clean markdown string of ONLY the ingredients list and instructions block.
+  servings: number; // e.g. 2
+  prepTime: number; // e.g. 15
+  cookTime: number; // e.g. 30
+  nutrition: {
+    calories: string; // e.g. "450"
+    protein: string; // e.g. "30"
+    carbohydrates: string; // e.g. "40"
+    fat: string; // e.g. "20"
+  };
+  healthBenefits: string; // 1-2 sentences
+  excessRisks: string; // 1-2 sentences
+}
 `;
 
 const RECIPE_GENERATION_PROMPT = `
-You are a master nutritionist and chef specializing in traditional and modern dishes (especially Indonesian cuisine).
-Given a list of available ingredients and user preferences (e.g., allergies, diet type), generate:
-1. A delicious, healthy recipe utilizing those ingredients. Give this recipe a clear and appetizing Name.
-2. At the very beginning of your response, output an image of the dish using this exact markdown format: \`![Dish Name](https://image.pollinations.ai/prompt/delicious%20food%20photography%20of%20[URL_ENCODED_DISH_NAME]?width=800&height=400&nologo=true)\`, where [URL_ENCODED_DISH_NAME] is the generated dish name properly URL-encoded.
-3. Step-by-step instructions.
-4. Nutritional information.
-5. Health benefits.
-6. Risks of overconsumption.
-Format the response cleanly in Markdown.
+You are a master nutritionist and chef specializing in traditional and modern dishes.
+Given a list of available ingredients and user preferences, generate a recipe.
+
+Return your response strictly as a JSON object matching this TypeScript interface without any markdown blocks:
+{
+  name: string; // The appetizing name of the dish
+  desc: string; // A short description
+  emoji: string; // A relevant single unicode emoji
+  country: string; // Origin country related to the style
+  style: "Traditional" | "Modern";
+  category: "Food" | "Beverage";
+  scientificNames: { ingredient: string; name: string; }[];
+  recipe: string; // Clean markdown string of ONLY the ingredients list and instructions block.
+  servings: number; // e.g. 2
+  prepTime: number; // e.g. 15
+  cookTime: number; // e.g. 30
+  nutrition: {
+    calories: string; // e.g. "450"
+    protein: string; // e.g. "30"
+    carbohydrates: string; // e.g. "40"
+    fat: string; // e.g. "20"
+  };
+  healthBenefits: string; // 1-2 sentences
+  excessRisks: string; // 1-2 sentences
+}
 `;
 
 export const analyzeFoodImage = async (base64Image: string, mimeType: string) => {
@@ -48,6 +84,7 @@ export const analyzeFoodImage = async (base64Image: string, mimeType: string) =>
       },
       config: {
         systemInstruction: INGREDIENT_SYSTEM_PROMPT,
+        responseMimeType: 'application/json'
       },
     });
     return response.text;
@@ -60,14 +97,14 @@ export const analyzeFoodImage = async (base64Image: string, mimeType: string) =>
 export const getIngredientPrices = async (ingredients: string[]) => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.1-pro-preview',
-      contents: `Find the estimated online market prices for these ingredients: ${ingredients.join(', ')}. Provide a brief summary of the prices.`,
+      model: 'gemini-3.1-flash-lite',
+      contents: `Find the estimated online market prices for these 3 main ingredients: ${ingredients.slice(0, 3).join(', ')}. Keep the list concise.`,
       config: {
         systemInstruction: `You are an expert grocery shopping assistant.
-Given a list of ingredients, provide the estimated online market prices for each ingredient.
-Format the response using a clean Markdown table with columns: Ingredient, Estimated Price (e.g., per lb, per piece), and Online Shop Link.
-For the Online Shop Link, provide a real markdown link to search for the ingredient on a major online grocer (e.g., [Amazon Fresh](https://www.amazon.com/s?k=ingredient) or [Walmart](https://www.walmart.com/search?q=ingredient)).
-Do not include any extra text before or after the table. Only output the markdown table.`,
+Given a list of ingredients, provide the estimated online market prices.
+Format the response using a clean Markdown table with columns: Ingredient, Estimated Price, and Action.
+For the Action, provide a real markdown link to search for the ingredient on Tokopedia (e.g., [Buy on Tokopedia](https://www.tokopedia.com/search?q=ingredient)).
+Keep the response strictly to the markdown table and limit it to the top 3 most important ingredients. Do not include any extra text.`,
       },
     });
     return response.text;
@@ -107,6 +144,7 @@ export const generateRecipeFromIngredients = async (ingredients: string, prefere
       contents: `Available ingredients: ${ingredients}. User preferences: ${preferences}. Please generate a recipe.`,
       config: {
         systemInstruction: RECIPE_GENERATION_PROMPT,
+        responseMimeType: 'application/json'
       },
     });
     return response.text;
