@@ -124,7 +124,7 @@
   }
 
   .hero-banner {
-    @apply relative w-full h-[450px] overflow-hidden border-b-8 border-app-border bg-[#111];
+    @apply relative w-full min-h-[550px] overflow-hidden border-b-8 border-app-border bg-[#111];
     image-rendering: auto;
   }
 

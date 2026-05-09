@@ -6,6 +6,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
+import { searchMealByName, filterByCategory, filterByArea, getRandomMeals, getFullMealDetails, getAreas, getCategories } from './services/mealDbService';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -345,6 +346,12 @@ export default function App() {
             onClose={() => setSelectedDish(null)} 
             vitals={vitals} 
             onVitalsUpdate={setVitals} 
+            onFetchFullDetails={async (id) => {
+              if (selectedDish.ingredients && selectedDish.ingredients.length === 0 && selectedDish.recipe.includes('Loading full blueprint')) {
+                const fullMeal = await getFullMealDetails(id);
+                if (fullMeal) setSelectedDish(fullMeal);
+              }
+            }}
           />
         )}
       </AnimatePresence>
@@ -586,14 +593,39 @@ function Dashboard({
   const [excludeQuery, setExcludeQuery] = React.useState('');
   const [activeTags, setActiveTags] = React.useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-  const heroImages = React.useMemo(() => DISHES.map(d => d.image), []);
+  
+  const localIndoDishes = React.useMemo(() => DISHES.filter(d => d.country === 'Indonesia'), []);
+  const [apiDishes, setApiDishes] = React.useState<Dish[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [apiAreas, setApiAreas] = React.useState<string[]>([]);
+  const [apiCategories, setApiCategories] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    async function loadInitial() {
+      setIsLoading(true);
+      const [randomMeals, areas, cats] = await Promise.all([
+        getRandomMeals(10),
+        getAreas(),
+        getCategories()
+      ]);
+      setApiDishes(randomMeals);
+      setApiAreas(areas);
+      setApiCategories(cats);
+      setIsLoading(false);
+    }
+    loadInitial();
+  }, []);
+
+  const allDishes = React.useMemo(() => [...localIndoDishes, ...apiDishes], [localIndoDishes, apiDishes]);
+  const heroImages = React.useMemo(() => allDishes.map(d => d.image).filter(Boolean), [allDishes]);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentImageIndex(prev => (prev + 1) % heroImages.length);
+      setCurrentImageIndex(prev => (heroImages.length > 0 ? (prev + 1) % heroImages.length : 0));
     }, 5000);
     return () => clearInterval(timer);
   }, [heroImages.length]);
+  
   const [favorites, setFavorites] = React.useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('favorites');
@@ -614,7 +646,7 @@ function Dashboard({
     });
   };
 
-  const filteredDishes = DISHES.filter(d => {
+  const filteredDishes = allDishes.filter(d => {
     if (showFavoritesOnly && !favorites.includes(d.id)) return false;
     if (activeCountry && d.country !== activeCountry) return false;
     if (activeStyle && d.style !== activeStyle) return false;
@@ -640,10 +672,39 @@ function Dashboard({
     return true;
   });
 
-  const countries = Array.from(new Set(DISHES.map(d => d.country)));
+  const countries = Array.from(new Set([...localIndoDishes.map(d => d.country), ...apiAreas])).sort();
   const styles = ['Traditional', 'Modern'];
-  const categories = ['Food', 'Beverage'];
-  const allTags = Array.from(new Set(DISHES.flatMap(d => d.tags || []))).sort();
+  const categories = Array.from(new Set(['Food', 'Beverage', ...apiCategories])).sort();
+  const allTags = Array.from(new Set(allDishes.flatMap(d => d.tags || []))).sort();
+
+  React.useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.trim() !== '') {
+        setIsLoading(true);
+        const results = await searchMealByName(searchQuery);
+        setApiDishes(results);
+        setIsLoading(false);
+      }
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  React.useEffect(() => {
+    async function filterData() {
+      if (activeCountry && activeCountry !== 'Indonesia') {
+        setIsLoading(true);
+        const results = await filterByArea(activeCountry);
+        setApiDishes(results);
+        setIsLoading(false);
+      } else if (activeCategory && activeCategory !== 'Food' && activeCategory !== 'Beverage') {
+        setIsLoading(true);
+        const results = await filterByCategory(activeCategory);
+        setApiDishes(results);
+        setIsLoading(false);
+      }
+    }
+    filterData();
+  }, [activeCountry, activeCategory]);
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700">
@@ -1276,61 +1337,22 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
         <div className="p-8 bg-app-bg">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Main Content Area: Ingredients & Recipe */}
-            <div className="lg:col-span-9 order-2 lg:order-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* Ingredients Column */}
-                <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
-                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Material Deck</div>
-                  <div>
-                    <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
-                      <span className="w-3 h-3 bg-game-accent"></span>
-                      Resource Components
-                    </h3>
-                    <ul className="space-y-4">
-                      {(dish.ingredients || []).map((ing, idx) => (
-                        <li key={idx} className="flex flex-col bg-black/40 p-4 border-l-4 border-app-border hover:border-game-accent transition-colors">
-                          <span className="text-lg font-bold text-app-text-main uppercase tracking-wide leading-tight">
-                            {ing.quantity} {ing.unit} {ing.name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {dish.variations && dish.variations.length > 0 && (
-                    <div className="pt-6 border-t-4 border-app-border">
-                      <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-accent border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3">
-                        <span className="w-3 h-3 bg-game-accent"></span>
-                        Sub-Modules
-                      </h3>
-                      <ul className="space-y-3">
-                        {dish.variations.map((v, idx) => (
-                          <li key={idx} className="text-base text-app-text-muted flex items-start gap-2 before:content-['•'] before:text-game-accent">
-                            {v}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                {/* Recipe Column */}
-                <div className="p-8 bg-app-surface border-4 border-app-border relative">
-                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
-                  <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
-                    <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
-                  </h3>
-                  <div className="markdown-body text-app-text-main text-lg leading-snug">
-                    <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
-                  </div>
+            {/* Main Content Area: Recipe */}
+            <div className="lg:col-span-7 order-2 lg:order-1">
+              {/* Recipe Column */}
+              <div className="p-8 bg-app-surface border-4 border-app-border relative h-full">
+                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
+                <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
+                  <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
+                </h3>
+                <div className="markdown-body text-app-text-main text-lg leading-snug">
+                  <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Intelligence & Systems */}
-            <div className="lg:col-span-3 order-1 lg:order-2 space-y-10">
+            <div className="lg:col-span-5 order-1 lg:order-2 space-y-10">
               
               <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
                 <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
