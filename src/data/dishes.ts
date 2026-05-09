@@ -95,7 +95,7 @@ export const DISHES: Dish[] = [
       }
     ],
     desc: "Classic Indonesian fried Rice (Oryza sativa) with sweet soy sauce, shallot, Garlic (Allium sativum), Tamarind (Tamarindus indica) and Chili (Capsicum annuum).",
-    image: "/images/dishes/indo_nasi_goreng.png",
+    image: "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Toppings%3A%20fried%20egg%2C%20cucumber%20slices%2C%20prawn%20crackers%2C%20fried%20shallots?width=600&height=400&nologo=true",
     emoji: "🍛",
     country: "Indonesia",
     style: "Traditional",
@@ -170,8 +170,8 @@ export const DISHES: Dish[] = [
         "unit": ""
       }
     ],
-    desc: "Slow-cooked Beef (Bos taurus) in Coconut (Cocos nucifera) milk and a complex spice paste until dry and deeply flavorful.",
-    image: "/images/dishes/indo_rendang.png",
+    desc: "Rich and tender Coconut (Cocos nucifera) Beef (Bos taurus) stew, slow-cooked with a complex spice paste.",
+    image: "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20**Spice%20paste**%3A%20Shallots%2C%20garlic%2C%20chilies%2C%20ginger%2C%20galangal%2C%20turmeric%2C%20coriander%20seeds.?width=600&height=400&nologo=true",
     emoji: "🥩",
     country: "Indonesia",
     style: "Traditional",
@@ -248,7 +248,7 @@ export const DISHES: Dish[] = [
       }
     ],
     desc: "Yellow spicy Chicken (Gallus gallus domesticus) soup with Turmeric (Curcuma longa), vermicelli noodles, and boiled Chicken (Gallus gallus domesticus).",
-    image: "/images/dishes/indo_soto_ayam.png",
+    image: "watermarked_img_8509685733428860263.png",
     emoji: "🍲",
     country: "Indonesia",
     style: "Traditional",
@@ -341,8 +341,8 @@ export const DISHES: Dish[] = [
         "unit": "tbsp"
       }
     ],
-    desc: "Mixed shaved ice dessert with various sweet toppings like jackfruit, Avocado (Persea americana), and Coconut (Cocos nucifera).",
-    image: "/images/dishes/indo_es_campur.png",
+    desc: "Modern Indonesian shaved ice dessert with mixed fruits, syrups, and condensed milk.",
+    image: "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20red%20syrup%20(cocopandan)?width=600&height=400&nologo=true",
     emoji: "🍧",
     country: "Indonesia",
     style: "Modern",

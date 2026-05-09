@@ -1,4 +1,3 @@
-console.log('App.tsx is evaluating...');
 import React, { useState, useEffect } from 'react';
 import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -6,7 +5,6 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
-import { searchMealByName, filterByCategory, filterByArea, getRandomMeals, getFullMealDetails, getAreas, getCategories } from './services/mealDbService';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -103,12 +101,12 @@ export default function App() {
             <div className="w-10 h-10 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
               <span className="text-2xl">🌽</span>
             </div>
-            <div className="font-game">
-              <div className="text-2xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
+            <div>
+              <div className="text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
                 CORN
               </div>
-              <div className="text-lg font-mono text-game-green flex items-center gap-2 mt-1">
-                <span className="w-2.5 h-2.5 bg-game-green animate-pulse"></span>
+              <div className="text-base font-mono text-game-green flex items-center gap-2 mt-1">
+                <span className="w-2 h-2 bg-game-green animate-pulse"></span>
                 WORLD: KITCHEN
               </div>
             </div>
@@ -207,11 +205,11 @@ export default function App() {
             onClick={() => setIsMenuOpen(false)}
           />
           <div className="fixed top-[65px] md:top-[73px] left-0 bottom-0 w-64 bg-app-surface z-30 shadow-2xl p-6 overflow-y-auto border-r border-app-border animate-in slide-in-from-left duration-300">
-            <h2 className="font-game text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
+            <h2 className="text-lg font-bold uppercase tracking-widest text-app-text-main mb-8 border-b border-app-border pb-4">Categories</h2>
             
             <div className="space-y-10">
               <div>
-                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Region</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -235,7 +233,7 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Class</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -265,7 +263,7 @@ export default function App() {
               </div>
 
               <div>
-                <h3 className="font-game text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-app-text-main mb-4">By Tier</h3>
                 <ul className="space-y-3">
                   <li>
                     <button 
@@ -299,7 +297,7 @@ export default function App() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-none w-full p-4 md:p-8 mb-20 md:mb-0">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 mb-20 md:mb-0">
         {activeTab === 'dashboard' && (
           <Dashboard 
             activeCountry={activeCountry} 
@@ -310,7 +308,6 @@ export default function App() {
             setActiveCategory={setActiveCategory}
             onSelectDish={setSelectedDish} 
             vitals={vitals}
-            setActiveTab={setActiveTab}
           />
         )}
         {activeTab === 'scanner' && <Scanner />}
@@ -346,12 +343,6 @@ export default function App() {
             onClose={() => setSelectedDish(null)} 
             vitals={vitals} 
             onVitalsUpdate={setVitals} 
-            onFetchFullDetails={async (id) => {
-              if (selectedDish.ingredients && selectedDish.ingredients.length === 0 && selectedDish.recipe.includes('Loading full blueprint')) {
-                const fullMeal = await getFullMealDetails(id);
-                if (fullMeal) setSelectedDish(fullMeal);
-              }
-            }}
           />
         )}
       </AnimatePresence>
@@ -469,10 +460,10 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
         </div>
 
         <div className="mt-2 space-y-1">
-          <h3 className="font-game font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
+          <h3 className="font-bold text-2xl text-app-text-main uppercase tracking-tight truncate pr-14 group-hover:text-game-accent transition-colors">
             {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
           </h3>
-          <div className="font-game text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
+          <div className="text-base font-bold text-app-text-muted flex items-center gap-2 uppercase tracking-widest">
             <span className="text-game-magenta">BIOME:</span> {dish.country}
             <span className="w-2 h-2 bg-app-border"></span>
             <span className="text-game-accent">TIER:</span> {dish.style}
@@ -576,8 +567,7 @@ function Dashboard({
   setActiveStyle,
   setActiveCategory,
   onSelectDish,
-  vitals,
-  setActiveTab
+  vitals
 }: { 
   activeCountry: string | null, 
   activeStyle: string | null, 
@@ -586,46 +576,11 @@ function Dashboard({
   setActiveStyle: (s: 'Traditional' | 'Modern' | null) => void,
   setActiveCategory: (c: 'Food' | 'Beverage' | null) => void,
   onSelectDish: (d: Dish) => void,
-  vitals: any,
-  setActiveTab: (t: 'dashboard' | 'scanner' | 'generator') => void
+  vitals: any
 }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [excludeQuery, setExcludeQuery] = React.useState('');
   const [activeTags, setActiveTags] = React.useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-  
-  const localIndoDishes = React.useMemo(() => DISHES.filter(d => d.country === 'Indonesia'), []);
-  const [apiDishes, setApiDishes] = React.useState<Dish[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [apiAreas, setApiAreas] = React.useState<string[]>([]);
-  const [apiCategories, setApiCategories] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    async function loadInitial() {
-      setIsLoading(true);
-      const [randomMeals, areas, cats] = await Promise.all([
-        getRandomMeals(10),
-        getAreas(),
-        getCategories()
-      ]);
-      setApiDishes(randomMeals);
-      setApiAreas(areas);
-      setApiCategories(cats);
-      setIsLoading(false);
-    }
-    loadInitial();
-  }, []);
-
-  const allDishes = React.useMemo(() => [...localIndoDishes, ...apiDishes], [localIndoDishes, apiDishes]);
-  const heroImages = React.useMemo(() => allDishes.map(d => d.image).filter(Boolean), [allDishes]);
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex(prev => (heroImages.length > 0 ? (prev + 1) % heroImages.length : 0));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
-  
   const [favorites, setFavorites] = React.useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('favorites');
@@ -646,7 +601,7 @@ function Dashboard({
     });
   };
 
-  const filteredDishes = allDishes.filter(d => {
+  const filteredDishes = DISHES.filter(d => {
     if (showFavoritesOnly && !favorites.includes(d.id)) return false;
     if (activeCountry && d.country !== activeCountry) return false;
     if (activeStyle && d.style !== activeStyle) return false;
@@ -672,86 +627,32 @@ function Dashboard({
     return true;
   });
 
-  const countries = Array.from(new Set([...localIndoDishes.map(d => d.country), ...apiAreas])).sort();
+  const countries = Array.from(new Set(DISHES.map(d => d.country)));
   const styles = ['Traditional', 'Modern'];
-  const categories = Array.from(new Set(['Food', 'Beverage', ...apiCategories])).sort();
-  const allTags = Array.from(new Set(allDishes.flatMap(d => d.tags || []))).sort();
-
-  React.useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (searchQuery.trim() !== '') {
-        setIsLoading(true);
-        const results = await searchMealByName(searchQuery);
-        setApiDishes(results);
-        setIsLoading(false);
-      }
-    }, 500);
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
-
-  React.useEffect(() => {
-    async function filterData() {
-      if (activeCountry && activeCountry !== 'Indonesia') {
-        setIsLoading(true);
-        const results = await filterByArea(activeCountry);
-        setApiDishes(results);
-        setIsLoading(false);
-      } else if (activeCategory && activeCategory !== 'Food' && activeCategory !== 'Beverage') {
-        setIsLoading(true);
-        const results = await filterByCategory(activeCategory);
-        setApiDishes(results);
-        setIsLoading(false);
-      }
-    }
-    filterData();
-  }, [activeCountry, activeCategory]);
+  const categories = ['Food', 'Beverage'];
+  const allTags = Array.from(new Set(DISHES.flatMap(d => d.tags || []))).sort();
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-700">
-      {/* Hero Banner Section */}
-      <div className="-mx-4 md:-mx-8 -mt-4 md:-mt-8 mb-16 relative z-0">
-        <div className="hero-banner relative">
-          <AnimatePresence mode="wait">
-            <motion.img 
-              key={currentImageIndex}
-              src={heroImages[currentImageIndex]} 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
-              alt="Featured Recipe" 
-              className="absolute inset-0 w-full h-full object-cover grayscale-[20%] transition-all duration-1000 scale-105"
-            />
-          </AnimatePresence>
-          <div className="hero-overlay">
-            <div className="space-y-6 max-w-2xl">
-              <div className="inline-block px-4 py-1 bg-game-accent text-app-bg font-game font-bold text-sm uppercase tracking-[0.3em]">
-                Latest Patch v1.25
-              </div>
-              <h2 className="text-7xl md:text-8xl font-game font-black tracking-tight text-white uppercase leading-none drop-shadow-[4px_4px_0_rgba(0,0,0,0.8)]">
-                CORN <span className="text-game-accent">SYSTEM</span>
-              </h2>
-              <p className="text-xl md:text-2xl text-white leading-tight font-medium bg-[#0a0a0c]/90 p-8 border-l-8 border-game-accent shadow-[10px_10px_0_rgba(0,0,0,0.5)]">
-                Experience the next evolution in <strong className="text-game-accent font-black">Culinary Synthesis</strong>. 
-                Discover traditional biomes and modernize your nutritional inventory with neural-powered insights.
-              </p>
-              <div className="flex flex-row gap-4 pt-4">
-                <button 
-                  onClick={() => setActiveTab('generator')}
-                  className="game-btn game-btn-primary px-8 py-3 text-2xl shadow-[0_0_20px_rgba(124,163,55,0.4)] text-white"
-                >
-                  Quick Forge
-                </button>
-                <button className="game-btn game-btn-outline px-8 py-3 text-2xl flex items-center gap-3 text-[#373737]">
-                  <ScrollText size={22} /> Patch Notes
-                </button>
-              </div>
-            </div>
+    <div className="space-y-12 animate-in fade-in duration-500">
+      <div className="space-y-4 max-w-4xl border-l-[8px] border-game-accent pl-6 bg-app-surface/30 py-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <h2 className="text-5xl font-black tracking-tight text-app-text-main uppercase">
+            CORN <span className="text-game-accent opacity-50 font-mono text-2xl">v1.20</span>
+          </h2>
+          <div className="flex flex-wrap items-center gap-6 px-4 py-3 bg-app-bg/40 border-2 border-app-border">
+            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" />
+            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" />
+            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" />
           </div>
         </div>
+        <p className="text-app-text-muted text-xl leading-snug font-medium">
+          <strong className="text-game-accent">Craft Own Recipe and Nutrition (CORN)</strong>. 
+          A sophisticated algorithm-driven system designed to help you synthesize legacy recipes, 
+          track nutritional vitals, and discover the culinary heritage of the global biomes.
+        </p>
       </div>
 
-      <div className="flex flex-col gap-10 px-4 md:px-0">
+      <div className="flex flex-col gap-8">
         {/* Search Bar */}
         <div className="flex flex-col md:flex-row gap-6">
           <div className="relative flex-1 group">
@@ -1287,7 +1188,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
     >
       <motion.div 
         ref={modalRef}
-        className="modal-content !max-w-6xl"
+        className="modal-content"
         tabIndex={-1}
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1319,12 +1220,12 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
           <div className="absolute bottom-0 left-0 p-8 text-app-text-main w-full">
             <div className="flex items-center gap-4 mb-4">
               <span className="text-5xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)]" role="img" aria-label="dish-emoji">{dish.emoji}</span>
-              <div className="flex gap-2 font-game">
+              <div className="flex gap-2">
                 <span className="px-4 py-2 bg-game-magenta border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.country}</span>
                 <span className="px-4 py-2 bg-game-accent border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.style}</span>
               </div>
             </div>
-            <h2 id="modal-title" className="font-game text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
+            <h2 id="modal-title" className="text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
               {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
             </h2>
             <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent">
@@ -1337,22 +1238,61 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate }: { dish: Dish, on
         <div className="p-8 bg-app-bg">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Main Content Area: Recipe */}
-            <div className="lg:col-span-7 order-2 lg:order-1">
-              {/* Recipe Column */}
-              <div className="p-8 bg-app-surface border-4 border-app-border relative h-full">
-                <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
-                <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
-                  <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
-                </h3>
-                <div className="markdown-body text-app-text-main text-lg leading-snug">
-                  <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
+            {/* Main Content Area: Ingredients & Recipe */}
+            <div className="lg:col-span-9 order-2 lg:order-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {/* Ingredients Column */}
+                <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
+                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Material Deck</div>
+                  <div>
+                    <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
+                      <span className="w-3 h-3 bg-game-accent"></span>
+                      Resource Components
+                    </h3>
+                    <ul className="space-y-4">
+                      {(dish.ingredients || []).map((ing, idx) => (
+                        <li key={idx} className="flex flex-col bg-black/40 p-4 border-l-4 border-app-border hover:border-game-accent transition-colors">
+                          <span className="text-lg font-bold text-app-text-main uppercase tracking-wide leading-tight">
+                            {ing.quantity} {ing.unit} {ing.name}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {dish.variations && dish.variations.length > 0 && (
+                    <div className="pt-6 border-t-4 border-app-border">
+                      <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-accent border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3">
+                        <span className="w-3 h-3 bg-game-accent"></span>
+                        Sub-Modules
+                      </h3>
+                      <ul className="space-y-3">
+                        {dish.variations.map((v, idx) => (
+                          <li key={idx} className="text-base text-app-text-muted flex items-start gap-2 before:content-['•'] before:text-game-accent">
+                            {v}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Recipe Column */}
+                <div className="p-8 bg-app-surface border-4 border-app-border relative">
+                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent opacity-50 uppercase tracking-widest">Blueprint: {dish.country}</div>
+                  <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-4 text-app-text-main uppercase tracking-widest">
+                    <Pickaxe className="text-game-accent" size={24} /> Crafting Steps
+                  </h3>
+                  <div className="markdown-body text-app-text-main text-lg leading-snug">
+                    <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Intelligence & Systems */}
-            <div className="lg:col-span-5 order-1 lg:order-2 space-y-10">
+            <div className="lg:col-span-3 order-1 lg:order-2 space-y-10">
               
               <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
                 <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
