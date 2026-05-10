@@ -3,23 +3,23 @@ import { GoogleGenAI } from '@google/genai';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const INGREDIENT_SYSTEM_PROMPT = `
-You are a master sous-chef and nutritionist.
-Given an image of a food or ingredients, perform the following:
-1. Identify all visible ingredients.
-2. Provide the scientific/binomial name if the ingredient comes from a plant or animal.
-3. Provide a detailed recipe based on what you see, including:
+You are a master sous-chef and nutritionist specializing in culinary synthesis and forged items.
+Given an image of food, beverages, ingredients, or forged items (culinary creations forged via synthesis), perform the following:
+1. Identify all visible ingredients, forged foods, and beverages.
+2. Provide the scientific/binomial name for natural ingredients.
+3. Provide a detailed recipe or synthesis guide based on what you see, including:
    - Ingredient list (with estimated amounts)
    - Step-by-step instructions
-4. List the health benefits for these ingredients.
+4. List the health benefits for these items.
 5. List related diseases or negative effects that could be caused by excessive intake of this food/beverage.
 
 Return your response strictly as a JSON object matching this TypeScript interface without any markdown blocks:
 {
-  name: string; // The appetizing name of the dish
+  name: string; // The appetizing name of the dish or forged item
   desc: string; // A short description
   emoji: string; // A relevant single unicode emoji
   country: string; // Origin country (or "Unknown")
-  style: "Traditional" | "Modern";
+  style: "Traditional" | "Modern" | "Synthesized";
   category: "Food" | "Beverage";
   scientificNames: { ingredient: string; name: string; }[];
   recipe: string; // Clean markdown string of ONLY the ingredients list and instructions block.
@@ -78,7 +78,7 @@ export const analyzeFoodImage = async (base64Image: string, mimeType: string) =>
             },
           },
           {
-            text: "Please analyze this food image and break down the recipe and ingredients.",
+            text: "Please analyze this food or forged culinary item image and break down the recipe, ingredients, or synthesis process.",
           },
         ],
       },
@@ -100,11 +100,8 @@ export const getIngredientPrices = async (ingredients: string[]) => {
       model: 'gemini-3.1-flash-lite',
       contents: `Find the estimated online market prices for these 3 main ingredients: ${ingredients.slice(0, 3).join(', ')}. Keep the list concise.`,
       config: {
-        systemInstruction: `You are an expert grocery shopping assistant.
-Given a list of ingredients, provide the estimated online market prices.
-Format the response using a clean Markdown table with columns: Ingredient, Estimated Price, and Action.
-For the Action, provide a real markdown link to search for the ingredient on Tokopedia (e.g., [Buy on Tokopedia](https://www.tokopedia.com/search?q=ingredient)).
-Keep the response strictly to the markdown table and limit it to the top 3 most important ingredients. Do not include any extra text.`,
+        maxOutputTokens: 150,
+        systemInstruction: `Provide a 3-row Markdown table: | Ingredient | Price | [Search](https://tokopedia.com/search?q=Ingredient) |. No other text.`,
       },
     });
     return response.text;
@@ -117,23 +114,38 @@ Keep the response strictly to the markdown table and limit it to the top 3 most 
 export const getHealthInsights = async (dishName: string, ingredients: string[]) => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.1-pro-preview',
+      model: 'gemini-3.1-flash-lite',
       contents: `Provide health insights for ${dishName} which contains these key ingredients: ${ingredients.join(', ')}.`,
       config: {
-        systemInstruction: `You are an expert nutritionist and dietitian.
-Provide AI-powered health insights for the given recipe.
-Specifically, your response MUST include these exact sections:
-### Benefits
-### Risks
-### Chronic Illness Prevention Tips
-
-Format the response using clean Markdown with clear headings and bullet points.`,
+        maxOutputTokens: 150,
+        systemInstruction: `Provide 3 concise sections: ### Benefits, ### Risks, ### Prevention Tips. Use bullet points. No other text.`,
       },
     });
     return response.text;
   } catch (error) {
     console.error("Error fetching health insights:", error);
     throw new Error("Failed to fetch health insights.");
+  }
+};
+
+export const getCheckupStatus = async (conditions: string[]) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: `User conditions: ${conditions.join(', ')}. Generate a JSON block with: "status" (short 2-5 word uppercase status summary for a cyberpunk UI health bar) and "maxHealth", "maxEnergy", "maxShield" (numbers between 50 and 100 representing maximum capacity penalties due to these conditions. 100 means no penalty).`,
+      config: {
+        maxOutputTokens: 100,
+        responseMimeType: "application/json",
+        systemInstruction: `You return only valid JSON, for example: {"status": "HIGH BP WARNING", "maxHealth": 80, "maxEnergy": 90, "maxShield": 75}`,
+      },
+    });
+    if (response.text) {
+      return JSON.parse(response.text);
+    }
+    return { status: "STATUS: CAUTION", maxHealth: 85, maxEnergy: 85, maxShield: 85 };
+  } catch (error) {
+    console.error("Error generating checkup status:", error);
+    return { status: "STATUS: CAUTION", maxHealth: 85, maxEnergy: 85, maxShield: 85 };
   }
 };
 

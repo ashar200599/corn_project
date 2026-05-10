@@ -21,19 +21,19 @@ export async function syncUserProfile(user: User) {
       vitals: {
         health: 100,
         shield: 50,
-        attack: 10
+        energy: 100
       }
     });
   } else {
     const data = userSnap.data();
     const updateData: any = { lastLogin: serverTimestamp() };
     
-    // Ensure vitals exist for legacy users
-    if (!data.vitals) {
+    // Ensure vitals exist for legacy users or patch missing energy
+    if (!data.vitals || data.vitals.energy === undefined) {
       updateData.vitals = {
-        health: 100,
-        shield: 50,
-        attack: 10
+        health: data.vitals?.health ?? 100,
+        shield: data.vitals?.shield ?? 50,
+        energy: 100
       };
     }
     
@@ -41,7 +41,7 @@ export async function syncUserProfile(user: User) {
   }
 }
 
-export async function updateUserVitals(uid: string, vitals: { health: number, shield: number, attack: number }) {
+export async function updateUserVitals(uid: string, vitals: { health: number, shield: number, energy?: number }) {
   const userRef = doc(db, 'users', uid);
   await setDoc(userRef, {
     vitals,

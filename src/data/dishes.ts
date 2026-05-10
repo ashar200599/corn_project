@@ -1,3 +1,5 @@
+import { ITALY_RAW_DISHES } from './italyRawDishes';
+
 export interface ScientificName {
   ingredient: string;
   name: string;
@@ -3391,5 +3393,6 @@ export const DISHES: Dish[] = [
     "servings": 2,
     "prepTime": 15,
     "cookTime": 20
-  }
+  },
+  ...ITALY_RAW_DISHES
 ];

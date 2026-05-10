@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn, PlusCircle, MinusCircle, Zap, Shield, ChevronUp, ChevronDown } from 'lucide-react';
+import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn, PlusCircle, MinusCircle, Zap, Shield, ChevronUp, ChevronDown, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights } from './services/geminiService';
+import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights, getCheckupStatus } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -11,17 +11,26 @@ import { doc, getDoc } from 'firebase/firestore';
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
   const [synthesisHistory, setSynthesisHistory] = useState<{dishName: string, message: string, timestamp: number}[]>([]);
+  const [isCheckupModalOpen, setIsCheckupModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isMarketplaceModalOpen, setIsMarketplaceModalOpen] = useState(false);
   const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [vitals, setVitals] = useState({ health: 100, shield: 50, attack: 10 });
+  const [vitals, setVitals] = useState({ health: 100, shield: 50, energy: 100 });
+  const [maxVitals, setMaxVitals] = useState({ health: 100, shield: 100, energy: 100 });
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [isMarketplaceMenuOpen, setIsMarketplaceMenuOpen] = useState(false);
+  const [medicalConditions, setMedicalConditions] = useState<string[]>([]);
+  const [aiCheckupStatus, setAiCheckupStatus] = useState<string>("SYSTEM NOMINAL");
+  const [isGeneratingAiStatus, setIsGeneratingAiStatus] = useState(false);
+  
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('app-theme');
     return (saved as 'dark' | 'light') || 'dark';
   });
+
+  const CONDITIONS = ["Diabetes", "High Blood Pressure", "Cholesterol", "Allergies", "Heart Disease"];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
@@ -89,8 +98,8 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
-      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex items-center flex-wrap gap-4 justify-between sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-4">
+      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex items-center justify-between flex-wrap gap-4 sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-md hover:bg-app-border transition-colors text-game-accent"
@@ -119,14 +128,23 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex xl:flex-1 items-center justify-center gap-2 md:gap-4 flex-wrap order-last xl:order-none w-full xl:w-auto mt-2 xl:mt-0">
           <div className="flex items-center gap-4 px-3 py-1.5 bg-app-bg/60 border-2 border-app-border">
-            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={100} color="bg-game-magenta" tooltip="Overall physical wellness." />
-            <VitalBar icon={<Sword className="text-game-accent" size={14} />} label="ATK" value={vitals.attack} max={99} color="bg-game-accent" tooltip="Culinary preparation efficiency." />
-            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={100} color="bg-game-green" tooltip="Defense against nutritional risks." />
+            <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={maxVitals.health} color="bg-game-magenta" tooltip="Overall physical wellness." />
+            <VitalBar icon={<Zap className="text-game-accent" size={14} fill="currentColor" />} label="NRG" value={vitals.energy || 100} max={maxVitals.energy} color="bg-game-accent" tooltip="Current energy levels. Consuming items affects your energy." />
+            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={maxVitals.shield} color="bg-game-green" tooltip="Defense against nutritional risks." />
+            <div className="hidden lg:flex items-center gap-2 pl-4 border-l-2 border-app-border" title="AI Health Status generated from Personal Checkup">
+              {isGeneratingAiStatus ? (
+                <span className="text-xs font-mono text-game-accent animate-pulse uppercase">ANALYZING...</span>
+              ) : (
+                <span className={`text-xs font-mono uppercase tracking-widest ${aiCheckupStatus === 'SYSTEM NOMINAL' ? 'text-game-green' : 'text-game-magenta animate-pulse'}`}>
+                  {aiCheckupStatus}
+                </span>
+              )}
+            </div>
           </div>
 
-          <nav className="hidden md:flex gap-2">
+          <nav className="flex gap-2 flex-wrap">
             <TabButton 
               active={activeTab === 'dashboard'} 
               onClick={() => setActiveTab('dashboard')}
@@ -145,11 +163,30 @@ export default function App() {
               icon={<Hammer size={16} />}
               label="Crafting"
             />
-          </nav>
+            <div className="relative">
+              <button 
+                onClick={() => setIsMarketplaceMenuOpen(!isMarketplaceMenuOpen)}
+                className={`game-btn game-btn-outline gap-2 px-3 py-2 md:px-4 md:py-2 flex items-center ${isMarketplaceMenuOpen ? 'border-game-accent text-game-accent' : ''}`}
+              >
+                <ShoppingBag size={16} /> <span className="text-xs md:text-sm font-bold uppercase tracking-widest hidden lg:block">Marketplace</span> {isMarketplaceMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              {isMarketplaceMenuOpen && (
+                <div className="absolute top-full right-0 mt-2 w-56 bg-app-surface border-4 border-app-border shadow-[8px_8px_0_rgba(0,0,0,0.5)] z-50">
+                  <a href="https://www.tokopedia.com/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Tokopedia</a>
+                  <a href="https://shopee.co.id/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shopee</a>
+                  <a href="https://shop-id.tokopedia.com/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shop-ID Tokopedia</a>
+                  <a href="https://www.lazada.co.id/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors">Lazada</a>
+                </div>
+              )}
+            </div>
 
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
           <button 
             onClick={toggleTheme}
-            className="p-2.5 rounded-none border border-app-border bg-app-surface hover:border-game-accent text-app-text-muted hover:text-game-accent transition-all shadow-sm"
+            className="p-2 sm:p-2.5 rounded-none border border-app-border bg-app-surface hover:border-game-accent text-app-text-muted hover:text-game-accent transition-all shadow-sm"
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -161,7 +198,7 @@ export default function App() {
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-                  className="flex items-center gap-2 p-1.5 border-2 border-app-border bg-app-bg hover:border-game-accent transition-all group"
+                  className="flex items-center gap-2 p-1.5 sm:p-2 border-2 border-app-border bg-app-bg hover:border-game-accent transition-all group"
                 >
                   <img 
                     src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'U')}&background=00f2ff&color=0a0a0c`} 
@@ -221,11 +258,6 @@ export default function App() {
                 </button>
               </li>
               <li>
-                <a href="https://www.tokopedia.com/" target="_blank" onClick={() => setIsMenuOpen(false)} className="block w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
-                  Marketplace
-                </a>
-              </li>
-              <li>
                 <button onClick={() => {setIsInstructionsModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
                   Instructions
                 </button>
@@ -235,9 +267,67 @@ export default function App() {
                   About
                 </button>
               </li>
+              <li>
+                <button 
+                  onClick={() => {setIsCheckupModalOpen(true); setIsMenuOpen(false);}} 
+                  className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all"
+                >
+                  Personal Checkup
+                </button>
+              </li>
             </ul>
           </div>
         </>
+      )}
+
+      {/* Checkup Modal */}
+      {isCheckupModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-lg text-left">
+            <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Personal Checkup</h2>
+            <div className="space-y-4">
+                {CONDITIONS.map(condition => (
+                  <label key={condition} className="flex items-center gap-3 text-sm font-medium text-app-text-main cursor-pointer p-2 hover:bg-app-border border border-transparent hover:border-app-border">
+                    <input
+                      type="checkbox"
+                      checked={medicalConditions.includes(condition)}
+                      onChange={() => {
+                        setMedicalConditions(prev =>
+                          prev.includes(condition)
+                            ? prev.filter(c => c !== condition)
+                            : [...prev, condition]
+                        );
+                      }}
+                      className="accent-game-accent"
+                    />
+                    {condition}
+                  </label>
+                ))}
+            </div>
+            <button 
+              onClick={async () => {
+                setIsCheckupModalOpen(false);
+                if (medicalConditions.length > 0) {
+                  setIsGeneratingAiStatus(true);
+                  const result = await getCheckupStatus(medicalConditions);
+                  setAiCheckupStatus(result.status);
+                  setMaxVitals({
+                    health: result.maxHealth || 100,
+                    energy: result.maxEnergy || 100,
+                    shield: result.maxShield || 100
+                  });
+                  setIsGeneratingAiStatus(false);
+                } else {
+                  setAiCheckupStatus("SYSTEM NOMINAL");
+                  setMaxVitals({ health: 100, energy: 100, shield: 100 });
+                }
+              }} 
+              className="mt-8 w-full game-btn game-btn-primary"
+            >
+              {isGeneratingAiStatus ? "PROCESSING..." : "Save Checkup"}
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Main Content Area */}
@@ -403,7 +493,10 @@ function HeroSlideshow() {
 }
 
 function VitalBar({ icon, label, value, max, color, tooltip }: { icon: React.ReactNode, label: string, value: number, max: number, color: string, tooltip?: string }) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  const displayValue = Math.min(value, max);
+  const percentage = Math.min(100, Math.max(0, (displayValue / 100) * 100)); // Bar width relative to absolute 100
+  const maxPercentage = Math.min(100, Math.max(0, (max / 100) * 100));
+
   return (
     <div className="flex items-center gap-3 w-32" title={tooltip}>
       <div className="flex flex-col gap-1 w-full">
@@ -412,13 +505,15 @@ function VitalBar({ icon, label, value, max, color, tooltip }: { icon: React.Rea
             {icon}
             <span className="text-app-text-muted">{label}</span>
           </div>
-          <span className="text-app-text-main">{Math.round(value)}</span>
+          <span className="text-app-text-main">{Math.round(displayValue)}/{max}</span>
         </div>
         <div className="h-2 bg-app-bg border border-app-border relative overflow-hidden">
+          {/* Background to show max limit */}
+          <div className="absolute top-0 left-0 h-full bg-app-border opacity-50" style={{ width: `${maxPercentage}%` }}></div>
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
-            className={`h-full ${color} transition-all duration-500`}
+            className={`absolute top-0 left-0 h-full ${color} transition-all duration-500`}
           />
         </div>
       </div>
@@ -663,49 +758,117 @@ function Dashboard({
     <div className="space-y-12 animate-in fade-in duration-500">
       <HeroSlideshow />
 
-      <div className="flex flex-col gap-8">
-        {/* Search Bar */}
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-game-accent" size={24} />
-            <input 
-              type="text" 
-              placeholder="SEARCH LIBRARY (Recipe, Ingredient, Biome...)" 
-              className="w-full pl-14 pr-4 py-5 bg-app-surface border-4 border-app-border text-app-text-main text-lg font-bold uppercase tracking-widest focus:outline-none focus:border-game-accent transition-all placeholder:text-app-text-muted/50"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="relative flex-[0.7] group">
-            <XCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-game-magenta" size={24} />
-            <input 
-              type="text" 
-              placeholder="RESTRICTED MATERIALS (e.g. peanut, pork)" 
-              className="w-full pl-14 pr-4 py-5 bg-app-surface border-4 border-app-border text-game-magenta text-lg font-bold uppercase tracking-widest focus:outline-none focus:border-game-magenta transition-all placeholder:text-game-magenta/30"
-              value={excludeQuery}
-              onChange={(e) => setExcludeQuery(e.target.value)}
-            />
-          </div>
-        </div>
+      <div className="flex gap-8 flex-col lg:flex-row lg:items-stretch items-start">
+        {/* Sidebar */}
+        <aside className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-8">
+          <div className="bg-app-surface/50 p-6 border-4 border-app-border space-y-6 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+            <h2 className="text-xl font-black uppercase text-app-text-main">Filters & Search</h2>
+            {/* Search Bar (Moved here) */}
+            <div className="space-y-4">
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-game-accent" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="SEARCH..." 
+                  className="w-full pl-12 pr-4 py-3 bg-app-bg border-2 border-app-border text-app-text-main text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-game-accent transition-all placeholder:text-app-text-muted/50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="relative group">
+                <XCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-game-magenta" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="RESTRICTED..." 
+                  className="w-full pl-12 pr-4 py-3 bg-app-bg border-2 border-app-border text-game-magenta text-sm font-bold uppercase tracking-widest focus:outline-none focus:border-game-magenta transition-all placeholder:text-game-magenta/30"
+                  value={excludeQuery}
+                  onChange={(e) => setExcludeQuery(e.target.value)}
+                />
+              </div>
+            </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-8 bg-app-surface/50 p-8 border-4 border-app-border relative">
-          <div className="absolute top-0 right-0 p-3 text-sm font-mono text-game-accent uppercase tracking-[0.2em] bg-app-surface border-l-4 border-b-4 border-app-border">Filter Set Loaded</div>
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-bold text-app-text-main uppercase tracking-[0.2em]">Biome</span>
-            <select 
-              className="text-sm bg-app-surface border-4 border-app-border text-game-accent font-bold px-4 py-3 focus:outline-none focus:border-game-accent uppercase tracking-wider cursor-pointer hover:bg-app-border"
-              value={activeCountry || ''}
-              onChange={(e) => setActiveCountry(e.target.value || null)}
-            >
-              <option value="">ALL BIOMES</option>
-              {countries.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
+            {/* Filter Module */}
+            <div className="space-y-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-bold text-app-text-muted uppercase tracking-[0.2em]">Biome</span>
+                <select 
+                  className="text-xs bg-app-bg border-2 border-app-border text-game-accent font-bold px-3 py-2 focus:outline-none focus:border-game-accent uppercase tracking-wider cursor-pointer hover:bg-app-border"
+                  value={activeCountry || ''}
+                  onChange={(e) => setActiveCountry(e.target.value || null)}
+                >
+                  <option value="">ALL</option>
+                  {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
 
-          <div className="flex flex-col gap-2 w-full lg:w-auto">
-            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Tag Module Cluster</span>
-            <div className="flex flex-wrap gap-2 bg-app-bg/40 border-4 border-app-border p-3 max-h-32 overflow-y-auto min-w-[300px]">
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-bold text-app-text-muted uppercase tracking-[0.2em]">Tier</span>
+                <div className="flex flex-col bg-app-bg border-2 border-app-border">
+                  <button 
+                    onClick={() => setActiveStyle(null)}
+                    className={`px-4 py-2 text-xs font-bold tracking-widest transition-all text-left ${!activeStyle ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                  >
+                    ALL TIERS
+                  </button>
+                  {styles.map(s => (
+                    <button 
+                      key={s}
+                      onClick={() => setActiveStyle(s as any)}
+                      className={`px-4 py-2 text-xs font-bold tracking-widest transition-all text-left ${activeStyle === s ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                    >
+                      {s.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-bold text-app-text-muted uppercase tracking-[0.2em]">Class</span>
+                <div className="flex flex-col bg-app-bg border-2 border-app-border">
+                  <button 
+                    onClick={() => setActiveCategory(null)}
+                    className={`px-4 py-2 text-xs font-bold tracking-widest transition-all text-left ${!activeCategory ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                  >
+                    ALL CLASSES
+                  </button>
+                  {categories.map(c => (
+                    <button 
+                      key={c}
+                      onClick={() => setActiveCategory(c as any)}
+                      className={`px-4 py-2 text-xs font-bold tracking-widest transition-all text-left ${activeCategory === c ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
+                    >
+                      {c.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`flex items-center gap-3 w-full px-4 py-3 text-xs font-bold uppercase tracking-widest border-2 transition-all ${showFavoritesOnly ? 'bg-game-magenta border-game-magenta text-white' : 'bg-app-bg border-app-border text-app-text-muted hover:text-app-text-main'}`}
+              >
+                <Heart size={16} fill={showFavoritesOnly ? "currentColor" : "none"} />
+                Loot Table
+              </button>
+            </div>
+            
+            {(activeCountry || activeStyle || activeCategory || activeTags.length > 0 || searchQuery || excludeQuery || showFavoritesOnly) && (
+              <button 
+                onClick={() => { setActiveCountry(null); setActiveStyle(null); setActiveCategory(null); setActiveTags([]); setSearchQuery(''); setExcludeQuery(''); setShowFavoritesOnly(false); }}
+                className="w-full text-xs font-bold uppercase tracking-[0.2em] text-game-magenta hover:bg-game-magenta/10 px-4 py-2 border-2 border-game-magenta transition-all"
+              >
+                Reset Matrix
+              </button>
+            )}
+          </div>
+        </aside>
+
+        {/* Content */}
+        <section className="flex-1">
+          {/* Tags (optional: keep or remove? let's keep them on top of dishes) */}
+          <div className="mb-8 p-4 bg-app-surface/50 border-4 border-app-border">
+            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em] mb-4 block">Tag Module Cluster</span>
+            <div className="flex flex-wrap gap-2">
               {allTags.map(t => {
                 const isActive = activeTags.includes(t);
                 return (
@@ -723,92 +886,28 @@ function Dashboard({
                   </button>
                 );
               })}
-              {activeTags.length === 0 && (
-                <div className="text-[10px] font-mono text-app-text-muted/50 uppercase tracking-widest italic py-1">No tags active. Global scan enabled.</div>
-              )}
-            </div>
-          </div>
-          
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Tier</span>
-            <div className="flex bg-app-bg/40 border-4 border-app-border p-1">
-              <button 
-                onClick={() => setActiveStyle(null)}
-                className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${!activeStyle ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
-              >
-                ALL
-              </button>
-              {styles.map(s => (
-                <button 
-                  key={s}
-                  onClick={() => setActiveStyle(s as any)}
-                  className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${activeStyle === s ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
-                >
-                  {s.toUpperCase()}
-                </button>
-              ))}
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em]">Class</span>
-            <div className="flex bg-app-bg/40 border-4 border-app-border p-1">
-              <button 
-                onClick={() => setActiveCategory(null)}
-                className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${!activeCategory ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
-              >
-                ALL
-              </button>
-              {categories.map(c => (
-                <button 
-                  key={c}
-                  onClick={() => setActiveCategory(c as any)}
-                  className={`px-6 py-2 text-sm font-bold tracking-widest transition-all ${activeCategory === c ? 'bg-game-accent text-app-bg' : 'text-app-text-muted hover:text-app-text-main'}`}
-                >
-                  {c.toUpperCase()}
-                </button>
+          {filteredDishes.length === 0 ? (
+            <div className="text-center p-20 bg-app-surface/20 border border-dashed border-app-border font-mono text-app-text-muted uppercase tracking-[0.3em]">
+              Zero records found in selected sector.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredDishes.map((dish, i) => (
+                <DishCard 
+                  key={i} 
+                  dish={dish} 
+                  isFavorite={favorites.includes(dish.id)}
+                  onToggleFavorite={(e) => toggleFavorite(dish.id, e)}
+                  onClick={() => onSelectDish(dish)} 
+                />
               ))}
             </div>
-          </div>
-
-          <div className="flex items-center gap-4 mt-auto pb-1">
-            <button
-              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-              className={`flex items-center gap-3 px-6 py-3 text-sm font-bold uppercase tracking-widest border-4 transition-all ${showFavoritesOnly ? 'bg-game-magenta border-game-magenta text-white' : 'bg-app-surface border-app-border text-app-text-muted hover:text-app-text-main'}`}
-            >
-              <Heart size={18} fill={showFavoritesOnly ? "currentColor" : "none"} />
-              Loot Table
-            </button>
-          </div>
-          
-          {(activeCountry || activeStyle || activeCategory || activeTags.length > 0 || searchQuery || excludeQuery || showFavoritesOnly) && (
-            <button 
-              onClick={() => { setActiveCountry(null); setActiveStyle(null); setActiveCategory(null); setActiveTags([]); setSearchQuery(''); setExcludeQuery(''); setShowFavoritesOnly(false); }}
-              className="ml-auto text-sm font-bold uppercase tracking-[0.2em] text-game-magenta hover:bg-game-magenta/10 px-6 py-3 border-4 border-game-magenta transition-all"
-            >
-              Reset Matrix
-            </button>
           )}
-        </div>
+        </section>
       </div>
-
-      {filteredDishes.length === 0 ? (
-        <div className="text-center p-20 bg-app-surface/20 border border-dashed border-app-border font-mono text-app-text-muted uppercase tracking-[0.3em]">
-          Zero records found in selected sector.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredDishes.map((dish, i) => (
-            <DishCard 
-              key={i} 
-              dish={dish} 
-              isFavorite={favorites.includes(dish.id)}
-              onToggleFavorite={(e) => toggleFavorite(dish.id, e)}
-              onClick={() => onSelectDish(dish)} 
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -1069,37 +1168,53 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
     const calories = parseInt(dish.nutrition.calories) || 0;
     const fat = parseInt(dish.nutrition.fat) || 0;
     const protein = parseInt(dish.nutrition.protein) || 0;
+    const carbs = parseInt(dish.nutrition.carbohydrates?.replace(/[^0-9]/g, '') || '0') || 0;
 
     const isHealthy = calories < 550 && fat < 25;
     const isJunk = calories > 900 || fat > 45;
     const isProtein = protein > 35;
+    const isHighCarb = carbs > 40;
     const isBeverage = dish.category === 'Beverage';
+
+    let energyDelta = 0;
 
     if (isHealthy) {
       newVitals.health = Math.min(100, vitals.health + 10);
       newVitals.shield = Math.min(100, vitals.shield + 5);
+      energyDelta = 10;
       message = "VITALITY RESTORED: +10 HP, +5 SHD";
       type = 'plus';
     } else if (isJunk) {
       newVitals.health = Math.max(1, vitals.health - 15);
-      message = "TOXICITY DETECTED: -15 HP (LIPID OVERLOAD)";
+      energyDelta = -20;
+      message = "TOXICITY DETECTED: -15 HP (LIPID OVERLOAD) | -20 NRG (Sluggish)";
       type = 'minus';
     } else {
       newVitals.health = Math.min(100, vitals.health + 5);
+      energyDelta = 5;
       message = "NUTRIENTIAL GAIN: +5 HP";
       type = 'plus';
     }
 
-    if (isProtein) {
-      newVitals.attack = Math.min(99, vitals.attack + 2);
-      message += " | ATK BOOSTED!";
+    if (isHighCarb) {
+      energyDelta = Math.max(energyDelta, 25);
+      message += " | HIGH CARB ENERGY SPIKE!";
+      type = 'buff';
+    } else if (isProtein) {
+      energyDelta += 10;
+      message += " | PROTEIN BOOST!";
       type = 'buff';
     }
 
     if (isBeverage) {
       newVitals.shield = Math.min(100, vitals.shield + 15);
-      message += " | SHIELD RECHARGED!";
+      message += " | HYDRATION SHIELD RECHARGED!";
       type = 'buff';
+    }
+
+    newVitals.energy = Math.min(100, Math.max(0, (vitals.energy || 100) + energyDelta));
+    if (energyDelta > 0 && !isJunk) {
+      message += ` | +${energyDelta} NRG`;
     }
 
     onSynthesize(dish.name, message);
