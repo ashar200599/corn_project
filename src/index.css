@@ -8,8 +8,8 @@
 @import "tailwindcss"; /* test */
 
 @theme {
-  --font-sans: "Minecraft", "VT323", monospace;
-  --font-mono: "Minecraft", "VT323", monospace;
+  --font-sans: "VT323", "Minecraft", monospace;
+  --font-mono: "VT323", "Minecraft", monospace;
   
   /* Theme Variables (Minecraft) */
   --color-game-accent: #3fb6da; /* Diamond */

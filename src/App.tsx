@@ -98,8 +98,9 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
-      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex items-center justify-between flex-wrap gap-4 sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-2 md:gap-4">
+      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex flex-col gap-4 md:gap-6 sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center justify-between flex-wrap gap-4 w-full">
+          <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-md hover:bg-app-border transition-colors text-game-accent"
@@ -114,8 +115,8 @@ export default function App() {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
-              <span className="text-2xl">🌽</span>
+            <div className="w-14 h-14 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
+              <span className="text-4xl">🌽</span>
             </div>
             <div>
               <div className="text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
@@ -128,12 +129,12 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className="flex xl:flex-1 items-center justify-center gap-2 md:gap-4 flex-wrap order-last xl:order-none w-full xl:w-auto mt-2 xl:mt-0">
-          <div className="flex items-center gap-4 px-3 py-1.5 bg-app-bg/60 border-2 border-app-border">
+
+        <div className="flex items-center gap-4 px-3 py-1.5 bg-app-bg/60 border-2 border-app-border order-last lg:order-none w-full lg:w-auto justify-center">
             <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={maxVitals.health} color="bg-game-magenta" tooltip="Overall physical wellness." />
             <VitalBar icon={<Zap className="text-game-accent" size={14} fill="currentColor" />} label="NRG" value={vitals.energy || 100} max={maxVitals.energy} color="bg-game-accent" tooltip="Current energy levels. Consuming items affects your energy." />
             <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={maxVitals.shield} color="bg-game-green" tooltip="Defense against nutritional risks." />
-            <div className="hidden lg:flex items-center gap-2 pl-4 border-l-2 border-app-border" title="AI Health Status generated from Personal Checkup">
+            <div className="hidden xl:flex items-center gap-2 pl-4 border-l-2 border-app-border" title="AI Health Status generated from Personal Checkup">
               {isGeneratingAiStatus ? (
                 <span className="text-xs font-mono text-game-accent animate-pulse uppercase">ANALYZING...</span>
               ) : (
@@ -144,56 +145,17 @@ export default function App() {
             </div>
           </div>
 
-          <nav className="flex gap-2 flex-wrap">
-            <TabButton 
-              active={activeTab === 'dashboard'} 
-              onClick={() => setActiveTab('dashboard')}
-              icon={<Library size={16} />}
-              label="Library"
-            />
-            <TabButton 
-              active={activeTab === 'scanner'} 
-              onClick={() => setActiveTab('scanner')}
-              icon={<Search size={16} />}
-              label="Identify"
-            />
-            <TabButton 
-              active={activeTab === 'generator'} 
-              onClick={() => setActiveTab('generator')}
-              icon={<Hammer size={16} />}
-              label="Crafting"
-            />
+          <div className="flex items-center gap-2 shrink-0">
+            <button 
+              onClick={toggleTheme}
+              className="p-2 sm:p-2.5 rounded-none border border-app-border bg-app-surface hover:border-game-accent text-app-text-muted hover:text-game-accent transition-all shadow-sm"
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
+            {/* User Account Section */}
             <div className="relative">
-              <button 
-                onClick={() => setIsMarketplaceMenuOpen(!isMarketplaceMenuOpen)}
-                className={`game-btn game-btn-outline gap-2 px-3 py-2 md:px-4 md:py-2 flex items-center ${isMarketplaceMenuOpen ? 'border-game-accent text-game-accent' : ''}`}
-              >
-                <ShoppingBag size={16} /> <span className="text-xs md:text-sm font-bold uppercase tracking-widest hidden lg:block">Marketplace</span> {isMarketplaceMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-              {isMarketplaceMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-56 bg-app-surface border-4 border-app-border shadow-[8px_8px_0_rgba(0,0,0,0.5)] z-50">
-                  <a href="https://www.tokopedia.com/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Tokopedia</a>
-                  <a href="https://shopee.co.id/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shopee</a>
-                  <a href="https://shop-id.tokopedia.com/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shop-ID Tokopedia</a>
-                  <a href="https://www.lazada.co.id/" target="_blank" className="block px-4 py-3 text-xs font-bold uppercase hover:bg-app-accent hover:text-white transition-colors">Lazada</a>
-                </div>
-              )}
-            </div>
-
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <button 
-            onClick={toggleTheme}
-            className="p-2 sm:p-2.5 rounded-none border border-app-border bg-app-surface hover:border-game-accent text-app-text-muted hover:text-game-accent transition-all shadow-sm"
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-
-          {/* User Account Section */}
-          <div className="relative">
             {user ? (
               <div className="flex items-center gap-3">
                 <button 
@@ -239,6 +201,47 @@ export default function App() {
             )}
           </div>
         </div>
+        </div>
+
+        {/* BOTTOM ROW: Navigation */}
+        <div className="w-full flex justify-center border-t-4 border-app-border pt-4 md:pt-5 border-dashed">
+          <nav className="flex items-center justify-center gap-3 md:gap-6 flex-wrap font-sans">
+            <TabButton 
+              active={activeTab === 'dashboard'} 
+              onClick={() => setActiveTab('dashboard')}
+              icon={<Library size={20} />}
+              label="Library"
+            />
+            <TabButton 
+              active={activeTab === 'scanner'} 
+              onClick={() => setActiveTab('scanner')}
+              icon={<Search size={20} />}
+              label="Identify"
+            />
+            <TabButton 
+              active={activeTab === 'generator'} 
+              onClick={() => setActiveTab('generator')}
+              icon={<Hammer size={20} />}
+              label="Crafting"
+            />
+            <div className="relative">
+              <button 
+                onClick={() => setIsMarketplaceMenuOpen(!isMarketplaceMenuOpen)}
+                className={`game-btn game-btn-outline gap-3 px-6 py-3 flex items-center text-lg md:text-xl ${isMarketplaceMenuOpen ? 'border-game-accent text-game-accent' : ''}`}
+              >
+                <ShoppingBag size={20} /> <span className="font-bold uppercase tracking-widest block">Marketplace</span> {isMarketplaceMenuOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+              {isMarketplaceMenuOpen && (
+                <div className="absolute top-full right-0 mt-2 w-56 bg-app-surface border-4 border-app-border shadow-[8px_8px_0_rgba(0,0,0,0.5)] z-50">
+                  <a href="https://www.tokopedia.com/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Tokopedia</a>
+                  <a href="https://shopee.co.id/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shopee</a>
+                  <a href="https://shop-id.tokopedia.com/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shop-ID Tokopedia</a>
+                  <a href="https://www.lazada.co.id/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors">Lazada</a>
+                </div>
+              )}
+            </div>
+          </nav>
+        </div>
       </header>
 
       {/* Hamburger / Navigation Sidebar */}
@@ -258,6 +261,14 @@ export default function App() {
                 </button>
               </li>
               <li>
+                <button 
+                  onClick={() => {setIsCheckupModalOpen(true); setIsMenuOpen(false);}} 
+                  className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all"
+                >
+                  Personal Checkup
+                </button>
+              </li>
+              <li>
                 <button onClick={() => {setIsInstructionsModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
                   Instructions
                 </button>
@@ -265,14 +276,6 @@ export default function App() {
               <li>
                 <button onClick={() => {setIsAboutModalOpen(true); setIsMenuOpen(false);}} className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all">
                   About
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => {setIsCheckupModalOpen(true); setIsMenuOpen(false);}} 
-                  className="w-full text-left px-5 py-3 text-sm font-bold uppercase tracking-wider border-4 border-app-border text-app-text-muted hover:border-game-accent hover:text-white transition-all"
-                >
-                  Personal Checkup
                 </button>
               </li>
             </ul>
@@ -448,11 +451,11 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button 
       onClick={onClick}
-      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-2 px-3 py-2 md:px-4 md:py-2`}
+      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-3 px-6 py-3 text-lg md:text-xl`}
     >
-      <span className="flex items-center gap-1 md:gap-2">
+      <span className="flex items-center gap-2">
         {icon}
-        <span className="text-xs md:text-sm font-bold uppercase tracking-widest">{label}</span>
+        <span className="font-bold uppercase tracking-widest">{label}</span>
       </span>
     </button>
   );
@@ -484,8 +487,9 @@ function HeroSlideshow() {
       </AnimatePresence>
       <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/50 to-transparent flex items-end p-8">
         <div className="max-w-4xl">
-           <h1 className="text-6xl font-black text-white uppercase tracking-tighter shadow-lg">CORN Library</h1>
-           <p className="text-xl text-white mt-2 shadow-lg">Synthesize legacy recipes and track nutrition.</p>
+           <h1 className="text-6xl sm:text-7xl font-black text-white uppercase tracking-tighter drop-shadow-md">CORN</h1>
+           <h2 className="text-2xl sm:text-3xl font-bold text-game-green mt-2 mb-4 tracking-wide drop-shadow-md">Craft Own Recipe and Nutrition</h2>
+           <p className="text-lg sm:text-xl text-white mt-2 drop-shadow-md max-w-2xl leading-relaxed">Discover, synthesize, and track your nutritional intake with an AI-powered culinary assistant. Explore legacy recipes and forge new ones to manage your wellness.</p>
         </div>
       </div>
     </div>
@@ -602,12 +606,6 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
                 title="Add to Chest"
               >
                 <Heart size={14} fill={isFavorite ? "currentColor" : "none"} />
-              </button>
-              <button 
-                onClick={handleHealthClick}
-                className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-1 px-2 py-1.5 transition-all border-2 ${showHealth ? 'bg-game-magenta text-white border-game-magenta' : 'text-game-magenta bg-game-magenta/5 border-game-magenta/30 hover:bg-game-magenta/20'}`}
-              >
-                <Sword size={12} /> Stats
               </button>
             </div>
         </div>
@@ -1050,7 +1048,7 @@ function Generator({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   const [preferences, setPreferences] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const sampleIngredients = ['Chicken', 'Rice', 'Garlic', 'Tofu', 'Spinach', 'Corn', 'Egg', 'Chili'];
+  const sampleIngredients = ['Chicken', 'Rice', 'Garlic', 'Tofu', 'Spinach', 'Corn', 'Egg', 'Chili', 'Beef', 'Pork', 'Onion', 'Ginger', 'Turmeric', 'Coconut', 'Basil', 'Lemongrass', 'Lime'];
 
   const handleSampleClick = (item: string) => {
     const current = ingredients.trim();
@@ -1421,7 +1419,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
                    <div>
                      <h4 className="text-sm font-bold text-app-text-muted uppercase tracking-[0.2em] mb-4">Core Attributes</h4>
                      <div className="grid grid-cols-2 gap-4 font-mono">
-                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
+                       <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center" title="Total energy provided by this dish.">
                          <span className="text-sm uppercase text-app-text-main mb-1 font-black">Energy</span>
                          <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.calories}</span>
                        </div>
