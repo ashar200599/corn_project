@@ -98,8 +98,8 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
-      <header className="bg-app-surface border-b-4 border-app-border py-4 px-3 md:py-6 md:px-8 flex flex-col gap-4 md:gap-6 sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-between flex-wrap gap-4 w-full">
+      <header className="bg-app-surface border-b-4 border-app-border py-2 px-3 md:py-6 md:px-8 flex flex-col gap-2 md:gap-6 sticky top-0 z-30 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center justify-between flex-wrap gap-2 md:gap-4 w-full">
           <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -115,14 +115,14 @@ export default function App() {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-14 h-14 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
-              <span className="text-4xl">🌽</span>
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-game-green/20 border-2 border-app-border flex items-center justify-center rounded-none shadow-[2px_2px_0_rgba(0,0,0,0.5)]">
+              <span className="text-3xl md:text-4xl">🌽</span>
             </div>
             <div>
-              <div className="text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
+              <div className="text-lg md:text-xl font-black tracking-[0.2em] text-app-text-main uppercase leading-none">
                 CORN
               </div>
-              <div className="text-base font-mono text-game-green flex items-center gap-2 mt-1">
+              <div className="text-xs md:text-base font-mono text-game-green flex items-center gap-2 mt-1">
                 <span className="w-2 h-2 bg-game-green animate-pulse"></span>
                 WORLD: KITCHEN
               </div>
@@ -130,7 +130,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 px-3 py-1.5 bg-app-bg/60 border-2 border-app-border order-last lg:order-none w-full lg:w-auto justify-center">
+        <div className="flex items-center gap-3 md:gap-4 px-3 py-1 md:py-1.5 bg-app-bg/60 border-2 border-app-border order-last lg:order-none w-full lg:w-auto justify-center flex-wrap md:flex-nowrap">
             <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={maxVitals.health} color="bg-game-magenta" tooltip="Overall physical wellness." />
             <VitalBar icon={<Zap className="text-game-accent" size={14} fill="currentColor" />} label="NRG" value={vitals.energy || 100} max={maxVitals.energy} color="bg-game-accent" tooltip="Current energy levels. Consuming items affects your energy." />
             <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={maxVitals.shield} color="bg-game-green" tooltip="Defense against nutritional risks." />
@@ -285,8 +285,8 @@ export default function App() {
 
       {/* Checkup Modal */}
       {isCheckupModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-lg text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80">
+          <div className="bg-app-surface border-4 border-app-border p-4 sm:p-8 w-full max-w-lg text-left overflow-y-auto max-h-[90vh]">
             <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Personal Checkup</h2>
             <div className="space-y-4">
                 {CONDITIONS.map(condition => (
@@ -375,7 +375,7 @@ export default function App() {
 
       {isHistoryModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-          <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-app-surface border-4 border-app-border p-4 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Synthesis History</h2>
             {synthesisHistory.length === 0 ? <p className="text-app-text-muted">No history found.</p> : (
               <ul className="space-y-4">
@@ -473,7 +473,7 @@ function HeroSlideshow() {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden border-b-4 border-app-border mb-12">
+    <div className="relative w-full h-[300px] sm:h-[400px] overflow-hidden border-b-4 border-app-border mb-8 sm:mb-12">
       <AnimatePresence mode='wait'>
         <motion.img
           key={index}
@@ -485,11 +485,11 @@ function HeroSlideshow() {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </AnimatePresence>
-      <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/50 to-transparent flex items-end p-8">
+      <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/50 to-transparent flex items-end p-4 sm:p-8">
         <div className="max-w-4xl">
-           <h1 className="text-6xl sm:text-7xl font-black text-white uppercase tracking-tighter drop-shadow-md">CORN</h1>
-           <h2 className="text-2xl sm:text-3xl font-bold text-game-green mt-2 mb-4 tracking-wide drop-shadow-md">Craft Own Recipe and Nutrition</h2>
-           <p className="text-lg sm:text-xl text-white mt-2 drop-shadow-md max-w-2xl leading-relaxed">Discover, synthesize, and track your nutritional intake with an AI-powered culinary assistant. Explore legacy recipes and forge new ones to manage your wellness.</p>
+           <h1 className="text-4xl sm:text-7xl font-black text-white uppercase tracking-tighter drop-shadow-md">CORN</h1>
+           <h2 className="text-xl sm:text-3xl font-bold text-game-green mt-2 mb-4 tracking-wide drop-shadow-md shrink-0">Craft Own Recipe and Nutrition</h2>
+           <p className="text-sm sm:text-xl text-white mt-2 drop-shadow-md max-w-2xl leading-relaxed line-clamp-3 sm:line-clamp-none">Discover, synthesize, and track your nutritional intake with an AI-powered culinary assistant.</p>
         </div>
       </div>
     </div>
@@ -502,7 +502,7 @@ function VitalBar({ icon, label, value, max, color, tooltip }: { icon: React.Rea
   const maxPercentage = Math.min(100, Math.max(0, (max / 100) * 100));
 
   return (
-    <div className="flex items-center gap-3 w-32" title={tooltip}>
+    <div className="flex items-center gap-2 sm:gap-3 w-24 sm:w-32" title={tooltip}>
       <div className="flex flex-col gap-1 w-full">
         <div className="flex justify-between items-center text-[10px] font-black tracking-widest leading-none">
           <div className="flex items-center gap-1">
@@ -571,7 +571,7 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
       onClick={onClick}
     >
       {/* Image Container */}
-      <div className="relative h-40 w-full overflow-hidden bg-app-bg/40">
+      <div className="relative h-32 sm:h-40 w-full overflow-hidden bg-app-bg/40">
         <img 
           src={dish.image} 
           alt={dish.name} 
@@ -583,7 +583,7 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col relative w-full overflow-hidden">
+      <div className="p-3 sm:p-4 flex-1 flex flex-col relative w-full overflow-hidden">
         <div className="absolute -top-6 right-2 bg-app-surface w-10 h-10 flex items-center justify-center text-2xl border-2 border-app-border">
           {dish.emoji}
         </div>
@@ -598,7 +598,7 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
           </div>
         </div>
         
-        <div className="mt-3 pt-3 border-t-2 border-app-border flex items-center justify-end">
+        <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t-2 border-app-border flex items-center justify-end">
             <div className="flex items-center gap-1">
               <button 
                 onClick={onToggleFavorite}
@@ -892,7 +892,7 @@ function Dashboard({
               Zero records found in selected sector.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8">
               {filteredDishes.map((dish, i) => (
                 <DishCard 
                   key={i} 
@@ -979,8 +979,8 @@ function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="space-y-4 border-l-4 border-game-accent pl-6 bg-app-surface/30 py-4">
-        <h2 className="text-4xl font-bold tracking-tighter text-app-text-main uppercase">Visual Analyzer</h2>
-        <p className="text-app-text-muted leading-relaxed font-medium">Upload raw visual data for neural breakdown. Our AI will decrypt the molecular structure, scientific classification, and nutritional potential of the target object.</p>
+        <h2 className="text-2xl sm:text-4xl font-bold tracking-tighter text-app-text-main uppercase">Visual Analyzer</h2>
+        <p className="text-sm sm:text-base text-app-text-muted leading-relaxed font-medium">Upload visual data for neural breakdown.</p>
       </div>
 
       <div className="game-card p-6 md:p-10">
@@ -1078,24 +1078,24 @@ function Generator({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="space-y-4 border-l-4 border-game-accent pl-6 bg-app-surface/30 py-4">
-        <h2 className="text-4xl font-bold tracking-tighter text-app-text-main uppercase">Crafting Forge</h2>
-        <p className="text-app-text-muted leading-relaxed font-medium">Synthesize new items using available raw components. Optimize the output vectors by providing secondary preference metrics.</p>
+        <h2 className="text-2xl sm:text-4xl font-bold tracking-tighter text-app-text-main uppercase">Crafting Forge</h2>
+        <p className="text-sm sm:text-base text-app-text-muted leading-relaxed font-medium">Synthesize new items using available raw components.</p>
       </div>
 
       <div className="game-card p-6 md:p-10 space-y-8">
                 <div className="space-y-8 text-left">
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-              <label className="text-base font-bold text-game-accent uppercase tracking-[0.2em] flex items-center gap-3">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6">
+              <label className="text-sm sm:text-base font-bold text-game-accent uppercase tracking-[0.2em] flex items-center gap-3">
                 <span className="w-3 h-3 bg-game-accent"></span>
                 Raw Materials Inventory
               </label>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {sampleIngredients.map(item => (
                   <button 
                     key={item}
                     onClick={() => handleSampleClick(item)}
-                    className="text-sm font-bold uppercase tracking-wider px-3 py-2 bg-game-accent/10 border-2 border-game-accent/40 text-game-accent hover:bg-game-accent hover:text-app-bg transition-all"
+                    className="text-[10px] sm:text-sm font-bold uppercase tracking-wider px-2 sm:px-3 py-1.5 sm:py-2 bg-game-accent/10 border-2 border-game-accent/40 text-game-accent hover:bg-game-accent hover:text-app-bg transition-all"
                   >
                     + {item}
                   </button>
@@ -1408,7 +1408,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
                  </div>
               </div>
               
-              <div className="p-8 bg-app-surface border-4 border-app-border space-y-8 relative">
+              <div className="p-4 sm:p-8 bg-app-surface border-4 border-app-border space-y-8 relative">
                  {/* ...rest of existing right column code... */}
                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-magenta uppercase tracking-widest">System Health</div>
                  <h3 className="text-base font-bold uppercase tracking-[0.3em] text-game-magenta flex items-center gap-4 border-b-4 border-app-border pb-4">
@@ -1424,15 +1424,15 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
                          <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.calories}</span>
                        </div>
                        <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Power</span>
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black" title="Proteins for muscle repair and system growth.">Power</span>
                          <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.protein}</span>
                        </div>
                        <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Fuel</span>
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black" title="Carbohydrates for quick energy synthesis.">Fuel</span>
                          <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.carbohydrates}</span>
                        </div>
                        <div className="bg-app-bg/40 p-4 border-4 border-app-border flex flex-col items-center">
-                         <span className="text-sm uppercase text-app-text-main mb-1 font-black">Buffer</span>
+                         <span className="text-sm uppercase text-app-text-main mb-1 font-black" title="Fats for long-term reserves and module insulation.">Buffer</span>
                          <span className="font-bold text-app-text-main text-2xl">{dish.nutrition.fat}</span>
                        </div>
                      </div>
