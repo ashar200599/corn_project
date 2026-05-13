@@ -1,4 +1,12 @@
 import { ITALY_RAW_DISHES } from './italyRawDishes';
+import { MEXICO_DISHES } from './mexicoDishes';
+import { THAILAND_DISHES } from './thailandDishes';
+import { INDONESIA_BEVERAGES } from './indonesiaBeverages';
+import { USA_DISHES } from './usaDishes';
+import { INDIA_DISHES } from './indiaDishes';
+import { SOUTH_KOREA_DISHES } from './southKoreaDishes';
+import { FRANCE_DISHES } from './franceDishes';
+import { CHINA_DISHES } from './chinaDishes';
 
 export interface ScientificName {
   ingredient: string;
@@ -22,6 +30,7 @@ export interface Dish {
   category: 'Food' | 'Beverage';
   scientificNames: ScientificName[];
   ingredients?: RecipeIngredient[];
+  variations?: string[];
   recipe: string;
   nutrition: {
     calories: string;
@@ -32,7 +41,6 @@ export interface Dish {
   healthBenefits: string;
   excessRisks?: string;
   tags?: string[];
-  variations?: string[];
   servings?: number;
   prepTime?: number;
   cookTime?: number;
@@ -1163,9 +1171,14 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-gado-gado",
+    "variations": [
+      "Spicy Gado-Gado",
+      "Original Gado-Gado",
+      "Premium Gado-Gado"
+    ],
     "name": "Gado-Gado",
     "desc": "Indonesian salad of slightly boiled, blanched or steamed vegetables and hard-boiled Chicken (Gallus gallus domesticus), boiled Potato (Solanum tuberosum), fried tofu and tempeh, served with a Peanut (Arachis hypogaea) sauce dressing.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Gado-Gado?width=600&height=400&nologo=true",
+    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20culinary%20shot%20of%20traditional%20Indonesian%20Gado-Gado%20salad%20with%20peanut%20sauce%20and%20crackers%20on%20a%20wooden%20table%20top-down%20view?width=600&height=400&nologo=true",
     "emoji": "🥗",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1203,9 +1216,14 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-sate-ayam",
+    "variations": [
+      "Spicy Sate Ayam & Kambing",
+      "Original Sate Ayam & Kambing",
+      "Premium Sate Ayam & Kambing"
+    ],
     "name": "Sate Ayam & Kambing",
     "desc": "Grilled skewered meat served with Peanut (Arachis hypogaea) sauce (Chicken (Gallus gallus domesticus)) or sweet soy sauce (Goat (Capra hircus)).",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Sate%20Ayam%20%26%20Kambing?width=600&height=400&nologo=true",
+    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20culinary%20shot%20of%20Indonesian%20Sate%20Ayam%20and%20Kambing%20chicken%20and%20goat%20skewers%20grilling%20over%20charcoal%20with%20peanut%20sauce?width=600&height=400&nologo=true",
     "emoji": "🍢",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1239,9 +1257,14 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-opor-ayam",
+    "variations": [
+      "Spicy Opor Ayam",
+      "Original Opor Ayam",
+      "Premium Opor Ayam"
+    ],
     "name": "Opor Ayam",
     "desc": "Chicken (Gallus gallus domesticus) braised in Coconut (Cocos nucifera) milk with traditional Indonesian spices, commonly served during Eid.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Opor%20Ayam?width=600&height=400&nologo=true",
+    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20culinary%20shot%20of%20Indonesian%20Opor%20Ayam%20chicken%20braised%20in%20coconut%20milk%20curry%20in%20a%20ceramic%20bowl?width=600&height=400&nologo=true",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1275,6 +1298,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-rawon",
+    "variations": [
+      "Spicy Rawon",
+      "Original Rawon",
+      "Premium Rawon"
+    ],
     "name": "Rawon",
     "desc": "Rich tasting traditional Indonesian Beef (Bos taurus) black soup. The dark color comes from the earthy Kluwak (Pangium edule).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Rawon?width=600&height=400&nologo=true",
@@ -1311,6 +1339,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-pempek",
+    "variations": [
+      "Spicy Pempek",
+      "Original Pempek",
+      "Premium Pempek"
+    ],
     "name": "Pempek",
     "desc": "Savory Indonesian fishcake delicacy, made of fish and Cassava (Manihot esculenta), served with rich sweet and sour sauce.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pempek?width=600&height=400&nologo=true",
@@ -1347,6 +1380,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-bakso",
+    "variations": [
+      "Spicy Bakso",
+      "Original Bakso",
+      "Premium Bakso"
+    ],
     "name": "Bakso",
     "desc": "Indonesian meatball soup served with noodles, tofu, and a savory Beef (Bos taurus) broth.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Bakso?width=600&height=400&nologo=true",
@@ -1383,6 +1421,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-nasi-padang",
+    "variations": [
+      "Spicy Nasi Padang",
+      "Original Nasi Padang",
+      "Premium Nasi Padang"
+    ],
     "name": "Nasi Padang",
     "desc": "Steamed Rice (Oryza sativa) served with various pre-cooked dishes from West Sumatra.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Padang?width=600&height=400&nologo=true",
@@ -1419,6 +1462,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-gudeg",
+    "variations": [
+      "Spicy Gudeg",
+      "Original Gudeg",
+      "Premium Gudeg"
+    ],
     "name": "Gudeg",
     "desc": "A traditional Javanese dish made from young unripe Jackfruit (Artocarpus heterophyllus) stewed for hours in Palm sugar (Arenga pinnata) and Coconut (Cocos nucifera) milk.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Gudeg?width=600&height=400&nologo=true",
@@ -1455,6 +1503,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-nasi-liwet",
+    "variations": [
+      "Spicy Nasi Liwet",
+      "Original Nasi Liwet",
+      "Premium Nasi Liwet"
+    ],
     "name": "Nasi Liwet",
     "desc": "Succulent Rice (Oryza sativa) dish cooked in Coconut (Cocos nucifera) milk, Chicken (Gallus gallus domesticus) broth, and spices.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Liwet?width=600&height=400&nologo=true",
@@ -1491,6 +1544,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-pecel-lele",
+    "variations": [
+      "Spicy Pecel Lele",
+      "Original Pecel Lele",
+      "Premium Pecel Lele"
+    ],
     "name": "Pecel Lele",
     "desc": "Deep-fried Catfish (Clarias) served with traditional sambal and fresh vegetables.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pecel%20Lele?width=600&height=400&nologo=true",
@@ -1527,6 +1585,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-ketoprak",
+    "variations": [
+      "Spicy Ketoprak",
+      "Original Ketoprak",
+      "Premium Ketoprak"
+    ],
     "name": "Ketoprak",
     "desc": "Vegetarian dish consisting of tofu, vegetables, Rice (Oryza sativa) cake, and Rice (Oryza sativa) vermicelli served in Peanut (Arachis hypogaea) sauce.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Ketoprak?width=600&height=400&nologo=true",
@@ -1563,6 +1626,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-nasi-uduk",
+    "variations": [
+      "Spicy Nasi Uduk",
+      "Original Nasi Uduk",
+      "Premium Nasi Uduk"
+    ],
     "name": "Nasi Uduk",
     "desc": "Jakarta style steamed Rice (Oryza sativa) cooked in Coconut (Cocos nucifera) milk, spiced with Lemongrass (Cymbopogon citratus), Clove (Syzygium aromaticum), and Pandan (Pandanus amaryllifolius) leaves.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Uduk?width=600&height=400&nologo=true",
@@ -1599,6 +1667,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-lontong-sayur",
+    "variations": [
+      "Spicy Lontong Sayur",
+      "Original Lontong Sayur",
+      "Premium Lontong Sayur"
+    ],
     "name": "Lontong Sayur",
     "desc": "Rice (Oryza sativa) cakes served in a vegetable stew of Coconut (Cocos nucifera) milk flavored with spices.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Lontong%20Sayur?width=600&height=400&nologo=true",
@@ -1635,6 +1708,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-semur-daging",
+    "variations": [
+      "Spicy Semur Daging",
+      "Original Semur Daging",
+      "Premium Semur Daging"
+    ],
     "name": "Semur Daging",
     "desc": "Indonesian meat stew braised in thick, sweet soy sauce, shallots, and Nutmeg (Myristica fragrans).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Semur%20Daging?width=600&height=400&nologo=true",
@@ -1671,6 +1749,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-sop-buntut",
+    "variations": [
+      "Spicy Sop Buntut",
+      "Original Sop Buntut",
+      "Premium Sop Buntut"
+    ],
     "name": "Sop Buntut",
     "desc": "Oxtail soup in a rich but clear Beef (Bos taurus) broth, featuring boiled Potato (Solanum tuberosum), Carrot (Daucus carota), and Tomato (Solanum lycopersicum).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Sop%20Buntut?width=600&height=400&nologo=true",
@@ -1707,6 +1790,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-tongseng",
+    "variations": [
+      "Spicy Tongseng",
+      "Original Tongseng",
+      "Premium Tongseng"
+    ],
     "name": "Tongseng",
     "desc": "A rich, spicy Goat (Capra hircus) meat stew cooked with Coconut (Cocos nucifera) milk, sweet soy sauce, and Cabbage (Brassica oleracea var. capitata).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Tongseng?width=600&height=400&nologo=true",
@@ -1743,6 +1831,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-martabak-manis",
+    "variations": [
+      "Spicy Martabak Manis",
+      "Original Martabak Manis",
+      "Premium Martabak Manis"
+    ],
     "name": "Martabak Manis",
     "desc": "A thick, sweet pancake heavily stuffed with chocolate, cheese, Peanut (Arachis hypogaea), and condensed milk.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Martabak%20Manis?width=600&height=400&nologo=true",
@@ -1775,6 +1868,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-martabak-telur",
+    "variations": [
+      "Spicy Martabak Telur",
+      "Original Martabak Telur",
+      "Premium Martabak Telur"
+    ],
     "name": "Martabak Telur",
     "desc": "Savory folded crisp pancake stuffed with seasoned Chicken (Gallus gallus domesticus), meat, and green Onion (Allium cepa).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Martabak%20Telur?width=600&height=400&nologo=true",
@@ -1803,6 +1901,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-klepon",
+    "variations": [
+      "Spicy Klepon",
+      "Original Klepon",
+      "Premium Klepon"
+    ],
     "name": "Klepon",
     "desc": "Sweet Rice (Oryza sativa) cake balls filled with liquid Palm sugar (Arenga pinnata) and coated in grated Coconut (Cocos nucifera).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Klepon?width=600&height=400&nologo=true",
@@ -1831,6 +1934,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-onde-onde",
+    "variations": [
+      "Spicy Onde-Onde",
+      "Original Onde-Onde",
+      "Premium Onde-Onde"
+    ],
     "name": "Onde-Onde",
     "desc": "Fried Sesame (Sesamum indicum) seed balls filled with sweet mung bean paste.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Onde-Onde?width=600&height=400&nologo=true",
@@ -1859,6 +1967,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-pisang-goreng",
+    "variations": [
+      "Spicy Pisang Goreng",
+      "Original Pisang Goreng",
+      "Premium Pisang Goreng"
+    ],
     "name": "Pisang Goreng",
     "desc": "Deep-fried Banana (Musa) or plantain coated in batter.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pisang%20Goreng?width=600&height=400&nologo=true",
@@ -1887,6 +2000,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-kue-lapis",
+    "variations": [
+      "Spicy Kue Lapis",
+      "Original Kue Lapis",
+      "Premium Kue Lapis"
+    ],
     "name": "Kue Lapis",
     "desc": "Colorful layered steamed soft Rice (Oryza sativa) pudding cake.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Kue%20Lapis?width=600&height=400&nologo=true",
@@ -1915,6 +2033,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-lupis",
+    "variations": [
+      "Spicy Lupis",
+      "Original Lupis",
+      "Premium Lupis"
+    ],
     "name": "Lupis",
     "desc": "Triangular sticky Rice (Oryza sativa) cake served with grated Coconut (Cocos nucifera) and Palm sugar (Arenga pinnata) syrup.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Lupis?width=600&height=400&nologo=true",
@@ -1943,6 +2066,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-risoles",
+    "variations": [
+      "Spicy Risoles",
+      "Original Risoles",
+      "Premium Risoles"
+    ],
     "name": "Risoles",
     "desc": "Savory fried pastry rolls filled with vegetables and Chicken (Gallus gallus domesticus), coated in breadcrumbs.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Risoles?width=600&height=400&nologo=true",
@@ -1971,6 +2099,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-lemper",
+    "variations": [
+      "Spicy Lemper",
+      "Original Lemper",
+      "Premium Lemper"
+    ],
     "name": "Lemper",
     "desc": "Sticky Rice (Oryza sativa) wrapper filled with savory spiced shredded Chicken (Gallus gallus domesticus), wrapped in Banana (Musa) leaf.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Lemper?width=600&height=400&nologo=true",
@@ -1999,6 +2132,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-serabi",
+    "variations": [
+      "Spicy Serabi",
+      "Original Serabi",
+      "Premium Serabi"
+    ],
     "name": "Serabi",
     "desc": "Traditional Indonesian pancake made from Rice (Oryza sativa) flour and Coconut (Cocos nucifera) milk or shredded Coconut (Cocos nucifera).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Serabi?width=600&height=400&nologo=true",
@@ -2027,6 +2165,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-dadar-gulung",
+    "variations": [
+      "Spicy Dadar Gulung",
+      "Original Dadar Gulung",
+      "Premium Dadar Gulung"
+    ],
     "name": "Dadar Gulung",
     "desc": "Green Pandan (Pandanus amaryllifolius) crepe rolled with sweet grated Coconut (Cocos nucifera) filling.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Dadar%20Gulung?width=600&height=400&nologo=true",
@@ -2055,6 +2198,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-getuk",
+    "variations": [
+      "Spicy Getuk",
+      "Original Getuk",
+      "Premium Getuk"
+    ],
     "name": "Getuk",
     "desc": "Cassava (Manihot esculenta)-based sweet snack, often colored and served with grated Coconut (Cocos nucifera).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Getuk?width=600&height=400&nologo=true",
@@ -2083,6 +2231,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-wingko-babat",
+    "variations": [
+      "Spicy Wingko Babat",
+      "Original Wingko Babat",
+      "Premium Wingko Babat"
+    ],
     "name": "Wingko Babat",
     "desc": "Chewy traditional Coconut (Cocos nucifera) pancake made of Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour and grated Coconut (Cocos nucifera).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Wingko%20Babat?width=600&height=400&nologo=true",
@@ -2111,6 +2264,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-pastel",
+    "variations": [
+      "Spicy Pastel",
+      "Original Pastel",
+      "Premium Pastel"
+    ],
     "name": "Pastel",
     "desc": "Fried pastry filled with glass noodles, Carrot (Daucus carota), and boiled Chicken (Gallus gallus domesticus).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pastel?width=600&height=400&nologo=true",
@@ -2139,6 +2297,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-cireng",
+    "variations": [
+      "Spicy Cireng",
+      "Original Cireng",
+      "Premium Cireng"
+    ],
     "name": "Cireng",
     "desc": "Chewy fried Cassava (Manihot esculenta) dough snack, often served with a spicy dip.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Cireng?width=600&height=400&nologo=true",
@@ -2167,6 +2330,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-ayam-geprek",
+    "variations": [
+      "Spicy Ayam Geprek",
+      "Original Ayam Geprek",
+      "Premium Ayam Geprek"
+    ],
     "name": "Ayam Geprek",
     "desc": "Crispy fried Chicken (Gallus gallus domesticus) crushed and mixed with hot and spicy sambal.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Ayam%20Geprek?width=600&height=400&nologo=true",
@@ -2195,6 +2363,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-sate-taichan",
+    "variations": [
+      "Spicy Sate Taichan",
+      "Original Sate Taichan",
+      "Premium Sate Taichan"
+    ],
     "name": "Sate Taichan",
     "desc": "A modern spin on satay: white grilled Chicken (Gallus gallus domesticus) meat served without Peanut (Arachis hypogaea) sauce, very spicy.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Sate%20Taichan?width=600&height=400&nologo=true",
@@ -2223,6 +2396,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-seblak",
+    "variations": [
+      "Spicy Seblak",
+      "Original Seblak",
+      "Premium Seblak"
+    ],
     "name": "Seblak",
     "desc": "A savory and spicy dish made of wet krupuk (crackers) cooked with flavorings and aromatic root.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Seblak?width=600&height=400&nologo=true",
@@ -2251,6 +2429,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-nasi-kulit-crispy",
+    "variations": [
+      "Spicy Nasi Kulit Crispy",
+      "Original Nasi Kulit Crispy",
+      "Premium Nasi Kulit Crispy"
+    ],
     "name": "Nasi Kulit Crispy",
     "desc": "Rice (Oryza sativa) served with deeply fried, ultra-crispy seasoned Chicken (Gallus gallus domesticus).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Kulit%20Crispy?width=600&height=400&nologo=true",
@@ -2279,6 +2462,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-indomie-kreasi",
+    "variations": [
+      "Spicy Indomie Goreng Kreasi",
+      "Original Indomie Goreng Kreasi",
+      "Premium Indomie Goreng Kreasi"
+    ],
     "name": "Indomie Goreng Kreasi",
     "desc": "Next-level instant noodles topped with salted Chicken (Gallus gallus domesticus), mozzarella, or extravagant meats.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Indomie%20Goreng%20Kreasi?width=600&height=400&nologo=true",
@@ -2307,6 +2495,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-nasi-goreng-seafood-premium",
+    "variations": [
+      "Spicy Nasi Goreng Seafood Premium",
+      "Original Nasi Goreng Seafood Premium",
+      "Premium Nasi Goreng Seafood Premium"
+    ],
     "name": "Nasi Goreng Seafood Premium",
     "desc": "Upgraded fried Rice (Oryza sativa) with premium seafood like squid, large prawns, and luxurious sauces.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Goreng%20Seafood%20Premium?width=600&height=400&nologo=true",
@@ -2335,6 +2528,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-korean-fusion",
+    "variations": [
+      "Spicy Korean-Indonesian Fusion",
+      "Original Korean-Indonesian Fusion",
+      "Premium Korean-Indonesian Fusion"
+    ],
     "name": "Korean-Indonesian Fusion",
     "desc": "Dishes like Tteokbokki mixed with Seblak or spicy Gochujang Ayam Geprek.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Korean-Indonesian%20Fusion?width=600&height=400&nologo=true",
@@ -2363,6 +2561,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-croffle-pandan",
+    "variations": [
+      "Spicy Pandanus amaryllifolius",
+      "Original Pandanus amaryllifolius",
+      "Premium Pandanus amaryllifolius"
+    ],
     "name": "Pandanus amaryllifolius",
     "desc": "A cross between a croissant and a waffle, infused with Pandan (Pandanus amaryllifolius) flavor and syrup.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Croffle%20Pandan?width=600&height=400&nologo=true",
@@ -2391,6 +2594,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-dimsum-kekinian",
+    "variations": [
+      "Spicy Dimsum Kekinian",
+      "Original Dimsum Kekinian",
+      "Premium Dimsum Kekinian"
+    ],
     "name": "Dimsum Kekinian",
     "desc": "Modern dimsum topped with mentai sauce, mozzarella, or salted Chicken (Gallus gallus domesticus) sauce, blowtorched.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Dimsum%20Kekinian?width=600&height=400&nologo=true",
@@ -2419,6 +2627,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-batagor-kuah",
+    "variations": [
+      "Spicy Batagor Kuah",
+      "Original Batagor Kuah",
+      "Premium Batagor Kuah"
+    ],
     "name": "Batagor Kuah",
     "desc": "Modern take on Batagor, served with warm, savory broth instead of Peanut (Arachis hypogaea) sauce.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Batagor%20Kuah?width=600&height=400&nologo=true",
@@ -2447,6 +2660,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-mie-pedas-level",
+    "variations": [
+      "Spicy Mie Pedas Level",
+      "Original Mie Pedas Level",
+      "Premium Mie Pedas Level"
+    ],
     "name": "Mie Pedas Level",
     "desc": "Trendy dry noodles featuring extreme spiciness levels ranging from level 1 to 100.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Mie%20Pedas%20Level?width=600&height=400&nologo=true",
@@ -2475,6 +2693,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-ayam-bakar-taliwang-modern",
+    "variations": [
+      "Spicy Ayam Bakar Taliwang Modern",
+      "Original Ayam Bakar Taliwang Modern",
+      "Premium Ayam Bakar Taliwang Modern"
+    ],
     "name": "Ayam Bakar Taliwang Modern",
     "desc": "Lombok's spicy grilled Chicken (Gallus gallus domesticus) served in modern Rice (Oryza sativa) bowl setups.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Ayam%20Bakar%20Taliwang%20Modern?width=600&height=400&nologo=true",
@@ -2503,6 +2726,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "indo-boba-toast",
+    "variations": [
+      "Spicy Boba Toast",
+      "Original Boba Toast",
+      "Premium Boba Toast"
+    ],
     "name": "Boba Toast",
     "desc": "Thick, fluffy toast slathered in cream cheese or milk Tea (Camellia sinensis) cream and topped with chewy Cassava (Manihot esculenta) pearls.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Boba%20Toast?width=600&height=400&nologo=true",
@@ -2531,6 +2759,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-boba-milk-tea",
+    "variations": [
+      "Spicy Camellia sinensis",
+      "Original Camellia sinensis",
+      "Premium Camellia sinensis"
+    ],
     "name": "Camellia sinensis",
     "desc": "Classic sweet milk Tea (Camellia sinensis) with chewy Cassava (Manihot esculenta) pearls.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Boba%20Milk%20Tea?width=600&height=400&nologo=true",
@@ -2559,6 +2792,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-brown-sugar-latte",
+    "variations": [
+      "Spicy Brown Sugar Latte",
+      "Original Brown Sugar Latte",
+      "Premium Brown Sugar Latte"
+    ],
     "name": "Brown Sugar Latte",
     "desc": "Fresh milk poured over a rich, tiger-striped syrup of molten Palm sugar (Arenga pinnata) and boba.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Brown%20Sugar%20Latte?width=600&height=400&nologo=true",
@@ -2587,6 +2825,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-es-kepal-milo",
+    "variations": [
+      "Spicy Es Kepal Milo",
+      "Original Es Kepal Milo",
+      "Premium Es Kepal Milo"
+    ],
     "name": "Es Kepal Milo",
     "desc": "Huge ball of shaved ice drenched in a thick, rich Milo (chocolate malt) syrup.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Es%20Kepal%20Milo?width=600&height=400&nologo=true",
@@ -2615,6 +2858,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-tea-latte-lokal",
+    "variations": [
+      "Spicy Tea (Camellia sinensis) Latte Lokal",
+      "Original Tea (Camellia sinensis) Latte Lokal",
+      "Premium Tea (Camellia sinensis) Latte Lokal"
+    ],
     "name": "Tea (Camellia sinensis) Latte Lokal",
     "desc": "Tea (Camellia sinensis) mixed with locally sourced milk and sometimes topped with cheese foam.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Matcha%20Latte%20Lokal?width=600&height=400&nologo=true",
@@ -2643,6 +2891,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-kopi-dalgona",
+    "variations": [
+      "Spicy Kopi Dalgona",
+      "Original Kopi Dalgona",
+      "Premium Kopi Dalgona"
+    ],
     "name": "Kopi Dalgona",
     "desc": "Whipped instant Coffee (Coffea) foam over cold milk.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Kopi%20Dalgona?width=600&height=400&nologo=true",
@@ -2671,6 +2924,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-thai-tea-fusion",
+    "variations": [
+      "Spicy Thai Tea (Camellia sinensis) Fusion",
+      "Original Thai Tea (Camellia sinensis) Fusion",
+      "Premium Thai Tea (Camellia sinensis) Fusion"
+    ],
     "name": "Thai Tea (Camellia sinensis) Fusion",
     "desc": "Strongly brewed Ceylon Tea (Camellia sinensis) with condensed milk, mixed with modern toppings.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Thai%20Tea%20Fusion?width=600&height=400&nologo=true",
@@ -2699,6 +2957,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-taro-latte",
+    "variations": [
+      "Spicy Taro (Colocasia esculenta) Latte",
+      "Original Taro (Colocasia esculenta) Latte",
+      "Premium Taro (Colocasia esculenta) Latte"
+    ],
     "name": "Taro (Colocasia esculenta) Latte",
     "desc": "Sweet, purple-colored milky drink flavor derived from Taro (Colocasia esculenta) root.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Taro%20Latte?width=600&height=400&nologo=true",
@@ -2727,6 +2990,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-sparkling-pandan",
+    "variations": [
+      "Spicy Sparkling Pandan (Pandanus amaryllifolius) Drink",
+      "Original Sparkling Pandan (Pandanus amaryllifolius) Drink",
+      "Premium Sparkling Pandan (Pandanus amaryllifolius) Drink"
+    ],
     "name": "Sparkling Pandan (Pandanus amaryllifolius) Drink",
     "desc": "Carbonated soda mixed with natural Pandan (Pandanus amaryllifolius) extract and lime.",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Sparkling%20Pandan%20Drink?width=600&height=400&nologo=true",
@@ -2755,6 +3023,11 @@ export const DISHES: Dish[] = [
   },
   {
     "id": "drink-es-kopi-susu-gula-aren",
+    "variations": [
+      "Spicy Es Kopi Susu Gula Aren",
+      "Original Es Kopi Susu Gula Aren",
+      "Premium Es Kopi Susu Gula Aren"
+    ],
     "name": "Es Kopi Susu Gula Aren",
     "desc": "Iced espresso and milk sweetened exclusively with Indonesian Palm sugar (Arenga pinnata).",
     "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Es%20Kopi%20Susu%20Gula%20Aren?width=600&height=400&nologo=true",
@@ -2888,7 +3161,8 @@ export const DISHES: Dish[] = [
     "id": "jp-udon",
     "variations": [
       "Kake Udon",
-      "Kitsune Udon"
+      "Kitsune Udon",
+      "Spicy Udon"
     ],
     "name": "Udon",
     "desc": "Thick wheat flour noodles.",
@@ -2920,7 +3194,8 @@ export const DISHES: Dish[] = [
     "id": "jp-soba",
     "variations": [
       "Zaru Soba",
-      "Kake Soba"
+      "Kake Soba",
+      "Spicy Soba"
     ],
     "name": "Soba",
     "desc": "Buckwheat flour noodles.",
@@ -2952,7 +3227,8 @@ export const DISHES: Dish[] = [
     "id": "jp-tempura",
     "variations": [
       "Ebi",
-      "Yasai"
+      "Yasai",
+      "Spicy Tempura"
     ],
     "name": "Tempura",
     "desc": "Lightly battered and deep-fried seafood and vegetables.",
@@ -2984,7 +3260,8 @@ export const DISHES: Dish[] = [
     "id": "jp-tonkatsu",
     "variations": [
       "Rosu",
-      "Hire"
+      "Hire",
+      "Spicy Tonkatsu"
     ],
     "name": "Tonkatsu",
     "desc": "Breaded, deep-fried pork cutlet.",
@@ -3016,7 +3293,8 @@ export const DISHES: Dish[] = [
     "id": "jp-yakitori",
     "variations": [
       "Negima",
-      "Tsukune"
+      "Tsukune",
+      "Spicy Yakitori"
     ],
     "name": "Yakitori",
     "desc": "Grilled chicken skewers.",
@@ -3048,7 +3326,8 @@ export const DISHES: Dish[] = [
     "id": "jp-sukiyaki",
     "variations": [
       "Beef",
-      "Tofu"
+      "Tofu",
+      "Spicy Sukiyaki"
     ],
     "name": "Sukiyaki",
     "desc": "Thinly sliced beef simmered with vegetables.",
@@ -3080,7 +3359,8 @@ export const DISHES: Dish[] = [
     "id": "jp-shabu",
     "variations": [
       "Beef",
-      "Pork"
+      "Pork",
+      "Spicy Shabu-Shabu"
     ],
     "name": "Shabu-Shabu",
     "desc": "Thinly sliced meat and vegetables boiled in broth.",
@@ -3112,7 +3392,8 @@ export const DISHES: Dish[] = [
     "id": "jp-miso",
     "variations": [
       "Tofu",
-      "Seaweed"
+      "Seaweed",
+      "Spicy Miso Soup"
     ],
     "name": "Miso Soup",
     "desc": "Traditional soup made with fermented soybean paste.",
@@ -3144,7 +3425,8 @@ export const DISHES: Dish[] = [
     "id": "jp-onigiri",
     "variations": [
       "Salmon",
-      "Umeboshi"
+      "Umeboshi",
+      "Spicy Onigiri"
     ],
     "name": "Onigiri",
     "desc": "Rice balls, often wrapped in nori.",
@@ -3175,7 +3457,9 @@ export const DISHES: Dish[] = [
   {
     "id": "jp-takoyaki",
     "variations": [
-      "Octopus"
+      "Octopus",
+      "Spicy Takoyaki",
+      "Original Takoyaki"
     ],
     "name": "Takoyaki",
     "desc": "Ball-shaped snack made of batter and filled with minced octopus.",
@@ -3207,7 +3491,8 @@ export const DISHES: Dish[] = [
     "id": "jp-okonomiyaki",
     "variations": [
       "Osaka",
-      "Hiroshima"
+      "Hiroshima",
+      "Spicy Okonomiyaki"
     ],
     "name": "Okonomiyaki",
     "desc": "Savory pancake containing a variety of ingredients.",
@@ -3239,7 +3524,8 @@ export const DISHES: Dish[] = [
     "id": "jp-gyoza",
     "variations": [
       "Pork",
-      "Veggie"
+      "Veggie",
+      "Spicy Gyoza"
     ],
     "name": "Gyoza",
     "desc": "Pan-fried dumplings.",
@@ -3271,7 +3557,8 @@ export const DISHES: Dish[] = [
     "id": "jp-yakisoba",
     "variations": [
       "Pork",
-      "Veggie"
+      "Veggie",
+      "Spicy Yakisoba"
     ],
     "name": "Yakisoba",
     "desc": "Stir-fried noodles.",
@@ -3302,7 +3589,9 @@ export const DISHES: Dish[] = [
   {
     "id": "jp-karaage",
     "variations": [
-      "Chicken"
+      "Chicken",
+      "Spicy Karaage",
+      "Original Karaage"
     ],
     "name": "Karaage",
     "desc": "Deep-fried chicken.",
@@ -3334,7 +3623,8 @@ export const DISHES: Dish[] = [
     "id": "jp-mochi",
     "variations": [
       "Red Bean",
-      "Strawberry"
+      "Strawberry",
+      "Spicy Mochi"
     ],
     "name": "Mochi",
     "desc": "Sticky rice cake.",
@@ -3366,7 +3656,8 @@ export const DISHES: Dish[] = [
     "id": "jp-matcha",
     "variations": [
       "Hot",
-      "Cold"
+      "Cold",
+      "Spicy Matcha"
     ],
     "name": "Matcha",
     "desc": "Powdered green tea.",
@@ -3394,5 +3685,13 @@ export const DISHES: Dish[] = [
     "prepTime": 15,
     "cookTime": 20
   },
-  ...ITALY_RAW_DISHES
+  ...ITALY_RAW_DISHES,
+  ...MEXICO_DISHES,
+  ...THAILAND_DISHES,
+  ...INDONESIA_BEVERAGES,
+  ...USA_DISHES,
+  ...INDIA_DISHES,
+  ...SOUTH_KOREA_DISHES,
+  ...FRANCE_DISHES,
+  ...CHINA_DISHES
 ];

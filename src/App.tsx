@@ -3,10 +3,12 @@ import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights, getCheckupStatus } from './services/geminiService';
+import { analyzeFoodImage, generateRecipeFromIngredients, getIngredientPrices, getHealthInsights, getCheckupStatus, getVariationRecipe, getVitalsStatus, getVitalsRecommendation } from './services/geminiService';
 import { DISHES, Dish } from './data/dishes';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+
+import { Chatbot } from './components/Chatbot';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
@@ -17,13 +19,17 @@ export default function App() {
   const [isInstructionsModalOpen, setIsInstructionsModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [vitals, setVitals] = useState({ health: 100, shield: 50, energy: 100 });
+  const [vitals, setVitals] = useState({ health: 100, shield: 100, energy: 100 });
   const [maxVitals, setMaxVitals] = useState({ health: 100, shield: 100, energy: 100 });
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMarketplaceMenuOpen, setIsMarketplaceMenuOpen] = useState(false);
   const [medicalConditions, setMedicalConditions] = useState<string[]>([]);
-  const [aiCheckupStatus, setAiCheckupStatus] = useState<string>("SYSTEM NOMINAL");
+  const [aiCheckupStatus, setAiCheckupStatus] = useState<string>("NORMAL CONDITION");
   const [isGeneratingAiStatus, setIsGeneratingAiStatus] = useState(false);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [depletionWarning, setDepletionWarning] = useState('');
+  const [aiRecommendation, setAiRecommendation] = useState('');
+  const [isFetchingRecommendation, setIsFetchingRecommendation] = useState(false);
   
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('app-theme');
@@ -49,10 +55,45 @@ export default function App() {
         } catch (error) {
           console.error("Error syncing profile:", error);
         }
+      } else {
+        setVitals({ health: 100, shield: 100, energy: 100 });
       }
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const updateVitalsStatus = async () => {
+      // Don't override if user is actively generating checkup
+      if (vitals.health >= maxVitals.health && vitals.energy >= maxVitals.energy && vitals.shield >= maxVitals.shield) {
+        setAiCheckupStatus("NORMAL CONDITION");
+      } else {
+        setIsGeneratingAiStatus(true);
+        const statusMsg = await getVitalsStatus(vitals);
+        if (isMounted) {
+          setAiCheckupStatus(statusMsg);
+          setIsGeneratingAiStatus(false);
+        }
+      }
+
+      if ((vitals.health <= 20 || vitals.energy <= 20 || vitals.shield <= 0) && (vitals.health > 0 || vitals.shield > 0 || vitals.energy > 0)) {
+        setIsWarningModalOpen(true);
+        if(vitals.health <= 20) setDepletionWarning("CRITICAL HP. LIFE SUPPORT FAILING.");
+        else if(vitals.shield <= 0) setDepletionWarning("SHIELD DEPLETED. VULNERABLE TO TOXICITY.");
+        else if(vitals.energy <= 20) setDepletionWarning("LOW ENERGY. MOVEMENT RESTRICTED.");
+        
+        setIsFetchingRecommendation(true);
+        const rec = await getVitalsRecommendation(vitals);
+        if (isMounted) {
+          setAiRecommendation(rec);
+          setIsFetchingRecommendation(false);
+        }
+      }
+    };
+    updateVitalsStatus();
+    return () => { isMounted = false; };
+  }, [vitals.health, vitals.energy, vitals.shield, maxVitals.health, maxVitals.energy, maxVitals.shield]);
 
   const handleLogin = async () => {
     try {
@@ -95,6 +136,19 @@ export default function App() {
 
   const countries = Array.from(new Set(DISHES.map(d => d.country)));
 
+  let statusIconColor = 'text-game-green';
+  let statusTextColor = 'text-game-green/80';
+  if (aiCheckupStatus === 'MILD CONDITION') {
+    statusIconColor = 'text-yellow-400';
+    statusTextColor = 'text-yellow-400 font-bold uppercase';
+  } else if (aiCheckupStatus === 'RISK CONDITION') {
+    statusIconColor = 'text-orange-500 animate-pulse';
+    statusTextColor = 'text-orange-500 font-bold uppercase';
+  } else if (aiCheckupStatus === 'SEVERE') {
+    statusIconColor = 'text-red-500 animate-pulse';
+    statusTextColor = 'text-red-500 font-black uppercase tracking-widest';
+  }
+
   return (
     <div className="min-h-screen flex flex-col font-sans bg-app-bg text-app-text-main relative transition-colors duration-300">
       {/* Top Navigation */}
@@ -130,20 +184,31 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 md:gap-4 px-3 py-1 md:py-1.5 bg-app-bg/60 border-2 border-app-border order-last lg:order-none w-full lg:w-auto justify-center flex-wrap md:flex-nowrap">
+        <div className="flex flex-col border-2 border-app-border order-last lg:order-none w-full lg:w-auto bg-app-bg/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+          {/* VITALS SECTION */}
+          <div className="flex items-center gap-3 md:gap-4 px-4 py-2 justify-center flex-wrap sm:flex-nowrap border-b border-app-border min-w-min">
             <VitalBar icon={<Heart className="text-game-magenta" size={14} fill="currentColor" />} label="HP" value={vitals.health} max={maxVitals.health} color="bg-game-magenta" tooltip="Overall physical wellness." />
             <VitalBar icon={<Zap className="text-game-accent" size={14} fill="currentColor" />} label="NRG" value={vitals.energy || 100} max={maxVitals.energy} color="bg-game-accent" tooltip="Current energy levels. Consuming items affects your energy." />
-            <VitalBar icon={<Pickaxe className="text-game-green" size={14} />} label="SHD" value={vitals.shield} max={maxVitals.shield} color="bg-game-green" tooltip="Defense against nutritional risks." />
-            <div className="hidden xl:flex items-center gap-2 pl-4 border-l-2 border-app-border" title="AI Health Status generated from Personal Checkup">
-              {isGeneratingAiStatus ? (
-                <span className="text-xs font-mono text-game-accent animate-pulse uppercase">ANALYZING...</span>
-              ) : (
-                <span className={`text-xs font-mono uppercase tracking-widest ${aiCheckupStatus === 'SYSTEM NOMINAL' ? 'text-game-green' : 'text-game-magenta animate-pulse'}`}>
-                  {aiCheckupStatus}
-                </span>
-              )}
+            <VitalBar icon={<Shield className="text-game-green" size={14} fill="currentColor" />} label="SHD" value={vitals.shield} max={maxVitals.shield} color="bg-game-green" tooltip="Defense against nutritional risks." />
+          </div>
+          
+          {/* INFO TICKER SECTION */}
+          <div className="flex items-center gap-2 px-3 py-1 text-[10px] md:text-xs overflow-hidden bg-black/40 relative h-6">
+            <div className="flex items-center gap-1 font-black tracking-widest text-app-text-muted shrink-0 pr-2 border-r border-app-border/50 uppercase">
+              <ScrollText size={12} className={statusIconColor} />
+              <span>Status</span>
+            </div>
+            <div className="flex-1 whitespace-nowrap overflow-hidden relative flex items-center pr-2">
+                {isGeneratingAiStatus ? (
+                  <span className="font-mono text-game-accent animate-pulse uppercase tracking-widest">TRANSMITTING TELEMETRY...</span>
+                ) : (
+                  <div className={`font-mono uppercase tracking-widest truncate w-full ${statusTextColor}`}>
+                    {aiCheckupStatus === 'NORMAL CONDITION' ? 'All vitals operating within optimal parameters.' : `WARNING: ${aiCheckupStatus}`}
+                  </div>
+                )}
             </div>
           </div>
+        </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button 
@@ -227,15 +292,14 @@ export default function App() {
             <div className="relative">
               <button 
                 onClick={() => setIsMarketplaceMenuOpen(!isMarketplaceMenuOpen)}
-                className={`game-btn game-btn-outline gap-3 px-6 py-3 flex items-center text-lg md:text-xl ${isMarketplaceMenuOpen ? 'border-game-accent text-game-accent' : ''}`}
+                className={`game-btn game-btn-outline px-3 py-2 md:px-6 md:py-3 flex items-center gap-1 md:gap-3 text-xs sm:text-sm md:text-xl ${isMarketplaceMenuOpen ? 'border-game-accent text-game-accent' : ''}`}
               >
-                <ShoppingBag size={20} /> <span className="font-bold uppercase tracking-widest block">Marketplace</span> {isMarketplaceMenuOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" /> <span className="font-bold uppercase tracking-widest block">Marketplace</span> {isMarketplaceMenuOpen ? <ChevronUp className="w-4 h-4 md:w-5 md:h-5" /> : <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />}
               </button>
               {isMarketplaceMenuOpen && (
                 <div className="absolute top-full right-0 mt-2 w-56 bg-app-surface border-4 border-app-border shadow-[8px_8px_0_rgba(0,0,0,0.5)] z-50">
                   <a href="https://www.tokopedia.com/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Tokopedia</a>
                   <a href="https://shopee.co.id/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shopee</a>
-                  <a href="https://shop-id.tokopedia.com/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors border-b-2 border-app-border">Shop-ID Tokopedia</a>
                   <a href="https://www.lazada.co.id/" target="_blank" className="block px-4 py-3 text-sm font-bold uppercase hover:bg-app-accent hover:text-white transition-colors">Lazada</a>
                 </div>
               )}
@@ -321,7 +385,7 @@ export default function App() {
                   });
                   setIsGeneratingAiStatus(false);
                 } else {
-                  setAiCheckupStatus("SYSTEM NOMINAL");
+                  setAiCheckupStatus("NORMAL CONDITION");
                   setMaxVitals({ health: 100, energy: 100, shield: 100 });
                 }
               }} 
@@ -345,6 +409,7 @@ export default function App() {
             setActiveCategory={setActiveCategory}
             onSelectDish={setSelectedDish} 
             vitals={vitals}
+            user={user}
           />
         )}
         {activeTab === 'scanner' && <Scanner onGenerate={(dish) => { setSelectedDish(dish); setActiveTab('dashboard'); }} />}
@@ -432,17 +497,41 @@ export default function App() {
         </div>
       )}
 
+      {isWarningModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-300">
+          <div className="bg-app-surface border-4 border-game-magenta p-8 w-full max-w-lg text-center shadow-[0_0_40px_rgba(255,85,255,0.4)]">
+             <div className="flex justify-center mb-6">
+                <MinusCircle size={64} className="text-game-magenta animate-pulse" />
+             </div>
+             <h2 className="text-2xl font-black uppercase text-game-magenta mb-4">CRITICAL ALERT</h2>
+             <p className="text-app-text-main mb-6 font-mono text-lg font-bold">{depletionWarning}</p>
+             
+             <div className="bg-app-bg border-2 border-app-border p-4 mb-8 text-left h-32 overflow-y-auto font-mono text-sm">
+                {isFetchingRecommendation ? (
+                   <span className="text-game-accent animate-pulse uppercase">Fetching neural recommendation...</span>
+                ) : (
+                   <Markdown remarkPlugins={[remarkGfm]}>{aiRecommendation}</Markdown>
+                )}
+             </div>
+
+             <button onClick={() => setIsWarningModalOpen(false)} className="w-full game-btn bg-game-magenta hover:bg-game-magenta/80 text-white border-2 border-game-magenta">ACKNOWLEDGE</button>
+          </div>
+        </div>
+      )}
+
       <AnimatePresence>
         {selectedDish && (
           <RecipeModal 
             dish={selectedDish} 
             onClose={() => setSelectedDish(null)} 
             vitals={vitals} 
+            maxVitals={maxVitals}
             onVitalsUpdate={setVitals} 
             onSynthesize={(dishName, message) => setSynthesisHistory(prev => [...prev, {dishName, message, timestamp: Date.now()}])}
           />
         )}
       </AnimatePresence>
+      <Chatbot />
     </div>
   );
 }
@@ -451,10 +540,10 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button 
       onClick={onClick}
-      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} gap-3 px-6 py-3 text-lg md:text-xl`}
+      className={`game-btn ${active ? 'game-btn-primary' : 'game-btn-outline'} px-3 py-2 md:px-6 md:py-3 text-xs sm:text-sm md:text-xl`}
     >
-      <span className="flex items-center gap-2">
-        {icon}
+      <span className="flex items-center gap-1 md:gap-2">
+        {React.cloneElement(icon as React.ReactElement, { className: 'w-4 h-4 md:w-5 md:h-5' } as any)}
         <span className="font-bold uppercase tracking-widest">{label}</span>
       </span>
     </button>
@@ -500,24 +589,25 @@ function VitalBar({ icon, label, value, max, color, tooltip }: { icon: React.Rea
   const displayValue = Math.min(value, max);
   const percentage = Math.min(100, Math.max(0, (displayValue / 100) * 100)); // Bar width relative to absolute 100
   const maxPercentage = Math.min(100, Math.max(0, (max / 100) * 100));
+  const isLow = value <= 30;
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3 w-24 sm:w-32" title={tooltip}>
+    <div className={`flex items-center gap-2 sm:gap-3 w-24 sm:w-32 ${isLow ? 'animate-pulse' : ''}`} title={tooltip}>
       <div className="flex flex-col gap-1 w-full">
         <div className="flex justify-between items-center text-[10px] font-black tracking-widest leading-none">
           <div className="flex items-center gap-1">
             {icon}
-            <span className="text-app-text-muted">{label}</span>
+            <span className={isLow ? 'text-game-magenta font-extrabold' : 'text-app-text-muted'}>{label}</span>
           </div>
-          <span className="text-app-text-main">{Math.round(displayValue)}/{max}</span>
+          <span className={isLow ? 'text-game-magenta font-extrabold' : 'text-app-text-main'}>{Math.round(displayValue)}/{max}</span>
         </div>
-        <div className="h-2 bg-app-bg border border-app-border relative overflow-hidden">
+        <div className={`h-2 bg-app-bg border ${isLow ? 'border-game-magenta shadow-[0_0_10px_rgba(255,85,255,0.7)]' : 'border-app-border'} relative overflow-hidden`}>
           {/* Background to show max limit */}
           <div className="absolute top-0 left-0 h-full bg-app-border opacity-50" style={{ width: `${maxPercentage}%` }}></div>
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
-            className={`absolute top-0 left-0 h-full ${color} transition-all duration-500`}
+            className={`absolute top-0 left-0 h-full ${isLow ? 'bg-game-magenta' : color} transition-all duration-500`}
           />
         </div>
       </div>
@@ -571,7 +661,7 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
       onClick={onClick}
     >
       {/* Image Container */}
-      <div className="relative h-32 sm:h-40 w-full overflow-hidden bg-app-bg/40">
+      <div className="relative h-48 sm:h-64 w-full overflow-hidden bg-app-bg/40">
         <img 
           src={dish.image} 
           alt={dish.name} 
@@ -583,7 +673,7 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
         </div>
       </div>
 
-      <div className="p-3 sm:p-4 flex-1 flex flex-col relative w-full overflow-hidden">
+      <div className="p-5 sm:p-6 flex-1 flex flex-col relative w-full overflow-hidden">
         <div className="absolute -top-6 right-2 bg-app-surface w-10 h-10 flex items-center justify-center text-2xl border-2 border-app-border">
           {dish.emoji}
         </div>
@@ -602,10 +692,10 @@ function DishCard({ dish, isFavorite, onToggleFavorite, onClick }: { dish: Dish;
             <div className="flex items-center gap-1">
               <button 
                 onClick={onToggleFavorite}
-                className={`p-1.5 transition-all border-2 ${isFavorite ? 'text-game-magenta border-game-magenta bg-game-magenta/10' : 'text-app-text-muted border-app-border hover:border-app-text-muted hover:text-game-accent bg-black/40'}`}
+                className={`p-1.5 sm:p-2 transition-all border-2 shadow-[2px_2px_0_0_rgba(0,0,0,0.5)] active:translate-y-1 active:translate-x-1 active:shadow-none hover:-translate-y-1 hover:shadow-[4px_4px_0_0_rgba(0,0,0,0.5)] ${isFavorite ? 'text-game-magenta border-game-magenta bg-game-magenta/10' : 'text-app-text-muted border-app-border hover:border-game-accent hover:text-game-accent bg-black/40'}`}
                 title="Add to Chest"
               >
-                <Heart size={14} fill={isFavorite ? "currentColor" : "none"} />
+                <Heart size={14} fill={isFavorite ? "currentColor" : "none"} className={isFavorite ? 'animate-pulse' : ''} />
               </button>
             </div>
         </div>
@@ -687,7 +777,8 @@ function Dashboard({
   setActiveStyle,
   setActiveCategory,
   onSelectDish,
-  vitals
+  vitals,
+  user
 }: { 
   activeCountry: string | null, 
   activeStyle: string | null, 
@@ -696,7 +787,8 @@ function Dashboard({
   setActiveStyle: (s: 'Traditional' | 'Modern' | null) => void,
   setActiveCategory: (c: 'Food' | 'Beverage' | null) => void,
   onSelectDish: (d: Dish) => void,
-  vitals: any
+  vitals: any,
+  user: User | null
 }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [excludeQuery, setExcludeQuery] = React.useState('');
@@ -711,14 +803,47 @@ function Dashboard({
   });
   const [showFavoritesOnly, setShowFavoritesOnly] = React.useState(false);
 
-  const toggleFavorite = (id: string, e: React.MouseEvent) => {
+  React.useEffect(() => {
+    if (user) {
+      const fetchFavorites = async () => {
+        try {
+          const favRef = collection(db, 'users', user.uid, 'favorites');
+          const snap = await getDocs(favRef);
+          const favs = snap.docs.map(doc => doc.id);
+          setFavorites(favs);
+          localStorage.setItem('favorites', JSON.stringify(favs));
+        } catch (error) {
+          console.error("Error fetching favorites:", error);
+        }
+      };
+      fetchFavorites();
+    }
+  }, [user]);
+
+  const toggleFavorite = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setFavorites((prev: string[]) => {
-      const isFav = prev.includes(id);
-      const newFavs = isFav ? prev.filter((f: string) => f !== id) : [...prev, id];
-      localStorage.setItem('favorites', JSON.stringify(newFavs));
-      return newFavs;
-    });
+    const isFav = favorites.includes(id);
+    const newFavs = isFav ? favorites.filter((f: string) => f !== id) : [...favorites, id];
+    setFavorites(newFavs);
+    localStorage.setItem('favorites', JSON.stringify(newFavs));
+
+    if (user) {
+      try {
+        if (isFav) {
+          await deleteDoc(doc(db, 'users', user.uid, 'favorites', id));
+        } else {
+          await setDoc(doc(db, 'users', user.uid, 'favorites', id), {
+            recipeId: id,
+            addedAt: serverTimestamp()
+          });
+        }
+      } catch (error) {
+        console.error("Error syncing favorite to Firestore:", error);
+        // revert optimistic update on failure
+        setFavorites(favorites);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+      }
+    }
   };
 
   const filteredDishes = DISHES.filter(d => {
@@ -892,7 +1017,7 @@ function Dashboard({
               Zero records found in selected sector.
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
               {filteredDishes.map((dish, i) => (
                 <DishCard 
                   key={i} 
@@ -1146,7 +1271,7 @@ function Generator({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   );
 }
 
-function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { dish: Dish, onClose: () => void, vitals: any, onVitalsUpdate: (v: any) => void, onSynthesize: (dishName: string, message: string) => void }) {
+function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynthesize }: { dish: Dish, onClose: () => void, vitals: any, maxVitals: any, onVitalsUpdate: (v: any) => void, onSynthesize: (dishName: string, message: string) => void }) {
   const [priceLoading, setPriceLoading] = useState(false);
   const [priceData, setPriceData] = useState<string | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
@@ -1154,6 +1279,35 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
 
   const [isSynthesizing, setIsSynthesizing] = useState(false);
   const [synthesisMessage, setSynthesisMessage] = useState<{ text: string, type: 'plus' | 'minus' | 'buff' } | null>(null);
+
+  const [selectedVariation, setSelectedVariation] = useState<string | null>(null);
+  const [variationLoading, setVariationLoading] = useState(false);
+  const [variationRecipe, setVariationRecipe] = useState<string | null>(null);
+
+  const handleCheckVariation = async (variationName: string) => {
+    if (selectedVariation === variationName) {
+       setSelectedVariation(null);
+       setVariationRecipe(null);
+       return;
+    }
+    setSelectedVariation(variationName);
+    setVariationLoading(true);
+    try {
+      let ingredientNames: string[] = [];
+      if (dish.ingredients && dish.ingredients.length > 0) {
+        ingredientNames = dish.ingredients.map(ing => ing.name);
+      } else if (dish.scientificNames && dish.scientificNames.length > 0) {
+        ingredientNames = dish.scientificNames.map(sn => sn.ingredient);
+      }
+
+      const recipe = await getVariationRecipe(dish.name, variationName, ingredientNames);
+      setVariationRecipe(recipe);
+    } catch(e) {
+      setVariationRecipe("Failed to generate recipe.");
+    } finally {
+      setVariationLoading(false);
+    }
+  };
 
   const handleSynthesize = async () => {
     setIsSynthesizing(true);
@@ -1168,49 +1322,66 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
     const protein = parseInt(dish.nutrition.protein) || 0;
     const carbs = parseInt(dish.nutrition.carbohydrates?.replace(/[^0-9]/g, '') || '0') || 0;
 
-    const isHealthy = calories < 550 && fat < 25;
-    const isJunk = calories > 900 || fat > 45;
+    const isJunk = calories > 800 || fat > 40 || dish.name.toLowerCase().includes('burger') || dish.name.toLowerCase().includes('pizza') || dish.name.toLowerCase().includes('hot dog');
+    const isFried = dish.name.toLowerCase().includes('fried') || dish.desc.toLowerCase().includes('fried') || dish.name.toLowerCase().includes('goreng');
+    const isGrilled = dish.name.toLowerCase().includes('grilled') || dish.desc.toLowerCase().includes('grilled') || dish.name.toLowerCase().includes('bakar');
+    const isAlcoholic = dish.desc.toLowerCase().includes('alcohol') || dish.name.toLowerCase().includes('beer') || dish.name.toLowerCase().includes('wine') || dish.desc.toLowerCase().includes('fermented');
+    
+    const isHealthy = !isJunk && !isFried && !isAlcoholic && !isGrilled && (calories < 550 && fat < 25);
     const isProtein = protein > 35;
     const isHighCarb = carbs > 40;
     const isBeverage = dish.category === 'Beverage';
 
     let energyDelta = 0;
+    let isToxic = isJunk || isFried || isGrilled || isAlcoholic;
+    
+    let toxicityTypes = [];
+    if (isJunk) toxicityTypes.push('LIPID OVERLOAD');
+    if (isFried) toxicityTypes.push('OIL SATURATION');
+    if (isGrilled) toxicityTypes.push('CARCINOGENIC TRACES');
+    if (isAlcoholic) toxicityTypes.push('NEUROTOXIN DETECTED');
 
     if (isHealthy) {
-      newVitals.health = Math.min(100, vitals.health + 10);
-      newVitals.shield = Math.min(100, vitals.shield + 5);
+      newVitals.health = Math.min(maxVitals.health, vitals.health + 10);
+      newVitals.shield = Math.min(maxVitals.shield, vitals.shield + 5);
       energyDelta = 10;
       message = "VITALITY RESTORED: +10 HP, +5 SHD";
       type = 'plus';
-    } else if (isJunk) {
-      newVitals.health = Math.max(1, vitals.health - 15);
-      energyDelta = -20;
-      message = "TOXICITY DETECTED: -15 HP (LIPID OVERLOAD) | -20 NRG (Sluggish)";
+    } else if (isToxic) {
+      const shieldDmg = (isJunk ? 20 : 0) + (isFried ? 15 : 0) + (isGrilled ? 10 : 0) + (isAlcoholic ? 25 : 0);
+      const hpDmg = (isJunk ? 10 : 0) + (isFried ? 5 : 0) + (isAlcoholic ? 15 : 0);
+      const nrgDmg = (isJunk ? 15 : 0) + (isAlcoholic ? 20 : 0) + (isHighCarb ? -25 : 0); // High carb can offset nrg loss
+      
+      newVitals.health = Math.max(1, vitals.health - hpDmg);
+      newVitals.shield = Math.max(0, vitals.shield - shieldDmg);
+      energyDelta = -nrgDmg;
+      
+      message = `TOXICITY DETECTED: -${hpDmg} HP | ${energyDelta < 0 ? energyDelta : '+'+energyDelta} NRG | -${shieldDmg} SHD (${toxicityTypes.join(', ')})`;
       type = 'minus';
     } else {
-      newVitals.health = Math.min(100, vitals.health + 5);
+      newVitals.health = Math.min(maxVitals.health, vitals.health + 5);
       energyDelta = 5;
       message = "NUTRIENTIAL GAIN: +5 HP";
       type = 'plus';
     }
 
-    if (isHighCarb) {
+    if (isHighCarb && !isToxic) {
       energyDelta = Math.max(energyDelta, 25);
       message += " | HIGH CARB ENERGY SPIKE!";
       type = 'buff';
-    } else if (isProtein) {
+    } else if (isProtein && !isToxic) {
       energyDelta += 10;
       message += " | PROTEIN BOOST!";
       type = 'buff';
     }
 
-    if (isBeverage) {
-      newVitals.shield = Math.min(100, vitals.shield + 15);
+    if (isBeverage && !isAlcoholic && !isToxic) {
+      newVitals.shield = Math.min(maxVitals.shield, vitals.shield + 15);
       message += " | HYDRATION SHIELD RECHARGED!";
       type = 'buff';
     }
 
-    newVitals.energy = Math.min(100, Math.max(0, (vitals.energy || 100) + energyDelta));
+    newVitals.energy = Math.min(maxVitals.energy, Math.max(0, (vitals.energy || maxVitals.energy) + energyDelta));
     if (energyDelta > 0 && !isJunk) {
       message += ` | +${energyDelta} NRG`;
     }
@@ -1268,7 +1439,13 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
   const handleCheckPrice = async () => {
     try {
       setPriceLoading(true);
-      const ingredientNames = (dish.ingredients || []).map(ing => ing.name);
+      let ingredientNames: string[] = [];
+      if (dish.ingredients && dish.ingredients.length > 0) {
+        ingredientNames = dish.ingredients.map(ing => ing.name);
+      } else if (dish.scientificNames && dish.scientificNames.length > 0) {
+        ingredientNames = dish.scientificNames.map(sn => sn.ingredient);
+      }
+      
       const result = await getIngredientPrices(ingredientNames);
       setPriceData(result);
     } catch (err) {
@@ -1282,7 +1459,13 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
   const handleCheckHealth = async () => {
     try {
       setHealthLoading(true);
-      const ingredientNames = (dish.ingredients || []).map(ing => ing.name);
+      let ingredientNames: string[] = [];
+      if (dish.ingredients && dish.ingredients.length > 0) {
+        ingredientNames = dish.ingredients.map(ing => ing.name);
+      } else if (dish.scientificNames && dish.scientificNames.length > 0) {
+        ingredientNames = dish.scientificNames.map(sn => sn.ingredient);
+      }
+      
       const result = await getHealthInsights(dish.name, ingredientNames);
       setHealthData(result);
     } catch (err) {
@@ -1333,49 +1516,85 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
             <X size={24} />
           </button>
 
-          <div className="absolute bottom-0 left-0 p-8 text-app-text-main w-full">
-            <div className="flex items-center gap-4 mb-4">
-              <span className="text-5xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)]" role="img" aria-label="dish-emoji">{dish.emoji}</span>
-              <div className="flex gap-2">
-                <span className="px-4 py-2 bg-game-magenta border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.country}</span>
-                <span className="px-4 py-2 bg-game-accent border-2 border-black text-xs font-bold uppercase tracking-[0.2em]">{dish.style}</span>
+          <div className="absolute bottom-0 left-0 p-4 sm:p-6 md:p-8 text-app-text-main w-full">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
+              <span className="text-4xl sm:text-5xl drop-shadow-[4px_4px_0_rgba(0,0,0,1)]" role="img" aria-label="dish-emoji">{dish.emoji}</span>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-game-magenta border-2 border-black text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]">{dish.country}</span>
+                <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-game-accent border-2 border-black text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]">{dish.style}</span>
               </div>
             </div>
-            <h2 id="modal-title" className="text-5xl md:text-6xl font-black tracking-tight uppercase mb-3 text-app-text-main">
+            <h2 id="modal-title" className="text-2xl sm:text-3xl md:text-4xl font-black tracking-widest uppercase mb-2 sm:mb-3 text-game-accent drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
               {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
             </h2>
-            <p className="text-white max-w-2xl text-xl font-medium leading-tight bg-black/60 p-5 border-l-[8px] border-game-accent mb-4">
+            <p className="text-white max-w-2xl text-sm sm:text-base md:text-xl font-medium leading-tight bg-black/60 p-3 sm:p-5 border-l-[4px] sm:border-l-[8px] border-game-accent mb-4">
               {dish.desc}
             </p>
 
-            <div className="flex gap-4 font-mono text-xs uppercase tracking-widest text-white">
-              {dish.servings && <div className="bg-black/60 px-4 py-2 border border-white/20">Servings: {dish.servings}</div>}
-              {dish.prepTime && <div className="bg-black/60 px-4 py-2 border border-white/20">Prep: {dish.prepTime} min</div>}
-              {dish.cookTime && <div className="bg-black/60 px-4 py-2 border border-white/20">Cook: {dish.cookTime} min</div>}
+            <div className="flex flex-wrap gap-2 sm:gap-4 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-white">
+              {dish.servings && <div className="bg-black/60 px-2 sm:px-4 py-1 sm:py-2 border border-white/20">Servings: {dish.servings}</div>}
+              {dish.prepTime && <div className="bg-black/60 px-2 sm:px-4 py-1 sm:py-2 border border-white/20">Prep: {dish.prepTime} min</div>}
+              {dish.cookTime && <div className="bg-black/60 px-2 sm:px-4 py-1 sm:py-2 border border-white/20">Cook: {dish.cookTime} min</div>}
             </div>
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-8 bg-app-bg">
-          <div className="flex flex-col gap-10">
+        <div className="p-4 sm:p-6 md:p-8 bg-app-bg">
+          <div className="flex flex-col gap-6 sm:gap-10">
             
             {/* Ingredients & Recipe */}
-            <div className="flex-1 space-y-8">
+            <div className="flex-1 space-y-6 sm:space-y-8">
               {/* How to Craft Section */}
-              <div className="p-8 bg-app-surface border-4 border-app-border">
-                <h3 className="text-xl font-black border-b-4 border-app-border pb-4 mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
+              <div className="p-4 sm:p-6 md:p-8 bg-app-surface border-4 border-app-border">
+                <h3 className="text-lg sm:text-xl font-black border-b-4 border-app-border pb-3 sm:pb-4 mb-4 sm:mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
                   <Pickaxe className="text-game-accent" size={24} /> How to Craft
                 </h3>
-                <div className="markdown-body text-app-text-main text-lg leading-snug">
+                <div className="markdown-body text-app-text-main text-sm sm:text-base md:text-lg leading-snug">
                   <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
                 </div>
               </div>
+
+              {/* Variations Section */}
+              {dish.variations && dish.variations.length > 0 && (
+                <div className="p-4 sm:p-6 md:p-8 bg-app-surface border-4 border-app-border">
+                  <h3 className="text-lg sm:text-xl font-black border-b-4 border-app-border pb-3 sm:pb-4 mb-4 sm:mb-6 flex items-center gap-3 text-app-text-main uppercase tracking-widest">
+                    <Search className="text-game-accent" size={24} /> Known Variations
+                  </h3>
+                  <div className="flex flex-col gap-4">
+                    {dish.variations.map(variation => (
+                      <div key={variation} className="border-2 border-app-border p-4">
+                        <button
+                          onClick={() => handleCheckVariation(variation)}
+                          className="w-full text-left font-bold text-game-accent uppercase tracking-wider flex items-center justify-between"
+                        >
+                          {variation}
+                          <span>{selectedVariation === variation ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+                        </button>
+                        {selectedVariation === variation && (
+                          <div className="mt-4 pt-4 border-t-2 border-app-border">
+                            {variationLoading ? (
+                              <div className="flex items-center gap-3 text-game-accent font-mono text-sm animate-pulse">
+                                <div className="w-4 h-4 border-2 border-game-accent border-t-transparent rounded-full animate-spin"></div>
+                                Extracting data...
+                              </div>
+                            ) : variationRecipe ? (
+                              <div className="markdown-body text-app-text-main text-sm sm:text-base leading-snug">
+                                <Markdown remarkPlugins={[remarkGfm]}>{variationRecipe}</Markdown>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Intelligence & Systems */}
-            <div className="w-full space-y-10">
-              <div className="p-8 bg-app-surface border-4 border-app-border flex flex-col gap-6 relative">
+            <div className="w-full space-y-6 sm:space-y-10">
+              <div className="p-4 sm:p-6 md:p-8 bg-app-surface border-4 border-app-border flex flex-col gap-4 sm:gap-6 relative">
                  {/* ...rest of existing right column code... */}
                  <div className="absolute top-0 right-0 p-2 text-sm font-mono text-game-accent uppercase tracking-widest">Analyzer</div>
                  <div className="pt-2">
@@ -1490,7 +1709,7 @@ function RecipeModal({ dish, onClose, vitals, onVitalsUpdate, onSynthesize }: { 
                      <button 
                        onClick={handleSynthesize}
                        disabled={isSynthesizing}
-                       className={`game-btn w-full py-6 text-2xl uppercase tracking-[0.3em] font-black transition-all ${isSynthesizing ? 'bg-app-border text-app-text-muted' : 'game-btn-primary border-4 shadow-[0_0_20px_rgba(0,242,255,0.2)] hover:scale-[1.02]'}`}
+                       className={`game-btn w-full py-4 sm:py-6 text-xl sm:text-2xl uppercase tracking-[0.2em] sm:tracking-[0.3em] font-black transition-all ${isSynthesizing ? 'bg-app-border text-app-text-muted' : 'game-btn-primary border-4 shadow-[0_0_20px_rgba(0,242,255,0.2)] hover:scale-[1.02]'}`}
                      >
                        {isSynthesizing ? 'Processing...' : 'Synthesize Item'}
                      </button>

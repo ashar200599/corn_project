@@ -3,15 +3,15 @@ import { GoogleGenAI } from '@google/genai';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const INGREDIENT_SYSTEM_PROMPT = `
-You are a master sous-chef and nutritionist specializing in culinary synthesis and forged items.
-Given an image of food, beverages, ingredients, or forged items (culinary creations forged via synthesis), perform the following:
-1. Identify all visible ingredients, forged foods, and beverages.
-2. Provide the scientific/binomial name for natural ingredients.
-3. Provide a detailed recipe or synthesis guide based on what you see, including:
-   - Ingredient list (with estimated amounts)
+You are a master sous-chef and expert food scientist specializing in highly accurate visual dish identification.
+Given an image of a real food dish, beverage, or ingredient, perform the following with the utmost accuracy based ONLY on the visual evidence:
+1. Identify the exact dish, beverage, or food items. Do not guess or hallucinate ingredients that are not visible or logical for the dish.
+2. Provide the scientific/binomial name for the natural ingredients.
+3. Provide a detailed, realistic recipe based on the identified dish, including:
+   - Ingredient list (with realistic estimated amounts)
    - Step-by-step instructions
-4. List the health benefits for these items.
-5. List related diseases or negative effects that could be caused by excessive intake of this food/beverage.
+4. List the precise health benefits for these items.
+5. List related diseases or negative effects that could be caused by excessive intake of this exact food/beverage.
 
 Return your response strictly as a JSON object matching this TypeScript interface without any markdown blocks:
 {
@@ -78,7 +78,7 @@ export const analyzeFoodImage = async (base64Image: string, mimeType: string) =>
             },
           },
           {
-            text: "Please analyze this food or forged culinary item image and break down the recipe, ingredients, or synthesis process.",
+            text: "Please analyze this food or beverage image with high precision. Based solely on the visual evidence in the photo, identify the exact dish and break down the recipe, ingredients, and nutritional profile accurately.",
           },
         ],
       },
@@ -149,6 +149,23 @@ export const getCheckupStatus = async (conditions: string[]) => {
   }
 };
 
+export const getVariationRecipe = async (dishName: string, variationName: string, ingredients: string[]) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: `Provide a recipe for the variation "${variationName}" of the dish "${dishName}". Some base ingredients: ${ingredients.join(', ')}.`,
+      config: {
+        maxOutputTokens: 500,
+        systemInstruction: `Provide a clean markdown string of ONLY the ingredients list and instructions block for the requested variation. Do not include any other text.`,
+      },
+    });
+    return response.text;
+  } catch (error) {
+    console.error("Error generating variation recipe:", error);
+    throw new Error("Failed to generate variation recipe.");
+  }
+};
+
 export const generateRecipeFromIngredients = async (ingredients: string, preferences: string) => {
   try {
     const response = await ai.models.generateContent({
@@ -163,5 +180,59 @@ export const generateRecipeFromIngredients = async (ingredients: string, prefere
   } catch (error) {
     console.error("Error generating recipe:", error);
     throw new Error("Failed to generate recipe.");
+  }
+};
+
+export const chatWithAIStream = async function*(message: string, history: {role: 'user' | 'model', text: string}[]) {
+  try {
+    const formattedHistory = history.map(h => ({
+      role: h.role,
+      parts: [{ text: h.text }]
+    }));
+    
+    formattedHistory.push({ role: 'user', parts: [{ text: message }] });
+
+    const responseStream = await ai.models.generateContentStream({
+      model: 'gemini-3.1-flash-lite',
+      contents: formattedHistory,
+      config: {
+        systemInstruction: 'You are a helpful AI assistant in a Minecraft-themed food and recipe app called CORN. Adopt a slightly playful, game-like persona, briefly dropping Minecraft or gaming references. Focus on synthesizing dishes from the app biomes (Italy, Mexico, Thailand, Indonesia, USA, India, South Korea, France, China) for healing. EXTREMELY IMPORTANT: Keep responses very short and concise (1-2 sentences maximum). Do not write long paragraphs.',
+      },
+    });
+
+    for await (const chunk of responseStream) {
+      if (chunk.text) {
+        yield chunk.text;
+      }
+    }
+  } catch (error) {
+    console.error("Error chatting with AI:", error);
+    throw new Error("Failed to get response from AI.");
+  }
+};
+
+export const getVitalsRecommendation = async (vitals: { health: number, energy: number, shield: number }) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: [{ role: 'user', parts: [{ text: `The user's vitals are depleted: HP: ${vitals.health}%, Energy: ${vitals.energy}%, Shield: ${vitals.shield}%. Generate a short, minecraft-themed alert for what they should synthesize. IMPORTANT: Do NOT suggest Golden Apples, potions, or standard Minecraft items. Instead, advise them to craft a healthy, high-protein, or hydrating food/beverage from the available biomes in the CORN menu (such as Italy, Mexico, Thailand, Indonesia, USA, India, South Korea, France, or China) to restore their status bars (2-3 sentences max).` }] }],
+    });
+    return response.text || "RECOMMENDATION: SYNTHESIZE NUTRITIOUS DISHES FROM THE MENU IMMEDIATELY.";
+  } catch (error) {
+    console.error("Error getting vitals recommendation:", error);
+    return "RECOMMENDATION: SYNTHESIZE NUTRITIOUS DISHES FROM THE MENU IMMEDIATELY.";
+  }
+};
+
+export const getVitalsStatus = async (vitals: { health: number, energy: number, shield: number }) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: [{ role: 'user', parts: [{ text: `Analyze these vitals: HP: ${vitals.health}%, Energy: ${vitals.energy}%, Shield: ${vitals.shield}%. You MUST STRICTLY reply with exactly one of these strings based on the severity of the vitals: "NORMAL CONDITION", "MILD CONDITION", "RISK CONDITION", or "SEVERE". Do not output anything else. ALL CAPS.` }] }],
+    });
+    return response.text?.replace(/["\n]/g, '').trim().toUpperCase() || "NORMAL CONDITION";
+  } catch (error) {
+    console.error("Error getting vitals status:", error);
+    return "NORMAL CONDITION";
   }
 };
