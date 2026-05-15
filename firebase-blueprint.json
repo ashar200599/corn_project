@@ -29,9 +29,27 @@
         "addedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["recipeId", "addedAt"]
+    },
+    "DishReview": {
+      "title": "Dish Review",
+      "description": "User review and rating for a dish",
+      "type": "object",
+      "properties": {
+        "dishId": { "type": "string" },
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "rating": { "type": "number" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["dishId", "userId", "displayName", "rating", "text", "createdAt"]
     }
   },
   "firestore": {
+    "dish_reviews/{reviewId}": {
+      "schema": "DishReview",
+      "description": "Reviews for dishes under root container"
+    },
     "users/{userId}": {
       "schema": "User",
       "description": "User profile document"

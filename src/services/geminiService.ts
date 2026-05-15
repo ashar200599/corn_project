@@ -101,7 +101,7 @@ export const getIngredientPrices = async (ingredients: string[]) => {
       contents: `Find the estimated online market prices for these 3 main ingredients: ${ingredients.slice(0, 3).join(', ')}. Keep the list concise.`,
       config: {
         maxOutputTokens: 150,
-        systemInstruction: `Provide a 3-row Markdown table: | Ingredient | Price | [Search](https://tokopedia.com/search?q=Ingredient) |. No other text.`,
+        systemInstruction: `Provide a 3-row Markdown table. The headers must be | Ingredient | Price | Market |. For the Market column in each row, provide a link like [Tokopedia](https://tokopedia.com/search?q=Ingredient). No other text.`,
       },
     });
     return response.text;
@@ -210,6 +210,28 @@ export const chatWithAIStream = async function*(message: string, history: {role:
     throw new Error("Failed to get response from AI.");
   }
 };
+
+export const generateDishReview = async (dishName: string) => {
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: [{ role: 'user', parts: [{ text: `Generate a short (1-2 sentences), slightly game-themed review for the dish "${dishName}". It should sound like a player logging their findings. Include a rating from 1 to 5. Format your response exactly like this: "RATING: X\nREVIEW: [your review text]"` }] }],
+    });
+    const text = response.text || "";
+    
+    // Parse rating and review
+    const ratingMatch = text.match(/RATING:\s*([1-5])/);
+    const reviewMatch = text.match(/REVIEW:\s*(.+)$/is); // /s allows dot to match newlines if any
+
+    const rating = ratingMatch ? parseInt(ratingMatch[1], 10) : 5;
+    const reviewText = reviewMatch ? reviewMatch[1].trim() : "Tastes like code. Needs more polygons.";
+
+    return { rating, text: reviewText };
+  } catch (error) {
+    console.error("Gemini API Error (generateDishReview):", error);
+    return { rating: 4, text: "Data corrupted. Default rating applied." };
+  }
+}
 
 export const getVitalsRecommendation = async (vitals: { health: number, energy: number, shield: number }) => {
   try {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn, PlusCircle, MinusCircle, Zap, Shield, ChevronUp, ChevronDown, ShoppingBag } from 'lucide-react';
+import { ChefHat, Camera, ScrollText, HeartPulse, Search, Info, Menu, X, XCircle, Heart, Sun, Moon, Hammer, Library, Sword, Pickaxe, Map, Apple, UserCircle, LogOut, LogIn, PlusCircle, MinusCircle, Zap, Shield, ChevronUp, ChevronDown, ShoppingBag, Share2, Twitter, Facebook, Instagram, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -9,6 +9,23 @@ import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, Use
 import { doc, getDoc, collection, getDocs, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
 import { Chatbot } from './components/Chatbot';
+import { DishReviews } from './components/DishReviews';
+
+const formatTextWithScientificNames = (text: string) => {
+  if (!text) return text;
+  const parts = text.split(/(\([A-Z][a-z]+(?: [a-z]+)+\))/g);
+  return parts.map((part, i) => {
+    if (part.match(/^\([A-Z][a-z]+(?: [a-z]+)+\)$/)) {
+      return <i key={i} className="italic opacity-90">{part}</i>;
+    }
+    return part;
+  });
+};
+
+const formatMarkdownWithScientificNames = (text: string) => {
+  if (!text) return text;
+  return text.replace(/\(([A-Z][a-z]+(?: [a-z]+)+)\)/g, '(*$1*)');
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'generator'>('dashboard');
@@ -472,15 +489,17 @@ export default function App() {
       {isInstructionsModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
           <div className="bg-app-surface border-4 border-app-border p-8 w-full max-w-2xl text-left">
-            <h2 className="text-2xl font-black uppercase text-app-text-main mb-6">Instructions</h2>
-            <ol className="text-app-text-main space-y-4 list-decimal list-inside">
-               <li><strong>Connect/Login:</strong> Sync your profile for persistent stats.</li>
-               <li><strong>Dashboard:</strong> Browse dishes, filter by region/category.</li>
-               <li><strong>Scanner:</strong> Use visual data to identify ingredients.</li>
-               <li><strong>Generator:</strong> Forge new recipes from your inventory.</li>
-               <li><strong>Synthesize:</strong> Cook selected recipes to gain buffs and increase status.</li>
+            <h2 className="text-2xl font-black uppercase text-app-text-main mb-6 flex items-center gap-2"><Info className="text-game-accent" size={28} /> Operating Instructions</h2>
+            <ol className="text-app-text-main space-y-4 list-decimal list-inside font-medium leading-relaxed">
+               <li><strong className="text-game-accent">Connect/Login:</strong> Authenticate with the OS to synchronize your profile and ensure persistent vital stats.</li>
+               <li><strong className="text-game-accent">Library (Dashboard):</strong> Browse through the extensive grid of culinary discoveries. Filter by origin or classification.</li>
+               <li><strong className="text-game-accent">Identify:</strong> Utilize visual AI scanning to decrypt and decipher unknown ingredients via the external camera interface.</li>
+               <li><strong className="text-game-accent">Crafting:</strong> Forge and manifest new culinary blueprints by inputting specific ingredients from your inventory.</li>
+               <li><strong className="text-game-accent">Synthesize:</strong> Process selected recipes in the reactor to gain vital buffs, restore health, or mutate attributes.</li>
+               <li><strong className="text-game-accent">Market:</strong> Cross-reference material values with active marketplace exchanges to acquire base components.</li>
+               <li><strong className="text-game-accent">Reviews:</strong> Share structural logs of your synthesis with other explorers to document side effects and flavor profiles.</li>
             </ol>
-            <button onClick={() => setIsInstructionsModalOpen(false)} className="mt-8 w-full game-btn game-btn-primary">Got it</button>
+            <button onClick={() => setIsInstructionsModalOpen(false)} className="mt-8 w-full game-btn game-btn-primary">Acknowledge</button>
           </div>
         </div>
       )}
@@ -1104,8 +1123,8 @@ function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="space-y-4 border-l-4 border-game-accent pl-6 bg-app-surface/30 py-4">
-        <h2 className="text-2xl sm:text-4xl font-bold tracking-tighter text-app-text-main uppercase">Visual Analyzer</h2>
-        <p className="text-sm sm:text-base text-app-text-muted leading-relaxed font-medium">Upload visual data for neural breakdown.</p>
+        <h2 className="text-2xl sm:text-4xl font-bold tracking-tighter text-app-text-main uppercase">Dish Analyzer</h2>
+        <p className="text-sm sm:text-base text-app-text-muted leading-relaxed font-medium">Upload your dish photo to breakdown the ingredient</p>
       </div>
 
       <div className="game-card p-6 md:p-10">
@@ -1148,7 +1167,6 @@ function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
                 <Camera size={48} className="text-app-text-main group-hover:text-game-accent" />
               </div>
               <div className="space-y-3">
-                <span className="font-bold text-2xl block uppercase tracking-widest">Transmit Visual Data</span>
                 <span className="text-lg font-mono uppercase tracking-[0.2em]">Upload or Drop Stream</span>
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
@@ -1254,7 +1272,7 @@ function Generator({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
             disabled={loading || !ingredients}
             className="game-btn game-btn-primary w-full py-6 text-2xl disabled:opacity-50"
           >
-            {loading ? 'Synthesizing...' : 'Run Forge Algorithm'}
+            {loading ? 'Synthesizing...' : 'Forge'}
           </button>
         </div>
 
@@ -1283,6 +1301,40 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
   const [selectedVariation, setSelectedVariation] = useState<string | null>(null);
   const [variationLoading, setVariationLoading] = useState(false);
   const [variationRecipe, setVariationRecipe] = useState<string | null>(null);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+
+  const handleShare = async (platform: string) => {
+    const shareText = `Check out this recipe for ${dish.name} from the CORN app! 🍳`;
+    const shareUrl = window.location.href;
+
+    switch (platform) {
+      case 'x':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank');
+        break;
+      case 'facebook':
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`, '_blank');
+        break;
+      case 'reddit':
+        window.open(`https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`, '_blank');
+        break;
+      default:
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: dish.name,
+              text: shareText,
+              url: shareUrl
+            });
+          } catch (e) {
+             console.log("Share failed", e);
+          }
+        } else {
+          navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+          alert(`Link copied to clipboard for you to share on ${platform}!`);
+        }
+    }
+    setIsShareOpen(false);
+  };
 
   const handleCheckVariation = async (variationName: string) => {
     if (selectedVariation === variationName) {
@@ -1508,13 +1560,46 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
           />
           <div className="absolute inset-0 bg-gradient-to-t from-app-bg via-app-bg/40 to-transparent"></div>
           
-          <button 
-            onClick={onClose}
-            className="absolute top-6 right-6 p-2 bg-app-surface border-4 border-app-border hover:border-game-accent hover:text-game-accent transition-all text-app-text-main z-10"
-            aria-label="Close modal"
-          >
-            <X size={24} />
-          </button>
+          <div className="absolute top-6 right-6 flex items-center gap-2 sm:gap-4 z-20">
+            <div className="relative">
+              <button
+                onClick={() => setIsShareOpen(!isShareOpen)}
+                className="p-2 bg-app-surface border-4 border-app-border hover:border-game-accent hover:text-game-accent transition-all text-app-text-main"
+                aria-label="Share recipe"
+              >
+                <Share2 size={24} />
+              </button>
+              
+              {isShareOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-app-surface border-4 border-app-border p-2 min-w-[200px] flex flex-col gap-2 shadow-[8px_8px_0_rgba(0,0,0,1)] z-50">
+                  <span className="text-xs uppercase tracking-widest text-app-text-muted mb-1 font-bold px-2 pt-2">Share Recipe</span>
+                  <button onClick={() => handleShare('x')} className="flex items-center gap-3 px-3 py-2 text-sm text-app-text-main hover:bg-app-border hover:text-game-accent text-left font-bold transition-colors border-l-4 border-transparent hover:border-game-accent">
+                    <Twitter size={18} /> X
+                  </button>
+                  <button onClick={() => handleShare('facebook')} className="flex items-center gap-3 px-3 py-2 text-sm text-app-text-main hover:bg-app-border hover:text-game-accent text-left font-bold transition-colors border-l-4 border-transparent hover:border-game-accent">
+                    <Facebook size={18} /> Facebook
+                  </button>
+                  <button onClick={() => handleShare('instagram')} className="flex items-center gap-3 px-3 py-2 text-sm text-app-text-main hover:bg-app-border hover:text-game-accent text-left font-bold transition-colors border-l-4 border-transparent hover:border-game-accent">
+                    <Instagram size={18} /> Instagram
+                  </button>
+                  <button onClick={() => handleShare('tiktok')} className="flex items-center gap-3 px-3 py-2 text-sm text-app-text-main hover:bg-app-border hover:text-game-accent text-left font-bold transition-colors border-l-4 border-transparent hover:border-game-accent">
+                    <Share2 size={18} /> TikTok
+                  </button>
+                  <button onClick={() => handleShare('reddit')} className="flex items-center gap-3 px-3 py-2 text-sm text-app-text-main hover:bg-app-border hover:text-game-accent text-left font-bold transition-colors border-l-4 border-transparent hover:border-game-accent">
+                    <MessageCircle size={18} /> Reddit
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={onClose}
+              className="p-2 bg-app-surface border-4 border-app-border hover:border-game-accent hover:text-game-accent transition-all text-app-text-main"
+              aria-label="Close modal"
+            >
+              <X size={24} />
+            </button>
+          </div>
 
           <div className="absolute bottom-0 left-0 p-4 sm:p-6 md:p-8 text-app-text-main w-full">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4">
@@ -1528,7 +1613,7 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
               {dish.name.replace(/\s*\(.*?\)\s*/g, '')}
             </h2>
             <p className="text-white max-w-2xl text-sm sm:text-base md:text-xl font-medium leading-tight bg-black/60 p-3 sm:p-5 border-l-[4px] sm:border-l-[8px] border-game-accent mb-4">
-              {dish.desc}
+              {formatTextWithScientificNames(dish.desc)}
             </p>
 
             <div className="flex flex-wrap gap-2 sm:gap-4 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-white">
@@ -1551,7 +1636,7 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
                   <Pickaxe className="text-game-accent" size={24} /> How to Craft
                 </h3>
                 <div className="markdown-body text-app-text-main text-sm sm:text-base md:text-lg leading-snug">
-                  <Markdown remarkPlugins={[remarkGfm]}>{dish.recipe}</Markdown>
+                  <Markdown remarkPlugins={[remarkGfm]}>{formatMarkdownWithScientificNames(dish.recipe)}</Markdown>
                 </div>
               </div>
 
@@ -1580,7 +1665,7 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
                               </div>
                             ) : variationRecipe ? (
                               <div className="markdown-body text-app-text-main text-sm sm:text-base leading-snug">
-                                <Markdown remarkPlugins={[remarkGfm]}>{variationRecipe}</Markdown>
+                                <Markdown remarkPlugins={[remarkGfm]}>{formatMarkdownWithScientificNames(variationRecipe)}</Markdown>
                               </div>
                             ) : null}
                           </div>
@@ -1734,6 +1819,9 @@ function RecipeModal({ dish, onClose, vitals, maxVitals, onVitalsUpdate, onSynth
                  </div>
                </div>
             </div>
+
+            {/* Reviews Section */}
+            <DishReviews dishId={dish.id} dishName={dish.name} />
           </div>
         </div>
       </motion.div>

@@ -47,6 +47,16 @@ service cloud.firestore {
              data.recipeId is string && data.recipeId.size() <= 100;
     }
 
+    function isValidDishReview(data) {
+      return data.keys().hasAll(['dishId', 'userId', 'displayName', 'rating', 'text', 'createdAt']) &&
+             data.keys().size() == 6 &&
+             data.dishId is string && data.dishId.size() <= 100 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.displayName is string && data.displayName.size() <= 100 &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.text is string && data.text.size() <= 1000;
+    }
+
     // 1. Users Collection
     match /users/{userId} {
       allow get: if isOwner(userId);
@@ -73,6 +83,18 @@ service cloud.firestore {
                         incoming().addedAt == request.time;
         allow delete: if isOwner(userId);
       }
+    }
+
+    // 3. Dish Reviews Collection
+    match /dish_reviews/{reviewId} {
+      allow list: if true;
+      allow get: if true;
+      allow create: if isSignedIn() &&
+                      isValidId(reviewId) &&
+                      isValidDishReview(incoming()) &&
+                      incoming().createdAt == request.time &&
+                      incoming().userId == request.auth.uid;
+      allow delete: if isOwner(existing().userId);
     }
   }
 }

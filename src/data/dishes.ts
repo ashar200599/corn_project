@@ -1,3 +1,4 @@
+import { JAPAN_MODERN_DISHES } from './japanModernDishes';
 import { ITALY_RAW_DISHES } from './italyRawDishes';
 import { MEXICO_DISHES } from './mexicoDishes';
 import { THAILAND_DISHES } from './thailandDishes';
@@ -113,7 +114,7 @@ export const DISHES: Dish[] = [
       }
     ],
     "desc": "Classic Indonesian fried Rice (Oryza sativa) with sweet soy sauce, shallot, Garlic (Allium sativum), Tamarind (Tamarindus indica) and Chili (Capsicum annuum).",
-    "image": "/fonts/images/dishes/indo_nasi_goreng.png",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_nasi_goreng.png",
     "emoji": "🍛",
     "country": "Indonesia",
     "style": "Traditional",
@@ -152,7 +153,7 @@ export const DISHES: Dish[] = [
         "name": "Syzygium aromaticum"
       }
     ],
-    "recipe": "### Nasi Goreng\n### Ingredients\n- 2 cups cooked white Rice (Oryza sativa) (day-old preferred)\n- 2 Chicken (Gallus gallus domesticus)\n- 3 Clove (Syzygium aromaticum) Garlic (Allium sativum), minced\n- 2 shallots, minced\n- 2 tbsp kecap manis (sweet soy sauce)\n- 1 tbsp soy sauce\n- 1 tsp Shrimp (Caridea) paste (terasi)\n- 2 red Chili (Capsicum annuum), sliced\n- 2 tbsp cooking oil\n- Salt & pepper to taste\n- Toppings: fried Chicken (Gallus gallus domesticus), cucumber slices, prawn crackers, fried shallots\n\n### Instructions\n1. Heat oil in a wok over high heat.\n2. Sauté Garlic (Allium sativum) and shallots until fragrant (1–2 min).\n3. Add Shrimp (Caridea) paste and Chili (Capsicum annuum), stir for 30 seconds.\n4. Push to the side, crack Chicken (Gallus gallus domesticus) into wok, scramble until half-cooked.\n5. Add Rice (Oryza sativa), mix everything together vigorously.\n6. Add kecap manis and soy sauce, stir-fry for 3–4 minutes.\n7. Season with salt and pepper.\n8. Serve topped with fried Chicken (Gallus gallus domesticus), cucumber, and crackers.",
+    "recipe": "### Nasi Goreng\n### Ingredients\n- 2 cups cooked white Rice (Oryza sativa) (day-old preferred)\n- 2 Eggs\n- 3 Clove (Syzygium aromaticum) Garlic (Allium sativum), minced\n- 2 shallots, minced\n- 2 tbsp kecap manis (sweet soy sauce)\n- 1 tbsp soy sauce\n- 1 tsp Shrimp (Caridea) paste (terasi)\n- 2 red Chili (Capsicum annuum), sliced\n- 2 tbsp cooking oil\n- Salt & pepper to taste\n- Toppings: fried Chicken (Gallus gallus domesticus), cucumber slices, prawn crackers, fried shallots\n\n### Instructions\n1. Heat oil in a wok over high heat.\n2. Sauté Garlic (Allium sativum) and shallots until fragrant (1–2 min).\n3. Add Shrimp (Caridea) paste and Chili (Capsicum annuum), stir for 30 seconds.\n4. Push to the side, crack eggs into wok, scramble until half-cooked.\n5. Add Rice (Oryza sativa), mix everything together vigorously.\n6. Add kecap manis and soy sauce, stir-fry for 3–4 minutes.\n7. Season with salt and pepper.\n8. Serve topped with fried Chicken (Gallus gallus domesticus), cucumber, and crackers.",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "60g",
@@ -201,7 +202,7 @@ export const DISHES: Dish[] = [
       }
     ],
     "desc": "Rich and tender Coconut (Cocos nucifera) Beef (Bos taurus) stew, slow-cooked with a complex spice paste.",
-    "image": "/fonts/images/dishes/indo_rendang.png",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_rendang.png",
     "emoji": "🥩",
     "country": "Indonesia",
     "style": "Traditional",
@@ -303,7 +304,7 @@ export const DISHES: Dish[] = [
       }
     ],
     "desc": "Yellow spicy Chicken (Gallus gallus domesticus) soup with Turmeric (Curcuma longa), vermicelli noodles, and boiled Chicken (Gallus gallus domesticus).",
-    "image": "/fonts/images/dishes/indo_soto_ayam.png",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_soto_ayam.png",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Traditional",
@@ -405,7 +406,7 @@ export const DISHES: Dish[] = [
       }
     ],
     "desc": "Modern Indonesian shaved ice dessert with mixed fruits, syrups, and condensed milk.",
-    "image": "/fonts/images/dishes/indo_es_campur.png",
+    "image": "/fonts/images/dishes/indo_beverage_modern/indo_es_campur.png",
     "emoji": "🍧",
     "country": "Indonesia",
     "style": "Modern",
@@ -863,7 +864,7 @@ export const DISHES: Dish[] = [
         "name": "Tamarindus indica"
       }
     ],
-    "recipe": "### Ingredients\n* 200g dried flat Rice (Oryza sativa) noodles\n* 150g Shrimp (Caridea), peeled and deveined\n* 2 Chicken (Gallus gallus domesticus), lightly beaten\n* 1 cup bean sprouts\n* 1/4 cup crushed roasted Peanut (Arachis hypogaea)\n* **Sauce**: Tamarind (Tamarindus indica) paste, fish sauce, Palm sugar (Arenga pinnata).\n\n### Instructions\n1. Soak Rice (Oryza sativa) noodles in warm water until pliable, then drain.\n2. Mix the sauce ingredients (Tamarind (Tamarindus indica), fish sauce, sugar) in a small bowl.\n3. Heat oil in a wok. Cook the Shrimp (Caridea) until pink, then remove.\n4. Add Chicken (Gallus gallus domesticus) to the wok and scramble lightly. Add noodles and sauce, tossing constantly.\n5. Add bean sprouts and cooked Shrimp (Caridea), tossing until noodles are cooked and coated.\n6. Serve immediately garnished with crushed Peanut (Arachis hypogaea) and a lime wedge.",
+    "recipe": "### Ingredients\n* 200g dried flat Rice (Oryza sativa) noodles\n* 150g Shrimp (Caridea), peeled and deveined\n* 2 Eggs, lightly beaten\n* 1 cup bean sprouts\n* 1/4 cup crushed roasted Peanut (Arachis hypogaea)\n* **Sauce**: Tamarind (Tamarindus indica) paste, fish sauce, Palm sugar (Arenga pinnata).\n\n### Instructions\n1. Soak Rice (Oryza sativa) noodles in warm water until pliable, then drain.\n2. Mix the sauce ingredients (Tamarind (Tamarindus indica), fish sauce, sugar) in a small bowl.\n3. Heat oil in a wok. Cook the Shrimp (Caridea) until pink, then remove.\n4. Add Chicken (Gallus gallus domesticus) to the wok and scramble lightly. Add noodles and sauce, tossing constantly.\n5. Add bean sprouts and cooked Shrimp (Caridea), tossing until noodles are cooked and coated.\n6. Serve immediately garnished with crushed Peanut (Arachis hypogaea) and a lime wedge.",
     "nutrition": {
       "calories": "550 kcal",
       "carbohydrates": "70g",
@@ -1067,7 +1068,7 @@ export const DISHES: Dish[] = [
         "unit": "g"
       },
       {
-        "name": "Chicken (Gallus gallus domesticus) (for Chicken (Gallus gallus domesticus) wash)",
+        "name": "Chicken (Gallus gallus domesticus) (for Egg wash)",
         "quantity": "1",
         "unit": ""
       }
@@ -1088,7 +1089,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* 500g all-purpose flour\n* 10g salt, 50g sugar\n* 10g instant yeast\n* 140ml water, 140ml whole milk\n* 250g unsalted butter, cold (for laminating)\n* 1 Chicken (Gallus gallus domesticus) (for Chicken (Gallus gallus domesticus) wash)\n\n### Instructions\n1. Make the dough (flour, salt, sugar, yeast, milk, water) and let it rest in the fridge overnight.\n2. Prepare a butter block by pounding the cold butter into a square.\n3. Enclose the butter block in the dough, and perform a series of rolls and folds (laminating) to create layers, chilling between folds.\n4. Roll out the laminated dough, cut into triangles, and roll into croissants.\n5. Proof until doubled in size, brush with Chicken (Gallus gallus domesticus) wash, and bake at 200°C for 15-20 minutes until golden.",
+    "recipe": "### Ingredients\n* 500g all-purpose flour\n* 10g salt, 50g sugar\n* 10g instant yeast\n* 140ml water, 140ml whole milk\n* 250g unsalted butter, cold (for laminating)\n* 1 Chicken (Gallus gallus domesticus) (for Egg wash)\n\n### Instructions\n1. Make the dough (flour, salt, sugar, yeast, milk, water) and let it rest in the fridge overnight.\n2. Prepare a butter block by pounding the cold butter into a square.\n3. Enclose the butter block in the dough, and perform a series of rolls and folds (laminating) to create layers, chilling between folds.\n4. Roll out the laminated dough, cut into triangles, and roll into croissants.\n5. Proof until doubled in size, brush with Egg wash, and bake at 200°C for 15-20 minutes until golden.",
     "nutrition": {
       "calories": "400 kcal",
       "carbohydrates": "38g",
@@ -1305,7 +1306,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Rawon",
     "desc": "Rich tasting traditional Indonesian Beef (Bos taurus) black soup. The dark color comes from the earthy Kluwak (Pangium edule).",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Rawon?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_rawon.png",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1346,7 +1347,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Pempek",
     "desc": "Savory Indonesian fishcake delicacy, made of fish and Cassava (Manihot esculenta), served with rich sweet and sour sauce.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pempek?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_pempek.png",
     "emoji": "🥟",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1387,7 +1388,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Bakso",
     "desc": "Indonesian meatball soup served with noodles, tofu, and a savory Beef (Bos taurus) broth.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Bakso?width=600&height=400&nologo=true",
+    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20culinary%20shot%20of%20traditional%20Indonesian%20Bakso%20meatball%20soup%20with%20noodles%20and%20crispy%20wontons?width=600&height=400&nologo=true",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1428,7 +1429,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Nasi Padang",
     "desc": "Steamed Rice (Oryza sativa) served with various pre-cooked dishes from West Sumatra.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Padang?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_nasi_padang.png",
     "emoji": "🍛",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1469,7 +1470,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Gudeg",
     "desc": "A traditional Javanese dish made from young unripe Jackfruit (Artocarpus heterophyllus) stewed for hours in Palm sugar (Arenga pinnata) and Coconut (Cocos nucifera) milk.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Gudeg?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_gudeg.png",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1510,7 +1511,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Nasi Liwet",
     "desc": "Succulent Rice (Oryza sativa) dish cooked in Coconut (Cocos nucifera) milk, Chicken (Gallus gallus domesticus) broth, and spices.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Liwet?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_nasi liwet.png",
     "emoji": "🍚",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1551,7 +1552,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Pecel Lele",
     "desc": "Deep-fried Catfish (Clarias) served with traditional sambal and fresh vegetables.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Pecel%20Lele?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_pecel lele.png",
     "emoji": "🐟",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1592,7 +1593,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Ketoprak",
     "desc": "Vegetarian dish consisting of tofu, vegetables, Rice (Oryza sativa) cake, and Rice (Oryza sativa) vermicelli served in Peanut (Arachis hypogaea) sauce.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Ketoprak?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_traditional/indo_ketoprak.png",
     "emoji": "🍝",
     "country": "Indonesia",
     "style": "Traditional",
@@ -1853,7 +1854,7 @@ export const DISHES: Dish[] = [
         "name": "Arachis hypogaea"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Mix flour, yeast, sugar, Chicken (Gallus gallus domesticus), and water.\n2. Pour into a heated thick pan, let it rise, sprinkle sugar, and fold with toppings.",
+    "recipe": "### Ingredients\n* 250g all-purpose Flour\n* 1 tsp Yeast\n* 50g Sugar\n* 300ml Water\n* 2 Eggs\n* Sweetened condensed milk & various toppings\n\n### Instructions\n1. Mix flour, yeast, sugar, eggs, and water.\n2. Pour into a heated thick pan, let it rise, sprinkle sugar, and fold with toppings.",
     "nutrition": {
       "calories": "700 kcal",
       "carbohydrates": "80g",
@@ -1886,7 +1887,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Fill a thin stretched dough with a mix of whisked Chicken (Gallus gallus domesticus), minced meat, and scallions.\n2. Fold and deep fry.",
+    "recipe": "### Ingredients\n* Spring roll or martabak wrappers\n* 200g minced Meat (Beef or Mutton)\n* 3 stalks Scallions, chopped\n* 3 Eggs\n\n### Instructions\n1. Fill a thin stretched dough with a mix of whisked Eggs, minced meat, and scallions.\n2. Fold and deep fry.",
     "nutrition": {
       "calories": "550 kcal",
       "carbohydrates": "30g",
@@ -1919,7 +1920,7 @@ export const DISHES: Dish[] = [
         "name": "Glutinous Rice (Rice (Oryza sativa) glutinosa)"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Mix Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour with Pandan (Pandanus amaryllifolius) juice, fill with Palm sugar (Arenga pinnata), boil until they float, then roll in grated Coconut (Cocos nucifera).",
+    "recipe": "### Ingredients\n* 250g Glutinous Rice (Oryza sativa) flour\n* 50ml Pandan (Pandanus amaryllifolius) juice\n* 100g Palm sugar\n* Grated Coconut (Cocos nucifera)\n\n### Instructions\n1. Mix Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour with Pandan (Pandanus amaryllifolius) juice, fill with Palm sugar (Arenga pinnata), boil until they float, then roll in grated Coconut (Cocos nucifera).",
     "nutrition": {
       "calories": "250 kcal",
       "carbohydrates": "50g",
@@ -1952,7 +1953,7 @@ export const DISHES: Dish[] = [
         "name": "Sesamum indicum"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Make dough from Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour, fill with mung bean paste, coat with Sesame (Sesamum indicum) seeds and deep fry.",
+    "recipe": "### Ingredients\n* 250g Glutinous Rice (Oryza sativa) flour\n* 100g Mung bean paste\n* White Sesame (Sesamum indicum) seeds\n\n### Instructions\n1. Make dough from Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour, fill with mung bean paste, coat with Sesame (Sesamum indicum) seeds and deep fry.",
     "nutrition": {
       "calories": "280 kcal",
       "carbohydrates": "45g",
@@ -1985,7 +1986,7 @@ export const DISHES: Dish[] = [
         "name": "Musa"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Coat sliced Banana (Musa) in a batter of flour, sugar, and water.\n2. Deep fry until golden.",
+    "recipe": "### Ingredients\n* 5 ripe Banana (Musa)\n* 150g all-purpose Flour\n* 2 tbsp Sugar\n* Water & Ice (for crispy batter)\n* Frying oil\n\n### Instructions\n1. Coat sliced Banana (Musa) in a batter of flour, sugar, and water.\n2. Deep fry until golden.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "40g",
@@ -2018,7 +2019,7 @@ export const DISHES: Dish[] = [
         "name": "Manihot esculenta"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Make a batter with Cassava (Manihot esculenta), Rice (Oryza sativa) flour, and Coconut (Cocos nucifera) milk.\n2. Divide into colors and steam layer by layer.",
+    "recipe": "### Ingredients\n* 150g Cassava (Manihot esculenta) (Tapioca) flour\n* 150g Rice (Oryza sativa) flour\n* 800ml Coconut (Cocos nucifera) milk\n* 250g Sugar\n* Food coloring\n\n### Instructions\n1. Make a batter with Cassava (Manihot esculenta), Rice (Oryza sativa) flour, and Coconut (Cocos nucifera) milk.\n2. Divide into colors and steam layer by layer.",
     "nutrition": {
       "calories": "320 kcal",
       "carbohydrates": "65g",
@@ -2051,7 +2052,7 @@ export const DISHES: Dish[] = [
         "name": "Glutinous Rice (Rice (Oryza sativa) glutinosa)"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Wrap Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) in Banana (Musa) leaves in a triangle shape, boil until cooked.\n2. Serve with Coconut (Cocos nucifera) and sugar syrup.",
+    "recipe": "### Ingredients\n* 300g Glutinous Rice (Oryza sativa)\n* Banana (Musa) leaves for wrapping\n* Grated Coconut (Cocos nucifera)\n* Palm sugar syrup\n\n### Instructions\n1. Wrap Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) in Banana (Musa) leaves in a triangle shape, boil until cooked.\n2. Serve with Coconut (Cocos nucifera) and sugar syrup.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "75g",
@@ -2084,7 +2085,7 @@ export const DISHES: Dish[] = [
         "name": "Daucus carota"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Make thin crepes, fill with ragout (Carrot (Daucus carota), Chicken (Gallus gallus domesticus)), fold, coat in Chicken (Gallus gallus domesticus) and breadcrumbs, and fry.",
+    "recipe": "### Ingredients\n* Crepe wrappers (Flour, Milk, Eggs)\n* 1 Carrot (Daucus carota), diced\n* 150g shredded Chicken (Gallus gallus domesticus)\n* Bread crumbs & frying oil\n\n### Instructions\n1. Make thin crepes, fill with ragout (Carrot (Daucus carota), Chicken (Gallus gallus domesticus)), fold, coat in egg and breadcrumbs, and fry.",
     "nutrition": {
       "calories": "320 kcal",
       "carbohydrates": "35g",
@@ -2117,7 +2118,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Cook Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) with Coconut (Cocos nucifera) milk.\n2. Flatten, add cooked shredded Chicken (Gallus gallus domesticus), roll, and wrap in Banana (Musa) leaves.",
+    "recipe": "### Ingredients\n* 300g Glutinous Rice (Oryza sativa)\n* 200ml Coconut (Cocos nucifera) milk\n* 200g shredded Chicken (Gallus gallus domesticus)\n* Banana (Musa) leaves for wrapping\n\n### Instructions\n1. Cook Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) with Coconut (Cocos nucifera) milk.\n2. Flatten, add cooked shredded Chicken (Gallus gallus domesticus), roll, and wrap in Banana (Musa) leaves.",
     "nutrition": {
       "calories": "250 kcal",
       "carbohydrates": "35g",
@@ -2150,7 +2151,7 @@ export const DISHES: Dish[] = [
         "name": "Cocos nucifera"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Pour a liquid batter of Rice (Oryza sativa) flour and Coconut (Cocos nucifera) milk into a clay pan over charcoal.\n2. Serve with sugar syrup.",
+    "recipe": "### Ingredients\n* 200g Rice (Oryza sativa) flour\n* 500ml Coconut (Cocos nucifera) milk\n* 2 tbsp Sugar\n* Palm sugar syrup\n\n### Instructions\n1. Pour a liquid batter of Rice (Oryza sativa) flour and Coconut (Cocos nucifera) milk into a clay pan over charcoal.\n2. Serve with sugar syrup.",
     "nutrition": {
       "calories": "280 kcal",
       "carbohydrates": "45g",
@@ -2183,7 +2184,7 @@ export const DISHES: Dish[] = [
         "name": "Pandanus amaryllifolius"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Make a green crepe using Pandan (Pandanus amaryllifolius) juice.\n2. Fill with unti (grated Coconut (Cocos nucifera) cooked with Palm sugar (Arenga pinnata)) and fold.",
+    "recipe": "### Ingredients\n* 150g all-purpose Flour\n* 50ml Pandan (Pandanus amaryllifolius) juice\n* 1 Chicken (Gallus gallus domesticus) egg\n* Grated Coconut (Cocos nucifera) mixed with Palm sugar\n\n### Instructions\n1. Make a green crepe using Pandan (Pandanus amaryllifolius) juice.\n2. Fill with unti (grated Coconut (Cocos nucifera) cooked with Palm sugar (Arenga pinnata)) and fold.",
     "nutrition": {
       "calories": "250 kcal",
       "carbohydrates": "40g",
@@ -2216,7 +2217,7 @@ export const DISHES: Dish[] = [
         "name": "Manihot esculenta"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Boil Cassava (Manihot esculenta), mash it with sugar and food coloring, then shape it.\n2. Serve with freshly grated Coconut (Cocos nucifera).",
+    "recipe": "### Ingredients\n* 500g boiled Cassava (Manihot esculenta)\n* 100g Sugar\n* Grated Coconut (Cocos nucifera)\n\n### Instructions\n1. Boil Cassava (Manihot esculenta), mash it with sugar and food coloring, then shape it.\n2. Serve with freshly grated Coconut (Cocos nucifera).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "65g",
@@ -2249,7 +2250,7 @@ export const DISHES: Dish[] = [
         "name": "Cocos nucifera"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Mix Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour, grated young Coconut (Cocos nucifera), and sugar.\n2. Bake or grill in small round shapes.",
+    "recipe": "### Ingredients\n* 250g Glutinous Rice (Oryza sativa) flour\n* 250g grated Coconut (Cocos nucifera)\n* 150g Sugar\n* 100ml Coconut (Cocos nucifera) milk\n\n### Instructions\n1. Mix Glutinous Rice (Glutinous Rice (Rice (Oryza sativa) glutinosa)) flour, grated young Coconut (Cocos nucifera), and sugar.\n2. Bake or grill in small round shapes.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "50g",
@@ -2282,7 +2283,7 @@ export const DISHES: Dish[] = [
         "name": "Daucus carota"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Make a pastry crust.\n2. Fill with sautéed Carrot (Daucus carota), vermicelli, and Chicken (Gallus gallus domesticus) slices.\n3. Pinch the edges and deep fry.",
+    "recipe": "### Ingredients\n* Pastry dough (Flour, Margarine, Water, Ice)\n* 1 Carrot (Daucus carota), diced\n* 150g shredded Chicken (Gallus gallus domesticus)\n* Rice vermicelli\n\n### Instructions\n1. Make a pastry crust.\n2. Fill with sautéed Carrot (Daucus carota), vermicelli, and Chicken (Gallus gallus domesticus) slices.\n3. Pinch the edges and deep fry.",
     "nutrition": {
       "calories": "320 kcal",
       "carbohydrates": "35g",
@@ -2315,7 +2316,7 @@ export const DISHES: Dish[] = [
         "name": "Manihot esculenta"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Mix Cassava (Manihot esculenta) flour with water, Garlic (Allium sativum), and scallions to form a sticky dough.\n2. Flatten and deep fry.",
+    "recipe": "### Ingredients\n* 250g Cassava (Manihot esculenta) flour (Tapioca)\n* 2 Clove (Syzygium aromaticum) Garlic (Allium sativum), minced\n* 1 stalk Scallions, chopped\n* 200ml boiling Water\n* Frying oil\n\n### Instructions\n1. Mix Cassava (Manihot esculenta) flour with water, Garlic (Allium sativum), and scallions to form a sticky dough.\n2. Flatten and deep fry.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "60g",
@@ -2337,7 +2338,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Ayam Geprek",
     "desc": "Crispy fried Chicken (Gallus gallus domesticus) crushed and mixed with hot and spicy sambal.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Ayam%20Geprek?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_ayam_geprek.png",
     "emoji": "🍗",
     "country": "Indonesia",
     "style": "Modern",
@@ -2348,7 +2349,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Fry battered Chicken (Gallus gallus domesticus) until crispy.\n2. Crush out flat using a pestle and intensely mix with raw Garlic (Allium sativum) Chili (Capsicum annuum) sambal.",
+    "recipe": "### Ingredients\n* 1 piece fried Chicken (Gallus gallus domesticus)\n* 2 Clove (Syzygium aromaticum) Garlic (Allium sativum)\n* 5-10 bird's eye Chili (Capsicum annuum)\n* Salt and seasoning\n\n### Instructions\n1. Fry battered Chicken (Gallus gallus domesticus) until crispy.\n2. Crush out flat using a pestle and intensely mix with raw Garlic (Allium sativum) Chili (Capsicum annuum) sambal.",
     "nutrition": {
       "calories": "550 kcal",
       "carbohydrates": "25g",
@@ -2370,7 +2371,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Sate Taichan",
     "desc": "A modern spin on satay: white grilled Chicken (Gallus gallus domesticus) meat served without Peanut (Arachis hypogaea) sauce, very spicy.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Sate%20Taichan?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_sate_taichan.png",
     "emoji": "🍢",
     "country": "Indonesia",
     "style": "Modern",
@@ -2381,7 +2382,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Grill unmarinated or lightly salted Chicken (Gallus gallus domesticus) skewers.\n2. Serve with a watery, extremely spicy Chili (Capsicum annuum) sauce and lime.",
+    "recipe": "### Ingredients\n* 200g Chicken (Gallus gallus domesticus) breast, cubed\n* Limes & Salt\n* 10 bird's eye Chili (Capsicum annuum)\n* 2 Clove (Syzygium aromaticum) Garlic (Allium sativum)\n* Skewers\n\n### Instructions\n1. Grill unmarinated or lightly salted Chicken (Gallus gallus domesticus) skewers.\n2. Serve with a watery, extremely spicy Chili (Capsicum annuum) sauce and lime.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "5g",
@@ -2403,7 +2404,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Seblak",
     "desc": "A savory and spicy dish made of wet krupuk (crackers) cooked with flavorings and aromatic root.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Seblak?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_seblak.png",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Modern",
@@ -2414,7 +2415,7 @@ export const DISHES: Dish[] = [
         "name": "Kaempferia galanga"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Boil raw crackers until soft.\n2. Sauté a paste of Kencur (Kaempferia galanga), Garlic (Allium sativum), and Chili (Capsicum annuum).\n3. Add water, crackers, Chicken (Gallus gallus domesticus), and toppings.",
+    "recipe": "### Ingredients\n* 100g raw tapioca Crackers, soaked\n* 1 Egg\n* 2 cm Kencur (Kaempferia galanga)\n* 2 Clove (Syzygium aromaticum) Garlic (Allium sativum)\n* 5 bird's eye Chili (Capsicum annuum)\n* Water and seasonings\n\n### Instructions\n1. Boil raw crackers until soft.\n2. Sauté a paste of Kencur (Kaempferia galanga), Garlic (Allium sativum), and Chili (Capsicum annuum).\n3. Add water, crackers, Chicken (Gallus gallus domesticus), and toppings.",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "70g",
@@ -2436,7 +2437,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Nasi Kulit Crispy",
     "desc": "Rice (Oryza sativa) served with deeply fried, ultra-crispy seasoned Chicken (Gallus gallus domesticus).",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Nasi%20Kulit%20Crispy?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_ayam_crispy.png",
     "emoji": "🍛",
     "country": "Indonesia",
     "style": "Modern",
@@ -2447,7 +2448,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Clean Chicken (Gallus gallus domesticus), marinate, coat in seasoned flour, and deep fry until crispy.\n2. Serve with warm Rice (Oryza sativa) and sambal.",
+    "recipe": "### Ingredients\n* 100g Chicken (Gallus gallus domesticus) skin\n* Seasoned Flour batter\n* Warm white Rice (Oryza sativa)\n* Sambal\n\n### Instructions\n1. Clean Chicken (Gallus gallus domesticus), marinate, coat in seasoned flour, and deep fry until crispy.\n2. Serve with warm Rice (Oryza sativa) and sambal.",
     "nutrition": {
       "calories": "650 kcal",
       "carbohydrates": "45g",
@@ -2469,7 +2470,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Indomie Goreng Kreasi",
     "desc": "Next-level instant noodles topped with salted Chicken (Gallus gallus domesticus), mozzarella, or extravagant meats.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Indomie%20Goreng%20Kreasi?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_indomie_goreng_kreasi.png",
     "emoji": "🍜",
     "country": "Indonesia",
     "style": "Modern",
@@ -2480,7 +2481,7 @@ export const DISHES: Dish[] = [
         "name": "Triticum"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Cook instant noodles as instructed.\n2. Add extravagant toppings like torch-melted mozzarella, corned Beef (Bos taurus), and a soft-boiled Chicken (Gallus gallus domesticus).",
+    "recipe": "### Ingredients\n* 1 pack instant Noodles\n* 50g corned Beef (Bos taurus)\n* 1 Chicken (Gallus gallus domesticus) egg\n* Cheese or other toppings\n\n### Instructions\n1. Cook instant noodles as instructed.\n2. Add extravagant toppings like torch-melted mozzarella, corned Beef (Bos taurus), and a soft-boiled Chicken (Gallus gallus domesticus).",
     "nutrition": {
       "calories": "550 kcal",
       "carbohydrates": "65g",
@@ -2513,7 +2514,7 @@ export const DISHES: Dish[] = [
         "name": "Caridea"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Sauté premium seafood, add day-old Rice (Oryza sativa), and mix with a rich blend of oyster sauce, soy sauce, and spices.",
+    "recipe": "### Ingredients\n* 2 cups cooked white Rice (Oryza sativa)\n* 150g premium Seafood (squid, prawns)\n* 2 tbsp Oyster sauce & Soy sauce\n* Spices (Garlic, shallots, chili)\n\n### Instructions\n1. Sauté premium seafood, add day-old Rice (Oryza sativa), and mix with a rich blend of oyster sauce, soy sauce, and spices.",
     "nutrition": {
       "calories": "550 kcal",
       "carbohydrates": "60g",
@@ -2525,72 +2526,7 @@ export const DISHES: Dish[] = [
     "servings": 2,
     "prepTime": 15,
     "cookTime": 20
-  },
-  {
-    "id": "indo-korean-fusion",
-    "variations": [
-      "Spicy Korean-Indonesian Fusion",
-      "Original Korean-Indonesian Fusion",
-      "Premium Korean-Indonesian Fusion"
-    ],
-    "name": "Korean-Indonesian Fusion",
-    "desc": "Dishes like Tteokbokki mixed with Seblak or spicy Gochujang Ayam Geprek.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Korean-Indonesian%20Fusion?width=600&height=400&nologo=true",
-    "emoji": "🍲",
-    "country": "Indonesia",
-    "style": "Modern",
-    "category": "Food",
-    "scientificNames": [
-      {
-        "ingredient": "Chili",
-        "name": "Capsicum annuum"
-      }
-    ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Combine Korean gochujang and Rice (Oryza sativa) cakes with Indonesian aromatic roots and sambals.",
-    "nutrition": {
-      "calories": "500 kcal",
-      "carbohydrates": "75g",
-      "protein": "15g",
-      "fat": "15g"
-    },
-    "healthBenefits": "Fusion of different spices.",
-    "excessRisks": "High sodium.",
-    "servings": 2,
-    "prepTime": 15,
-    "cookTime": 20
-  },
-  {
-    "id": "indo-croffle-pandan",
-    "variations": [
-      "Spicy Pandanus amaryllifolius",
-      "Original Pandanus amaryllifolius",
-      "Premium Pandanus amaryllifolius"
-    ],
-    "name": "Pandanus amaryllifolius",
-    "desc": "A cross between a croissant and a waffle, infused with Pandan (Pandanus amaryllifolius) flavor and syrup.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Croffle%20Pandan?width=600&height=400&nologo=true",
-    "emoji": "🧇",
-    "country": "Indonesia",
-    "style": "Modern",
-    "category": "Food",
-    "scientificNames": [
-      {
-        "ingredient": "Pandan",
-        "name": "Pandanus amaryllifolius"
-      }
-    ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Take croissant dough infused with Pandan (Pandanus amaryllifolius), roll it in sugar, and cook it in a waffle maker until caramelized.",
-    "nutrition": {
-      "calories": "450 kcal",
-      "carbohydrates": "50g",
-      "protein": "6g",
-      "fat": "25g"
-    },
-    "healthBenefits": "Pandan (Pandanus amaryllifolius) offers relaxation.",
-    "excessRisks": "High sugar and saturated fat.",
-    "servings": 2,
-    "prepTime": 15,
-    "cookTime": 20
+
   },
   {
     "id": "indo-dimsum-kekinian",
@@ -2601,7 +2537,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Dimsum Kekinian",
     "desc": "Modern dimsum topped with mentai sauce, mozzarella, or salted Chicken (Gallus gallus domesticus) sauce, blowtorched.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Dimsum%20Kekinian?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_dimsum_kekinian.png",
     "emoji": "🥟",
     "country": "Indonesia",
     "style": "Modern",
@@ -2612,7 +2548,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Steam Chicken (Gallus gallus domesticus) dimsum, coat generously with mayo-pollack roe sauce (mentai), and torch it until charred.",
+    "recipe": "### Ingredients\n* 200g minced Chicken (Gallus gallus domesticus) & shrimp\n* Dumpling wrappers\n* Mentai sauce (mayo, pollack roe)\n* Soy sauce & Tea for serving\n\n### Instructions\n1. Steam Chicken (Gallus gallus domesticus) dimsum, coat generously with mayo-pollack roe sauce (mentai), and torch it until charred.",
     "nutrition": {
       "calories": "400 kcal",
       "carbohydrates": "30g",
@@ -2634,7 +2570,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Batagor Kuah",
     "desc": "Modern take on Batagor, served with warm, savory broth instead of Peanut (Arachis hypogaea) sauce.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Batagor%20Kuah?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_batagor.png",
     "emoji": "🍲",
     "country": "Indonesia",
     "style": "Modern",
@@ -2645,7 +2581,7 @@ export const DISHES: Dish[] = [
         "name": "Scomberomorus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Deep fry fish dumplings (Batagor).\n2. Serve in a hot bowl of savory Chicken (Gallus gallus domesticus) or Beef (Bos taurus) broth with Chili (Capsicum annuum).",
+    "recipe": "### Ingredients\n* 150g Fish paste (tenggiri)\n* Dumpling wrappers & tofu\n* Chicken (Gallus gallus domesticus) or Beef (Bos taurus) broth\n* Chili (Capsicum annuum) and scallions\n\n### Instructions\n1. Deep fry fish dumplings (Batagor).\n2. Serve in a hot bowl of savory Chicken (Gallus gallus domesticus) or Beef (Bos taurus) broth with Chili (Capsicum annuum).",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "40g",
@@ -2667,7 +2603,7 @@ export const DISHES: Dish[] = [
     ],
     "name": "Mie Pedas Level",
     "desc": "Trendy dry noodles featuring extreme spiciness levels ranging from level 1 to 100.",
-    "image": "https://image.pollinations.ai/prompt/Delicious%20high%20quality%20food%20photography%20professional%20culinary%20shot%20of%20Mie%20Pedas%20Level?width=600&height=400&nologo=true",
+    "image": "/fonts/images/dishes/indo_food_modern/indo_mie_pedas.png",
     "emoji": "🍜",
     "country": "Indonesia",
     "style": "Modern",
@@ -2678,7 +2614,7 @@ export const DISHES: Dish[] = [
         "name": "Capsicum annuum"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Boil noodles and mix thoroughly with pureed bird's eye Chili (Capsicum annuum), Chili (Capsicum annuum) oil, and savory Chicken (Gallus gallus domesticus) seasoning.",
+    "recipe": "### Ingredients\n* 1 portion fresh or instant Noodles\n* 10-20 bird's eye Chili (Capsicum annuum), pureed\n* Minced Chicken (Gallus gallus domesticus) topping\n* Chili oil\n\n### Instructions\n1. Boil noodles and mix thoroughly with pureed bird's eye Chili (Capsicum annuum), Chili (Capsicum annuum) oil, and savory Chicken (Gallus gallus domesticus) seasoning.",
     "nutrition": {
       "calories": "480 kcal",
       "carbohydrates": "75g",
@@ -2711,7 +2647,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Marinate Chicken (Gallus gallus domesticus) in terasi (Shrimp (Caridea) paste) and Chili (Capsicum annuum), grill, and serve over Rice (Oryza sativa) with modern aesthetic garnishes.",
+    "recipe": "### Ingredients\n* 1 whole Chicken (Gallus gallus domesticus)\n* 1 tsp terasi (Shrimp (Caridea) paste)\n* 5 bird's eye Chili (Capsicum annuum)\n* Served with Rice (Oryza sativa)\n* Modern garnishes\n\n### Instructions\n1. Marinate Chicken (Gallus gallus domesticus) in terasi (Shrimp (Caridea) paste) and Chili (Capsicum annuum), grill, and serve over Rice (Oryza sativa) with modern aesthetic garnishes.",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "10g",
@@ -2744,7 +2680,7 @@ export const DISHES: Dish[] = [
         "name": "Manihot esculenta"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Toast thick bread, cover with sweet rich cream, and top with cooked warm boba pearls.",
+    "recipe": "### Ingredients\n* 2 slices thick Bread\n* 50g cooked Boba pearls\n* Sweet cream cheese or custard\n\n### Instructions\n1. Toast thick bread, cover with sweet rich cream, and top with cooked warm boba pearls.",
     "nutrition": {
       "calories": "600 kcal",
       "carbohydrates": "85g",
@@ -2777,7 +2713,7 @@ export const DISHES: Dish[] = [
         "name": "Camellia sinensis"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Brew black Tea (Camellia sinensis), mix with milk and sugar syrup, pour over ice and cooked Cassava (Manihot esculenta) pearls.",
+    "recipe": "### Ingredients\n* 1 cup Black Tea (Camellia sinensis)\n* 2 tbsp Sugar & Syrup\n* 50ml Milk\n* 30g Boba (Cassava/Manihot esculenta pearls)\n* Ice cubes\n\n### Instructions\n1. Brew black Tea (Camellia sinensis), mix with milk and sugar syrup, pour over ice and cooked Cassava (Manihot esculenta) pearls.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "65g",
@@ -2810,7 +2746,7 @@ export const DISHES: Dish[] = [
         "name": "Bos taurus"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Simmer Cassava (Manihot esculenta) pearls in dark brown sugar syrup.\n2. Swirl on a cup's edges, fill with ice and fresh milk.",
+    "recipe": "### Ingredients\n* 30ml Brown Sugar Syrup\n* 150ml Milk\n* 30g Boba (Cassava/Manihot esculenta pearls)\n* Ice cubes\n\n### Instructions\n1. Simmer Cassava (Manihot esculenta) pearls in dark brown sugar syrup.\n2. Swirl on a cup's edges, fill with ice and fresh milk.",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "75g",
@@ -2843,7 +2779,7 @@ export const DISHES: Dish[] = [
         "name": "Theobroma cacao"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Shape shaved ice into a ball.\n2. Make a very thick syrup with Milo powder and condensed milk, pour over the ice.",
+    "recipe": "### Ingredients\n* Shaved Ice\n* Chocolate Malt powder\n* Sweetened condensed Milk\n* Chocolate Syrup\n\n### Instructions\n1. Shape shaved ice into a ball.\n2. Make a very thick syrup with Milo powder and condensed milk, pour over the ice.",
     "nutrition": {
       "calories": "500 kcal",
       "carbohydrates": "90g",
@@ -2876,7 +2812,7 @@ export const DISHES: Dish[] = [
         "name": "Camellia sinensis"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Whisk Tea (Camellia sinensis) in warm water, pour over ice and milk.\n2. Top with a creamy sweet/salty cheese foam.",
+    "recipe": "### Ingredients\n* 1 cup brewed Tea (Camellia sinensis)\n* 50ml Milk\n* Cream Cheese & Sea Salt (for foam)\n* Ice cubes\n\n### Instructions\n1. Whisk Tea (Camellia sinensis) in warm water, pour over ice and milk.\n2. Top with a creamy sweet/salty cheese foam.",
     "nutrition": {
       "calories": "250 kcal",
       "carbohydrates": "30g",
@@ -2909,7 +2845,7 @@ export const DISHES: Dish[] = [
         "name": "Coffea"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Whip equal parts instant Coffee (Coffea), sugar, and hot water until stiff peaks form.\n2. Spoon over iced milk.",
+    "recipe": "### Ingredients\n* 2 tbsp instant Coffee (Coffea)\n* 2 tbsp Sugar\n* 2 tbsp hot Water\n* 150ml Milk & Ice\n\n### Instructions\n1. Whip equal parts instant Coffee (Coffea), sugar, and hot water until stiff peaks form.\n2. Spoon over iced milk.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "45g",
@@ -2942,7 +2878,7 @@ export const DISHES: Dish[] = [
         "name": "Camellia sinensis"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Brew Thai Tea (Camellia sinensis) mix, stir in condensed and evaporated milk, serve over crushed ice.",
+    "recipe": "### Ingredients\n* 1 cup strong Thai Tea (Camellia sinensis)\n* 50ml condensed Milk\n* Evaporated milk\n* Ice cubes\n\n### Instructions\n1. Brew Thai Tea (Camellia sinensis) mix, stir in condensed and evaporated milk, serve over crushed ice.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "65g",
@@ -2975,7 +2911,7 @@ export const DISHES: Dish[] = [
         "name": "Colocasia esculenta"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Mix Taro (Colocasia esculenta) powder with hot water, add simple syrup, and top with ice and fresh milk.",
+    "recipe": "### Ingredients\n* 2 tbsp Taro (Colocasia esculenta) powder\n* 150ml Milk\n* Sugar Syrup\n* Ice cubes & Water\n\n### Instructions\n1. Mix Taro (Colocasia esculenta) powder with hot water, add simple syrup, and top with ice and fresh milk.",
     "nutrition": {
       "calories": "320 kcal",
       "carbohydrates": "60g",
@@ -3008,7 +2944,7 @@ export const DISHES: Dish[] = [
         "name": "Pandanus amaryllifolius"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Boil Pandan (Pandanus amaryllifolius) leaves with sugar for syrup.\n2. Mix syrup with sparkling water, ice, and a squeeze of lime.",
+    "recipe": "### Ingredients\n* 1 shot Pandan (Pandanus amaryllifolius) extract\n* 200ml Sparkling Water\n* 1 tbsp Sugar Syrup\n* Ice cubes\n\n### Instructions\n1. Boil Pandan (Pandanus amaryllifolius) leaves with sugar for syrup.\n2. Mix syrup with sparkling water, ice, and a squeeze of lime.",
     "nutrition": {
       "calories": "150 kcal",
       "carbohydrates": "38g",
@@ -3045,7 +2981,7 @@ export const DISHES: Dish[] = [
         "name": "Arenga pinnata"
       }
     ],
-    "recipe": "### Ingredients\n* Full ingredients listed below/above.\n\n### Instructions\n1. Pull a shot of espresso.\n2. Add a generous pump of liquid Palm sugar (Arenga pinnata), ice, and top with fresh milk.",
+    "recipe": "### Ingredients\n* 1 shot Espresso\n* 30ml Palm Sugar (Gula Aren) syrup\n* 150ml Milk\n* Ice cubes\n\n### Instructions\n1. Pull a shot of espresso.\n2. Add a generous pump of liquid Palm sugar (Arenga pinnata), ice, and top with fresh milk.",
     "nutrition": {
       "calories": "200 kcal",
       "carbohydrates": "30g",
@@ -3078,7 +3014,7 @@ export const DISHES: Dish[] = [
         "name": "Oryza sativa"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare sushi rice.\n2. Shape rice.\n3. Add toppings.",
+    "recipe": "### Ingredients\n* 2 cups Sushi Rice (Oryza sativa)\n* 3 tbsp Rice Vinegar\n* Fresh Fish (Tuna, Salmon, or Whitefish)\n* Nori (Seaweed) sheets\n* Wasabi and Soy sauce\n\n### Instructions\n1. Prepare sushi rice.\n2. Shape rice.\n3. Add toppings.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "50g",
@@ -3111,7 +3047,7 @@ export const DISHES: Dish[] = [
         "name": "Various"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare fresh fish.\n2. Slice thinly.\n3. Serve.",
+    "recipe": "### Ingredients\n* Fresh, sushi-grade Fish (Tuna, Salmon, Yellowtail)\n* Daikon radish, shredded\n* Shiso leaves\n* Soy sauce and Wasabi\n\n### Instructions\n1. Prepare fresh fish.\n2. Slice thinly.\n3. Serve.",
     "nutrition": {
       "calories": "150 kcal",
       "carbohydrates": "0g",
@@ -3144,7 +3080,7 @@ export const DISHES: Dish[] = [
         "name": "Triticum aestivum"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare broth.\n2. Boil noodles.\n3. Add toppings.",
+    "recipe": "### Ingredients\n* 2 portions Ramen noodles\n* 4 cups Pork or Chicken broth\n* 2 tbsp Miso or Soy sauce base (Tare)\n* Chashu (Braised Pork belly)\n* Soft-boiled egg (Ajitsuke Tamago)\n* Scallions and Nori\n\n### Instructions\n1. Prepare broth.\n2. Boil noodles.\n3. Add toppings.",
     "nutrition": {
       "calories": "500 kcal",
       "carbohydrates": "70g",
@@ -3177,7 +3113,7 @@ export const DISHES: Dish[] = [
         "name": "Triticum aestivum"
       }
     ],
-    "recipe": "### Instructions\n1. Boil noodles.\n2. Serve in dashi broth.",
+    "recipe": "### Ingredients\n* 2 portions Udon noodles\n* 4 cups Dashi broth\n* 2 tbsp Soy sauce\n* 1 tbsp Mirin\n* Kamaboko (Fish Cake)\n* Scallions and Tempura flakes\n\n### Instructions\n1. Boil noodles.\n2. Serve in dashi broth.",
     "nutrition": {
       "calories": "400 kcal",
       "carbohydrates": "80g",
@@ -3210,7 +3146,7 @@ export const DISHES: Dish[] = [
         "name": "Fagopyrum esculentum"
       }
     ],
-    "recipe": "### Instructions\n1. Boil noodles.\n2. Rinse in cold water.\n3. Serve with dipping sauce.",
+    "recipe": "### Ingredients\n* 2 portions Soba (Buckwheat) noodles\n* Tsuyu (Dipping sauce: Dashi, Soy sauce, Mirin)\n* Scallions\n* Wasabi\n* Nori strips\n\n### Instructions\n1. Boil noodles.\n2. Rinse in cold water.\n3. Serve with dipping sauce.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "70g",
@@ -3243,7 +3179,7 @@ export const DISHES: Dish[] = [
         "name": "Triticum aestivum"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare batter.\n2. Dip ingredients.\n3. Deep fry.",
+    "recipe": "### Ingredients\n* Prawns and mixed vegetables (Sweet potato, Eggplant)\n* 1 cup Tempura flour (or Cake flour and cornstarch)\n* 1 cup Ice water\n* Frying oil\n* Tentsuyu (Tempura dipping sauce)\n\n### Instructions\n1. Prepare batter.\n2. Dip ingredients.\n3. Deep fry.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "20g",
@@ -3276,7 +3212,7 @@ export const DISHES: Dish[] = [
         "name": "Sus domesticus"
       }
     ],
-    "recipe": "### Instructions\n1. Bread the pork.\n2. Deep fry.",
+    "recipe": "### Ingredients\n* 2 Pork loin cutlets\n* Salt and Pepper\n* Flour, Egg, and Panko breadcrumbs\n* Frying oil\n* Shredded cabbage and Tonkatsu sauce\n\n### Instructions\n1. Bread the pork.\n2. Deep fry.",
     "nutrition": {
       "calories": "600 kcal",
       "carbohydrates": "30g",
@@ -3309,7 +3245,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Instructions\n1. Skewer chicken.\n2. Grill with sauce.",
+    "recipe": "### Ingredients\n* 300g Chicken thigh, cut into pieces\n* Scallions (Tokyo Negi)\n* Bamboo skewers\n* Yakitori sauce (Soy sauce, Mirin, Sake, Sugar) or Salt\n\n### Instructions\n1. Skewer chicken.\n2. Grill with sauce.",
     "nutrition": {
       "calories": "200 kcal",
       "carbohydrates": "5g",
@@ -3342,7 +3278,7 @@ export const DISHES: Dish[] = [
         "name": "Bos taurus"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare broth.\n2. Simmer beef and vegetables.",
+    "recipe": "### Ingredients\n* Thinly sliced Beef (Miyazaki or Wagyu)\n* Tofu, Negi (Scallions), Mushrooms (Shiitake, Enoki)\n* Shirataki noodles\n* Sukiyaki sauce (Soy sauce, Sugar, Sake, Mirin)\n* Raw egg for dipping\n\n### Instructions\n1. Prepare broth.\n2. Simmer beef and vegetables.",
     "nutrition": {
       "calories": "400 kcal",
       "carbohydrates": "20g",
@@ -3375,7 +3311,7 @@ export const DISHES: Dish[] = [
         "name": "Bos taurus"
       }
     ],
-    "recipe": "### Instructions\n1. Boil broth.\n2. Swish meat and veggies.",
+    "recipe": "### Ingredients\n* Thinly sliced Beef or Pork\n* mixed Vegetables (Cabbage, Mushrooms, Carrots)\n* Kombu (Kelp) broth\n* Ponzu sauce and Sesame sauce for dipping\n\n### Instructions\n1. Boil broth.\n2. Swish meat and veggies.",
     "nutrition": {
       "calories": "350 kcal",
       "carbohydrates": "10g",
@@ -3408,7 +3344,7 @@ export const DISHES: Dish[] = [
         "name": "Glycine max"
       }
     ],
-    "recipe": "### Instructions\n1. Dissolve miso in dashi.",
+    "recipe": "### Ingredients\n* 4 cups Dashi broth\n* 3 tbsp Miso paste\n* Silken Tofu, cubed\n* Wakame (Dried seaweed)\n* Scallions\n\n### Instructions\n1. Dissolve miso in dashi.",
     "nutrition": {
       "calories": "50 kcal",
       "carbohydrates": "5g",
@@ -3441,7 +3377,7 @@ export const DISHES: Dish[] = [
         "name": "Oryza sativa"
       }
     ],
-    "recipe": "### Instructions\n1. Shape rice into balls.\n2. Add filling.\n3. Wrap with nori.",
+    "recipe": "### Ingredients\n* 2 cups cooked Japanese short-grain Rice (Oryza sativa)\n* Salt\n* Fillings (Salted salmon, Tuna mayo, or Pickled plum)\n* Nori (Seaweed) strips\n\n### Instructions\n1. Shape rice into balls.\n2. Add filling.\n3. Wrap with nori.",
     "nutrition": {
       "calories": "200 kcal",
       "carbohydrates": "40g",
@@ -3474,7 +3410,7 @@ export const DISHES: Dish[] = [
         "name": "Octopus vulgaris"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare batter.\n2. Add octopus and fry in special pan.\n3. Serve with sauce.",
+    "recipe": "### Ingredients\n* 1 cup Takoyaki flour mix\n* 1 or 2 Eggs and Water\n* Boiled Octopus (Tako), cubed\n* Tenkasu (Tempura flakes), pickled red ginger, scallions\n* Takoyaki sauce, Mayo, Bonito flakes, Aonori\n\n### Instructions\n1. Prepare batter.\n2. Add octopus and fry in special pan.\n3. Serve with sauce.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "35g",
@@ -3507,7 +3443,7 @@ export const DISHES: Dish[] = [
         "name": "Brassica oleracea"
       }
     ],
-    "recipe": "### Instructions\n1. Mix batter and ingredients.\n2. Cook on griddle.\n3. Top with sauce.",
+    "recipe": "### Ingredients\n* 1 cup Okonomiyaki flour\n* 1 Egg and Water or Dashi\n* 2 cups shredded Cabbage\n* Pork belly slices\n* Okonomiyaki sauce, Mayo, Bonito flakes, Aonori\n\n### Instructions\n1. Mix batter and ingredients.\n2. Cook on griddle.\n3. Top with sauce.",
     "nutrition": {
       "calories": "500 kcal",
       "carbohydrates": "40g",
@@ -3540,7 +3476,7 @@ export const DISHES: Dish[] = [
         "name": "Sus domesticus"
       }
     ],
-    "recipe": "### Instructions\n1. Prepare filling.\n2. Wrap.\n3. Pan fry.",
+    "recipe": "### Ingredients\n* 1 pack Gyoza wrappers\n* 200g Minced Pork\n* 1 cup finely chopped Cabbage\n* Garlic, Ginger, Soy sauce, Sesame oil\n* Frying oil and Water for steaming\n\n### Instructions\n1. Prepare filling.\n2. Wrap.\n3. Pan fry.",
     "nutrition": {
       "calories": "250 kcal",
       "carbohydrates": "20g",
@@ -3573,7 +3509,7 @@ export const DISHES: Dish[] = [
         "name": "Triticum aestivum"
       }
     ],
-    "recipe": "### Instructions\n1. Boil noodles.\n2. Stir-fry with veggies and sauce.",
+    "recipe": "### Ingredients\n* 2 portions Yakisoba noodles\n* 100g sliced Pork belly\n* Cabbage, Carrots, Bean sprouts\n* Yakisoba sauce\n* Aonori and Pickled red ginger\n\n### Instructions\n1. Boil noodles.\n2. Stir-fry with veggies and sauce.",
     "nutrition": {
       "calories": "450 kcal",
       "carbohydrates": "70g",
@@ -3606,7 +3542,7 @@ export const DISHES: Dish[] = [
         "name": "Gallus gallus domesticus"
       }
     ],
-    "recipe": "### Instructions\n1. Marinade chicken.\n2. Coat in batter.\n3. Deep fry.",
+    "recipe": "### Ingredients\n* 300g Chicken thigh, cut into pieces\n* Marinade (Soy sauce, Sake, Ginger, Garlic)\n* Potato starch or Cornstarch\n* Frying oil\n* Lemon wedges\n\n### Instructions\n1. Marinade chicken.\n2. Coat in batter.\n3. Deep fry.",
     "nutrition": {
       "calories": "400 kcal",
       "carbohydrates": "15g",
@@ -3639,7 +3575,7 @@ export const DISHES: Dish[] = [
         "name": "Oryza sativa"
       }
     ],
-    "recipe": "### Instructions\n1. Steam rice.\n2. Pound into sticky paste.\n3. Shape.",
+    "recipe": "### Ingredients\n* 2 cups Glutinous Rice (Oryza sativa) flour (Mochiko/Shiratamako)\n* 1/4 cup Sugar\n* 1 cup Water\n* Potato starch (for dusting)\n* Sweet Red Bean paste (Anko) or Ice cream for filling\n\n### Instructions\n1. Steam rice.\n2. Pound into sticky paste.\n3. Shape.",
     "nutrition": {
       "calories": "200 kcal",
       "carbohydrates": "45g",
@@ -3672,7 +3608,7 @@ export const DISHES: Dish[] = [
         "name": "Camellia sinensis"
       }
     ],
-    "recipe": "### Instructions\n1. Whisk matcha powder with water.",
+    "recipe": "### Ingredients\n* 1 tsp Ceremonial grade Matcha powder\n* 2 oz Hot water (around 175°F/80°C)\n* (Optional) Wagashi (traditional Japanese sweets) to serve with\n\n### Instructions\n1. Whisk matcha powder with water.",
     "nutrition": {
       "calories": "5 kcal",
       "carbohydrates": "1g",
@@ -3693,5 +3629,6 @@ export const DISHES: Dish[] = [
   ...INDIA_DISHES,
   ...SOUTH_KOREA_DISHES,
   ...FRANCE_DISHES,
-  ...CHINA_DISHES
+  ...CHINA_DISHES,
+  ...JAPAN_MODERN_DISHES
 ];
