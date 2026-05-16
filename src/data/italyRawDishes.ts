@@ -16,7 +16,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pizza Napoletana.",
+    "recipe": "### Ingredients\n* Pizza dough (Flour, Water, Yeast)\n* Tomato Sauce\n* Mozzarella Cheese\n* Fresh Basil (Ocimum basilicum) & Olive Oil\n\n### Instructions\n1. Prepare Pizza Napoletana.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -44,7 +44,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Spaghetti Carbonara.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n* Guanciale or Pancetta\n* Eggs\n* Pecorino Romano cheese\n* Black pepper\n\n### Instructions\n1. Prepare Spaghetti Carbonara.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -72,7 +72,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Lasagne al Forno.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Lasagne al Forno.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -100,7 +100,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Risotto alla Milanese.",
+    "recipe": "### Ingredients\n* Arborio or Carnaroli Rice\n* Broth\n* Butter and Parmesan cheese\n* Saffron strands\n\n### Instructions\n1. Prepare Risotto alla Milanese.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -128,7 +128,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Osso Buco.",
+    "recipe": "### Ingredients\n* Premium Beef or Veal cut\n* Olive Oil, Salt, Black Pepper\n\n### Instructions\n1. Prepare Osso Buco.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -156,7 +156,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Bistecca alla Fiorentina.",
+    "recipe": "### Ingredients\n* Premium Beef or Veal cut\n* Olive Oil, Salt, Black Pepper\n\n### Instructions\n1. Prepare Bistecca alla Fiorentina.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -184,7 +184,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cacio e Pepe.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Cacio e Pepe.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -212,7 +212,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Amatriciana.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Amatriciana.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -240,7 +240,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Penne all'Arrabbiata.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n* Tomato Sauce\n* Garlic & Chili peppers\n\n### Instructions\n1. Prepare Penne all'Arrabbiata.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -268,7 +268,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Saltimbocca alla Romana.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Saltimbocca alla Romana.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -296,7 +296,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Ribollita.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Ribollita.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -324,7 +324,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Minestrone.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Minestrone.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -352,7 +352,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Gnocchi al Pomodoro.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Gnocchi al Pomodoro.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -380,7 +380,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Tagliatelle al Ragù (Bolognese).",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Tagliatelle al Ragù (Bolognese).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -408,7 +408,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pappardelle al Cinghiale.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Pappardelle al Cinghiale.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -436,7 +436,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Orecchiette con Cime di Rapa.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Orecchiette con Cime di Rapa.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -464,7 +464,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Trippa alla Romana.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Trippa alla Romana.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -492,7 +492,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Baccalà alla Livornese.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Baccalà alla Livornese.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -520,7 +520,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Caponata.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Caponata.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -548,7 +548,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Arancini.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Arancini.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -576,7 +576,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Supplì.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Supplì.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -604,7 +604,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Bruschetta.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Bruschetta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -632,7 +632,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Panzanella.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Panzanella.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -660,7 +660,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Vitello Tonnato.",
+    "recipe": "### Ingredients\n* Premium Beef or Veal cut\n* Olive Oil, Salt, Black Pepper\n\n### Instructions\n1. Prepare Vitello Tonnato.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -688,7 +688,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Polenta e Funghi.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n* Fresh Mushrooms\n\n### Instructions\n1. Prepare Polenta e Funghi.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -716,7 +716,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cacciucco (Tuscan Fish Stew).",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Cacciucco (Tuscan Fish Stew).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -744,7 +744,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Porchetta.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Porchetta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -772,7 +772,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Involtini.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Involtini.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -800,7 +800,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Farinata.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Farinata.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -828,7 +828,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Zuppa di Pesce.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Zuppa di Pesce.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -856,7 +856,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Tiramisu.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n* Espresso Coffee\n* Mascarpone cheese & Ladyfingers\n\n### Instructions\n1. Prepare Tiramisu.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -884,7 +884,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cannoli.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Cannoli.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -912,7 +912,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Panna Cotta.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Panna Cotta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -940,7 +940,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Gelato.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Gelato.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -968,7 +968,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Sfogliatella.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Sfogliatella.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -996,7 +996,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Torta della Nonna.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Torta della Nonna.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1024,7 +1024,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Zeppole.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Zeppole.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1052,7 +1052,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Panettone.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Panettone.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1080,7 +1080,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pandoro.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Pandoro.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1108,7 +1108,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Biscotti.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Biscotti.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1136,7 +1136,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Amaretti.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Amaretti.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1164,7 +1164,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cassata Siciliana.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Cassata Siciliana.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1192,7 +1192,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Granita.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Granita.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1220,7 +1220,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Bomboloni.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Bomboloni.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1248,7 +1248,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Struffoli.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Struffoli.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1276,7 +1276,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Crostata.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Crostata.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1304,7 +1304,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Zabaglione.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Zabaglione.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1332,7 +1332,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Semifreddo.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Semifreddo.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1360,7 +1360,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Budino di Riso.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Budino di Riso.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1388,7 +1388,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Ricciarelli.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Ricciarelli.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1416,7 +1416,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Espresso.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n\n### Instructions\n1. Prepare Espresso.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1444,7 +1444,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cappuccino.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n* Milk or Cream\n\n### Instructions\n1. Prepare Cappuccino.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1472,7 +1472,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Macchiato.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n* Milk or Cream\n\n### Instructions\n1. Prepare Macchiato.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1500,7 +1500,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Americano.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n\n### Instructions\n1. Prepare Americano.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1528,7 +1528,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Caffè Latte.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n* Milk or Cream\n\n### Instructions\n1. Prepare Caffè Latte.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1556,7 +1556,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Chianti (Red Wine).",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Chianti (Red Wine).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1584,7 +1584,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Barolo.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Barolo.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1612,7 +1612,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Brunello di Montalcino.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Brunello di Montalcino.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1640,7 +1640,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Prosecco.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Prosecco.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1668,7 +1668,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Limoncello.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Limoncello.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1696,7 +1696,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Grappa.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Grappa.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1724,7 +1724,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Campari.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Campari.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1752,7 +1752,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Aperol Spritz.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n* Aperol or Campari\n\n### Instructions\n1. Prepare Aperol Spritz.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1780,7 +1780,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Negroni.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Negroni.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1808,7 +1808,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Sambuca.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Sambuca.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1836,7 +1836,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Fernet-Branca.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Fernet-Branca.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1864,7 +1864,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Amaretto.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Amaretto.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1892,7 +1892,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Vin Santo.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Vin Santo.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1920,7 +1920,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Acqua Minerale Frizzante.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Acqua Minerale Frizzante.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1948,7 +1948,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Traditional",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Chinotto.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Chinotto.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -1976,7 +1976,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Truffle Pizza.",
+    "recipe": "### Ingredients\n* Pizza dough (Flour, Water, Yeast)\n* Tomato Sauce\n* Mozzarella Cheese\n* Truffle oil or fresh truffles\n\n### Instructions\n1. Prepare Truffle Pizza.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2004,7 +2004,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Burrata e Pomodorini.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n* Fresh Burrata or Stracciatella Cheese\n\n### Instructions\n1. Prepare Burrata e Pomodorini.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2032,7 +2032,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Black Squid Ink Pasta.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n* Fresh Seafood or Lobster\n\n### Instructions\n1. Prepare Black Squid Ink Pasta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2060,7 +2060,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Lobster Linguine.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n* Fresh Seafood or Lobster\n\n### Instructions\n1. Prepare Lobster Linguine.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2088,7 +2088,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pizza al Taglio (Gourmet Toppings).",
+    "recipe": "### Ingredients\n* Pizza dough (Flour, Water, Yeast)\n* Tomato Sauce\n* Mozzarella Cheese\n\n### Instructions\n1. Prepare Pizza al Taglio (Gourmet Toppings).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2116,7 +2116,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Wagyu Beef Tagliatelle.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Wagyu Beef Tagliatelle.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2144,7 +2144,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Stracciatella e Bresaola.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n* Fresh Burrata or Stracciatella Cheese\n\n### Instructions\n1. Prepare Stracciatella e Bresaola.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2172,7 +2172,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Focaccia Gourmet.",
+    "recipe": "### Ingredients\n* Pizza dough (Flour, Water, Yeast)\n* Tomato Sauce\n* Mozzarella Cheese\n\n### Instructions\n1. Prepare Focaccia Gourmet.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2200,7 +2200,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Poke Bowl Italian Style.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Poke Bowl Italian Style.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2228,7 +2228,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Smash Burger Italian Style.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Smash Burger Italian Style.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2256,7 +2256,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Carbonara Ramen Fusion.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Carbonara Ramen Fusion.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2284,7 +2284,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Burrata Toast.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n* Fresh Burrata or Stracciatella Cheese\n\n### Instructions\n1. Prepare Burrata Toast.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2312,7 +2312,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Mortadella Sandwich (Renaissance Style).",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Mortadella Sandwich (Renaissance Style).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2340,7 +2340,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Rainbow Lasagne.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Rainbow Lasagne.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2368,7 +2368,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pistachio Pesto Pasta.",
+    "recipe": "### Ingredients\n* Pasta/Noodles (Durum wheat flour)\n\n### Instructions\n1. Prepare Pistachio Pesto Pasta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2396,7 +2396,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pistachio Tiramisu.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n* Espresso Coffee\n* Mascarpone cheese & Ladyfingers\n* Pistachio nuts/paste\n\n### Instructions\n1. Prepare Pistachio Tiramisu.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2424,7 +2424,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Croissant Brioche (Cornetto Gourmet).",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Croissant Brioche (Cornetto Gourmet).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2452,7 +2452,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Bomboloni Nutella & Pistachio.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n* Pistachio nuts/paste\n\n### Instructions\n1. Prepare Bomboloni Nutella & Pistachio.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2480,7 +2480,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Affogato al Caffè (Gourmet Style).",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n* Milk or Cream\n\n### Instructions\n1. Prepare Affogato al Caffè (Gourmet Style).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2508,7 +2508,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Gelato Sandwich.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Gelato Sandwich.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2536,7 +2536,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Matcha Panna Cotta.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Matcha Panna Cotta.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2564,7 +2564,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Strawberry Tiramisu.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n* Espresso Coffee\n* Mascarpone cheese & Ladyfingers\n\n### Instructions\n1. Prepare Strawberry Tiramisu.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2592,7 +2592,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Croffles Italian Style.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Croffles Italian Style.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2620,7 +2620,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Ricotta Cheesecake.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Ricotta Cheesecake.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2648,7 +2648,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Food",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Mochi Gelato Fusion.",
+    "recipe": "### Ingredients\n* Sugar and Heavy Cream/Milk\n\n### Instructions\n1. Prepare Mochi Gelato Fusion.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2676,7 +2676,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Pistachio Latte.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Pistachio Latte.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2704,7 +2704,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Shakerato (Iced Espresso).",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n\n### Instructions\n1. Prepare Shakerato (Iced Espresso).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2732,7 +2732,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Espresso Tonic.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n\n### Instructions\n1. Prepare Espresso Tonic.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2760,7 +2760,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Aperol Spritz (Modern Variations).",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n* Aperol or Campari\n\n### Instructions\n1. Prepare Aperol Spritz (Modern Variations).",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2788,7 +2788,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Hugo Spritz.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n* Aperol or Campari\n\n### Instructions\n1. Prepare Hugo Spritz.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2816,7 +2816,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Limoncello Spritz.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n* Aperol or Campari\n\n### Instructions\n1. Prepare Limoncello Spritz.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2844,7 +2844,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Blood Orange Negroni.",
+    "recipe": "### Ingredients\n* Prosecco or Wine base\n\n### Instructions\n1. Prepare Blood Orange Negroni.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2872,7 +2872,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Cold Brew Italiano.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Cold Brew Italiano.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2900,7 +2900,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Iced Matcha Affogato.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Iced Matcha Affogato.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2928,7 +2928,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Sparkling Lavender Lemonade.",
+    "recipe": "### Ingredients\n* Olive oil\n* Garlic and Onions\n* Traditional Italian spices (Basil, Oregano)\n\n### Instructions\n1. Prepare Sparkling Lavender Lemonade.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2956,7 +2956,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Oat Milk Cappuccino.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n* Milk or Cream\n\n### Instructions\n1. Prepare Oat Milk Cappuccino.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",
@@ -2984,7 +2984,7 @@ export const ITALY_RAW_DISHES: Dish[] = [
     "style": "Modern",
     "category": "Beverage",
     "scientificNames": [],
-    "recipe": "### Instructions\n1. Prepare Rose Espresso Martini.",
+    "recipe": "### Ingredients\n* Espresso Coffee beans\n\n### Instructions\n1. Prepare Rose Espresso Martini.",
     "nutrition": {
       "calories": "300 kcal",
       "carbohydrates": "30g",

@@ -1167,7 +1167,7 @@ function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
                 <Camera size={48} className="text-app-text-main group-hover:text-game-accent" />
               </div>
               <div className="space-y-3">
-                <span className="text-lg font-mono uppercase tracking-[0.2em]">Upload or Drop Stream</span>
+                <span className="text-lg font-mono uppercase tracking-[0.2em]">Upload or Drop Photo</span>
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
             </label>

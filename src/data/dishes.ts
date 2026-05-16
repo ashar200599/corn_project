@@ -1,3 +1,4 @@
+import { THAILAND_TRADITIONAL_BEVERAGES } from './thailandBeverages';
 import { JAPAN_MODERN_DISHES } from './japanModernDishes';
 import { ITALY_RAW_DISHES } from './italyRawDishes';
 import { MEXICO_DISHES } from './mexicoDishes';
@@ -3624,6 +3625,7 @@ export const DISHES: Dish[] = [
   ...ITALY_RAW_DISHES,
   ...MEXICO_DISHES,
   ...THAILAND_DISHES,
+  ...THAILAND_TRADITIONAL_BEVERAGES,
   ...INDONESIA_BEVERAGES,
   ...USA_DISHES,
   ...INDIA_DISHES,
