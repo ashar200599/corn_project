@@ -16,6 +16,7 @@ export const THAILAND_TRADITIONAL_BEVERAGES: Dish[] = [
       { ingredient: "Star Anise", name: "Illicium verum" }
     ],
     recipe: "### Ingredients\n* 2 tbsp Thai Black Tea Mix (Camellia sinensis)\n* 1 Star Anise (Illicium verum)\n* 2 tbsp Sweetened Condensed Milk\n* 1 tbsp Evaporated Milk\n* Sugar to taste\n* Crushed Ice\n\n### Instructions\n1. Brew the Thai black tea with star anise in hot water for 5 minutes.\n2. Strain the tea leaves and stir in sugar and sweetened condensed milk while hot.\n3. Pour over a glass filled with crushed ice.\n4. Top with evaporated milk before serving.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "220 kcal",
       carbohydrates: "35g",
@@ -38,6 +39,7 @@ export const THAILAND_TRADITIONAL_BEVERAGES: Dish[] = [
       { ingredient: "Corn", name: "Zea mays" }
     ],
     recipe: "### Ingredients\n* 3 tbsp Oliang powder (blend of Coffea canephora, Zea mays, soybeans)\n* 1 cup Boiling Water\n* 2 tbsp Sugar\n* Ice\n\n### Instructions\n1. Add Oliang powder to a traditional Thai coffee filter (tung tom kafe) and place over a pitcher.\n2. Pour boiling water through the powder and let it steep for several minutes.\n3. Add sugar and stir until dissolved.\n4. Pour over a glass full of ice.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "90 kcal",
       carbohydrates: "22g",
@@ -59,6 +61,7 @@ export const THAILAND_TRADITIONAL_BEVERAGES: Dish[] = [
       { ingredient: "Lemongrass", name: "Cymbopogon citratus" }
     ],
     recipe: "### Ingredients\n* 3 stalks Lemongrass (Cymbopogon citratus)\n* 4 cups Water\n* Sugar or Honey to taste\n* Lime wedges (optional)\n\n### Instructions\n1. Wash and lightly bruise the lemongrass stalks.\n2. Boil the water, add the lemongrass, and simmer for 10-15 minutes.\n3. Remove from heat, strain out the stalks, and sweeten with sugar or honey.\n4. Serve hot or chilled over ice, optionally with a squeeze of lime.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "45 kcal",
       carbohydrates: "12g",

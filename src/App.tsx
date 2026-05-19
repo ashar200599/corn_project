@@ -11,6 +11,8 @@ import { doc, getDoc, collection, getDocs, setDoc, deleteDoc, serverTimestamp } 
 import { Chatbot } from './components/Chatbot';
 import { DishReviews } from './components/DishReviews';
 
+import { AuthModal } from './components/AuthModal';
+
 const formatTextWithScientificNames = (text: string) => {
   if (!text) return text;
   const parts = text.split(/(\([A-Z][a-z]+(?: [a-z]+)+\))/g);
@@ -48,6 +50,7 @@ export default function App() {
   const [aiRecommendation, setAiRecommendation] = useState('');
   const [isFetchingRecommendation, setIsFetchingRecommendation] = useState(false);
   
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('app-theme');
     return (saved as 'dark' | 'light') || 'dark';
@@ -112,17 +115,8 @@ export default function App() {
     return () => { isMounted = false; };
   }, [vitals.health, vitals.energy, vitals.shield, maxVitals.health, maxVitals.energy, maxVitals.shield]);
 
-  const handleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      if (result.user) {
-        await syncUserProfile(result.user);
-      }
-    } catch (error: any) {
-      if (error?.code !== 'auth/popup-closed-by-user') {
-        console.error("Login failed:", error);
-      }
-    }
+  const handleLogin = () => {
+    setIsAuthModalOpen(true);
   };
 
   const handleLogout = async () => {
@@ -278,7 +272,7 @@ export default function App() {
                 onClick={handleLogin}
                 className="game-btn game-btn-outline py-2 px-4 flex items-center gap-2 text-xs"
               >
-                <LogIn size={16} /> Link account
+                <LogIn size={16} /> Login
               </button>
             )}
           </div>
@@ -364,6 +358,7 @@ export default function App() {
         </>
       )}
 
+      {isAuthModalOpen && <AuthModal onClose={() => setIsAuthModalOpen(false)} />}
       {/* Checkup Modal */}
       {isCheckupModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80">
@@ -434,7 +429,7 @@ export default function App() {
       </main>
 
       {/* Mobile Nav */}
-      <div className="md:hidden min-nav fixed bottom-0 left-0 right-0 p-3 flex justify-around z-20">
+      <div className="hidden min-nav fixed bottom-0 left-0 right-0 p-3 justify-around z-20">
         <MobileNavButton 
           active={activeTab === 'dashboard'} 
           onClick={() => setActiveTab('dashboard')}

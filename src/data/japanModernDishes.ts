@@ -16,6 +16,7 @@ export const JAPAN_MODERN_DISHES: Dish[] = [
       { ingredient: "Salmon", name: "Salmo salar" }
     ],
     recipe: "### Ingredients\n* 2 cups Sushi Rice (Oryza sativa)\n* Fresh Salmon (Salmo salar)\n* Avocado (Persea americana)\n* Spicy Mayo\n\n### Instructions\n1. Form sushi rice into bun shapes.\n2. Layer salmon, avocado, and spicy mayo between the rice buns.\n3. Serve immediately.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "450 kcal",
       carbohydrates: "60g",
@@ -38,6 +39,7 @@ export const JAPAN_MODERN_DISHES: Dish[] = [
       { ingredient: "Chicken", name: "Gallus gallus domesticus" }
     ],
     recipe: "### Ingredients\n* 2 Eggs (Gallus gallus domesticus)\n* 2 tbsp Flour\n* 1 tsp Matcha powder (Camellia sinensis)\n* 2 tbsp Sugar\n\n### Instructions\n1. Whip egg whites with sugar until stiff peaks form.\n2. Fold in egg yolks, flour, and matcha powder gently.\n3. Pan-fry in a covered pan until fluffy and golden.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "320 kcal",
       carbohydrates: "45g",
@@ -60,6 +62,7 @@ export const JAPAN_MODERN_DISHES: Dish[] = [
       { ingredient: "Wheat", name: "Triticum" }
     ],
     recipe: "### Ingredients\n* 200g Wagyu Beef (Bos taurus)\n* Panko breadcrumbs\n* 2 slices Milk Bread (Triticum)\n* Tonkatsu Sauce\n\n### Instructions\n1. Bread the wagyu beef with panko and deep-fry until medium-rare.\n2. Toast the milk bread and spread tonkatsu sauce.\n3. Sandwich the beef cross-section and serve.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "850 kcal",
       carbohydrates: "40g",
@@ -82,6 +85,7 @@ export const JAPAN_MODERN_DISHES: Dish[] = [
       { ingredient: "Strawberry", name: "Fragaria ananassa" }
     ],
     recipe: "### Ingredients\n* 1 tsp Matcha powder (Camellia sinensis)\n* Fresh Strawberries (Fragaria ananassa)\n* 1 cup Milk\n* Sugar syrup\n\n### Instructions\n1. Muddle fresh strawberries with sugar at the bottom of a glass.\n2. Add ice and gently pour in the milk.\n3. Top with freshly whisked matcha for a layered effect.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "180 kcal",
       carbohydrates: "25g",
@@ -104,6 +108,7 @@ export const JAPAN_MODERN_DISHES: Dish[] = [
       { ingredient: "Cassava", name: "Manihot esculenta" }
     ],
     recipe: "### Ingredients\n* 2 tbsp Hojicha tea leaves (Camellia sinensis)\n* Boba Pearls (Manihot esculenta)\n* 1 cup Milk\n* Brown sugar syrup\n\n### Instructions\n1. Brew a strong concentrate of hojicha and let it cool.\n2. Coat a glass with brown sugar syrup and add cooked boba pearls.\n3. Add ice, milk, and the hojicha concentrate.",
+    healthBenefits: "Nourishes the body.",
     nutrition: {
       calories: "280 kcal",
       carbohydrates: "45g",
