@@ -592,7 +592,7 @@ function HeroSlideshow() {
         <div className="max-w-4xl">
            <h1 className="text-4xl sm:text-7xl font-black text-white uppercase tracking-tighter drop-shadow-md">CORN</h1>
            <h2 className="text-xl sm:text-3xl font-bold text-game-green mt-2 mb-4 tracking-wide drop-shadow-md shrink-0">Craft Own Recipe and Nutrition</h2>
-           <p className="text-sm sm:text-xl text-white mt-2 drop-shadow-md max-w-2xl leading-relaxed line-clamp-3 sm:line-clamp-none">Discover, synthesize, and track your nutritional intake with an AI-powered culinary assistant.</p>
+           <p className="text-sm sm:text-xl text-white mt-2 drop-shadow-md max-w-2xl leading-relaxed line-clamp-3 sm:line-clamp-none">Discover and make your healthy dishes with all world's recipe resources.</p>
         </div>
       </div>
     </div>
@@ -1107,9 +1107,9 @@ function Scanner({ onGenerate }: { onGenerate: (dish: Dish) => void }) {
         dish.image = image;
         onGenerate(dish);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Error analyzing image. Please try again.");
+      alert("Error analyzing image: " + (e.message || "Please try again."));
     } finally {
       setLoading(false);
     }

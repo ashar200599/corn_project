@@ -1,6 +1,6 @@
 {
   "name": "CORN (Create Own Recipe and Nutrition)",
-  "description": "A tactical kitchen dashboard for traditional and modern recipes with AI-powered health insights and recipe generation.",
+  "description": "Discover and make your healthy dishes with all world's recipe resources",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
