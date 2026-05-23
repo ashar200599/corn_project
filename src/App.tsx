@@ -8,7 +8,6 @@ import { DISHES, Dish } from './data/dishes';
 import { auth, googleProvider, signInWithPopup, signOut, onAuthStateChanged, User, syncUserProfile, db, updateUserVitals } from './lib/firebase';
 import { doc, getDoc, collection, getDocs, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
-import { Chatbot } from './components/Chatbot';
 import { DishReviews } from './components/DishReviews';
 
 import { AuthModal } from './components/AuthModal';
@@ -68,15 +67,28 @@ export default function App() {
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
             const data = userSnap.data();
-            if (data.vitals) {
-              setVitals(data.vitals);
+            const currentMax = data.maxVitals || { health: 100, shield: 100, energy: 100 };
+            
+            setMaxVitals(currentMax);
+            setVitals(currentMax); // Full restore on login
+            
+            if (data.medicalConditions) {
+              setMedicalConditions(data.medicalConditions);
             }
+            if (data.aiCheckupStatus) {
+              setAiCheckupStatus(data.aiCheckupStatus);
+            }
+
+            await setDoc(userRef, { vitals: currentMax }, { merge: true });
           }
         } catch (error) {
           console.error("Error syncing profile:", error);
         }
       } else {
-        setVitals({ health: 100, shield: 100, energy: 100 });
+        const defaultMax = { health: 100, shield: 100, energy: 100 };
+        setMaxVitals(defaultMax);
+        setVitals(defaultMax);
+        setMedicalConditions([]);
       }
     });
     return () => unsubscribe();
@@ -90,10 +102,15 @@ export default function App() {
         setAiCheckupStatus("NORMAL CONDITION");
       } else {
         setIsGeneratingAiStatus(true);
-        const statusMsg = await getVitalsStatus(vitals);
-        if (isMounted) {
-          setAiCheckupStatus(statusMsg);
-          setIsGeneratingAiStatus(false);
+        try {
+          const statusMsg = await getVitalsStatus(vitals);
+          if (isMounted) {
+            setAiCheckupStatus(statusMsg);
+          }
+        } catch (e: any) {
+          console.error("Vitals status error:", e);
+        } finally {
+          if (isMounted) setIsGeneratingAiStatus(false);
         }
       }
 
@@ -104,10 +121,15 @@ export default function App() {
         else if(vitals.energy <= 20) setDepletionWarning("LOW ENERGY. MOVEMENT RESTRICTED.");
         
         setIsFetchingRecommendation(true);
-        const rec = await getVitalsRecommendation(vitals);
-        if (isMounted) {
-          setAiRecommendation(rec);
-          setIsFetchingRecommendation(false);
+        try {
+          const rec = await getVitalsRecommendation(vitals);
+          if (isMounted) {
+            setAiRecommendation(rec);
+          }
+        } catch (e: any) {
+          console.error("Recommendation error:", e);
+        } finally {
+          if (isMounted) setIsFetchingRecommendation(false);
         }
       }
     };
@@ -386,19 +408,39 @@ export default function App() {
             <button 
               onClick={async () => {
                 setIsCheckupModalOpen(false);
+                let newMax = { health: 100, energy: 100, shield: 100 };
+                let statusTxt = "NORMAL CONDITION";
                 if (medicalConditions.length > 0) {
                   setIsGeneratingAiStatus(true);
-                  const result = await getCheckupStatus(medicalConditions);
-                  setAiCheckupStatus(result.status);
-                  setMaxVitals({
-                    health: result.maxHealth || 100,
-                    energy: result.maxEnergy || 100,
-                    shield: result.maxShield || 100
-                  });
-                  setIsGeneratingAiStatus(false);
+                  try {
+                    const result = await getCheckupStatus(medicalConditions);
+                    statusTxt = result.status;
+                    setAiCheckupStatus(statusTxt);
+                    newMax = {
+                      health: result.maxHealth || 100,
+                      energy: result.maxEnergy || 100,
+                      shield: result.maxShield || 100
+                    };
+                  } catch (e: any) {
+                    // silently handle
+                  } finally {
+                    setIsGeneratingAiStatus(false);
+                  }
                 } else {
-                  setAiCheckupStatus("NORMAL CONDITION");
-                  setMaxVitals({ health: 100, energy: 100, shield: 100 });
+                  setAiCheckupStatus(statusTxt);
+                }
+                
+                setMaxVitals(newMax);
+                setVitals(newMax);
+                
+                if (user) {
+                  const userRef = doc(db, 'users', user.uid);
+                  await setDoc(userRef, {
+                    medicalConditions,
+                    maxVitals: newMax,
+                    vitals: newMax,
+                    aiCheckupStatus: statusTxt
+                  }, { merge: true });
                 }
               }} 
               className="mt-8 w-full game-btn game-btn-primary"
@@ -545,7 +587,6 @@ export default function App() {
           />
         )}
       </AnimatePresence>
-      <Chatbot />
     </div>
   );
 }

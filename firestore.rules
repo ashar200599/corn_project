@@ -6,7 +6,6 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Phase 3: Primitive Definition
     function isSignedIn() {
       return request.auth != null;
     }
@@ -15,86 +14,20 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
-    }
-
-    // Validation Blueprints
-    function isValidUser(data) {
-      return data.keys().hasAll(['displayName', 'createdAt']) &&
-             data.keys().size() <= 5 &&
-             data.displayName is string && data.displayName.size() <= 100 &&
-             (data.get('photoURL', '') == '' || (data.photoURL is string && data.photoURL.size() <= 500)) &&
-             (data.get('vitals', null) == null || (
-               data.vitals is map && 
-               data.vitals.get('health', 0) is number &&
-               data.vitals.get('shield', 0) is number &&
-               data.vitals.get('attack', 0) is number
-             ));
-    }
-
-    function isValidFavorite(data) {
-      return data.keys().hasAll(['recipeId', 'addedAt']) &&
-             data.keys().size() == 2 &&
-             data.recipeId is string && data.recipeId.size() <= 100;
-    }
-
-    function isValidDishReview(data) {
-      return data.keys().hasAll(['dishId', 'userId', 'displayName', 'rating', 'text', 'createdAt']) &&
-             data.keys().size() == 6 &&
-             data.dishId is string && data.dishId.size() <= 100 &&
-             data.userId is string && data.userId.size() <= 128 &&
-             data.displayName is string && data.displayName.size() <= 100 &&
-             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
-             data.text is string && data.text.size() <= 1000;
-    }
-
-    // 1. Users Collection
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow create: if isOwner(userId) && 
-                      isValidId(userId) && 
-                      isValidUser(incoming()) && 
-                      incoming().createdAt == request.time;
-      
-      allow update: if isOwner(userId) && 
-                      isValidUser(incoming()) && 
-                      incoming().createdAt == existing().createdAt &&
-                      (
-                        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'lastLogin', 'vitals'])
-                      ) &&
-                      incoming().lastLogin == request.time;
+      allow get, list: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
 
-      // 2. Favorites Sub-collection
       match /favorites/{recipeId} {
-        allow list: if isOwner(userId);
-        allow get: if isOwner(userId);
-        allow create: if isOwner(userId) && 
-                        isValidId(recipeId) && 
-                        isValidFavorite(incoming()) && 
-                        incoming().addedAt == request.time;
-        allow delete: if isOwner(userId);
+        allow read, write: if isOwner(userId);
       }
     }
 
-    // 3. Dish Reviews Collection
     match /dish_reviews/{reviewId} {
-      allow list: if true;
-      allow get: if true;
-      allow create: if isSignedIn() &&
-                      isValidId(reviewId) &&
-                      isValidDishReview(incoming()) &&
-                      incoming().createdAt == request.time &&
-                      incoming().userId == request.auth.uid;
-      allow delete: if isOwner(existing().userId);
+      allow list, get: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
   }
 }

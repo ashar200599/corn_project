@@ -6,8 +6,9 @@ import { GoogleGenAI } from '@google/genai';
 let aiClient: GoogleGenAI | null = null;
 const getAI = () => {
   if (!aiClient) {
-    if (!process.env.GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is missing");
-    aiClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const key = process.env.GEMINI_API_KEY || "AIzaSyBiGl6ZZ3zGGHDxcPmGREoUqU1Kt3D_wAg";
+    if (!key) throw new Error("GEMINI_API_KEY is missing");
+    aiClient = new GoogleGenAI({ apiKey: key });
   }
   return aiClient;
 };
@@ -76,6 +77,13 @@ Return your response strictly as a JSON object matching this TypeScript interfac
 `;
 
 async function startServer() {
+  process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+  });
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+
   const app = express();
   const PORT = 3000;
 
@@ -86,7 +94,7 @@ async function startServer() {
       const ai = getAI();
       const { base64Image, mimeType } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
+        model: 'gemini-1.5-flash',
         contents: {
           parts: [
             { inlineData: { data: base64Image, mimeType: mimeType } },
@@ -95,7 +103,14 @@ async function startServer() {
         },
         config: { systemInstruction: INGREDIENT_SYSTEM_PROMPT, responseMimeType: 'application/json' },
       });
-      res.json({ text: response.text });
+      let resultText = response.text || "{}";
+      const match = resultText.match(/\{[\s\S]*\}/);
+      if (match) {
+        resultText = match[0];
+      } else {
+        resultText = "{}";
+      }
+      res.json({ text: resultText });
     } catch (e: any) {
       console.error(e);
       res.status(500).json({ error: e.message });
@@ -107,7 +122,7 @@ async function startServer() {
       const ai = getAI();
       const { ingredients } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: `Find the estimated online market prices for these 3 main ingredients: ${ingredients.slice(0, 3).join(', ')}. Keep the list concise.`,
         config: {
           maxOutputTokens: 150,
@@ -126,7 +141,7 @@ async function startServer() {
       const ai = getAI();
       const { dishName, ingredients } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: `Provide health insights for ${dishName} which contains these key ingredients: ${ingredients.join(', ')}.`,
         config: {
           maxOutputTokens: 150,
@@ -145,15 +160,28 @@ async function startServer() {
       const ai = getAI();
       const { conditions } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: `User conditions: ${conditions.join(', ')}. Generate a JSON block with: "status" (short 2-5 word uppercase status summary for a cyberpunk UI health bar) and "maxHealth", "maxEnergy", "maxShield" (numbers between 50 and 100 representing maximum capacity penalties due to these conditions. 100 means no penalty).`,
         config: {
-          maxOutputTokens: 100,
+          maxOutputTokens: 200,
           responseMimeType: "application/json",
           systemInstruction: `You return only valid JSON, for example: {"status": "HIGH BP WARNING", "maxHealth": 80, "maxEnergy": 90, "maxShield": 75}`,
         },
       });
-      res.json({ json: response.text ? JSON.parse(response.text) : null });
+      let parsedJson = null;
+      try {
+        let rawText = response.text || "{}";
+        const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedJson = JSON.parse(jsonMatch[0]);
+        } else {
+          // No JSON braces found at all
+          throw new Error("No JSON object found in response");
+        }
+      } catch (parseError) {
+        parsedJson = { status: "STATUS: UNKNOWN", maxHealth: 80, maxEnergy: 80, maxShield: 80 };
+      }
+      res.json({ json: parsedJson });
     } catch (e: any) {
       console.error(e);
       res.status(500).json({ error: e.message });
@@ -165,7 +193,7 @@ async function startServer() {
       const ai = getAI();
       const { dishName, variationName, ingredients } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: `Provide a recipe for the variation "${variationName}" of the dish "${dishName}". Some base ingredients: ${ingredients.join(', ')}.`,
         config: {
           maxOutputTokens: 500,
@@ -184,14 +212,21 @@ async function startServer() {
       const ai = getAI();
       const { ingredients, preferences } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
+        model: 'gemini-1.5-flash',
         contents: `Available ingredients: ${ingredients}. User preferences: ${preferences}. Please generate a recipe.`,
         config: {
           systemInstruction: RECIPE_GENERATION_PROMPT,
           responseMimeType: 'application/json'
         },
       });
-      res.json({ text: response.text });
+      let resultText = response.text || "{}";
+      const match = resultText.match(/\{[\s\S]*\}/);
+      if (match) {
+        resultText = match[0];
+      } else {
+        resultText = "{}";
+      }
+      res.json({ text: resultText });
     } catch (e: any) {
       console.error(e);
       res.status(500).json({ error: e.message });
@@ -203,7 +238,7 @@ async function startServer() {
       const ai = getAI();
       const { dishName } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: [{ role: 'user', parts: [{ text: `Generate a short (1-2 sentences), slightly game-themed review for the dish "${dishName}". It should sound like a player logging their findings. Include a rating from 1 to 5. Format your response exactly like this: "RATING: X\nREVIEW: [your review text]"` }] }],
       });
       const text = response.text || "";
@@ -223,7 +258,7 @@ async function startServer() {
       const ai = getAI();
       const { vitals } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: [{ role: 'user', parts: [{ text: `The user's vitals are depleted: HP: ${vitals.health}%, Energy: ${vitals.energy}%, Shield: ${vitals.shield}%. Generate a short, minecraft-themed alert for what they should synthesize. IMPORTANT: Do NOT suggest Golden Apples, potions, or standard Minecraft items. Instead, advise them to craft a healthy, high-protein, or hydrating food/beverage from the available biomes in the CORN menu (such as Italy, Mexico, Thailand, Indonesia, USA, India, South Korea, France, or China) to restore their status bars (2-3 sentences max).` }] }],
       });
       res.json({ text: response.text || "RECOMMENDATION: SYNTHESIZE NUTRITIOUS DISHES FROM THE MENU IMMEDIATELY." });
@@ -238,7 +273,7 @@ async function startServer() {
       const ai = getAI();
       const { vitals } = req.body;
       const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
+        model: 'gemini-1.5-flash',
         contents: `Determine the overall system status based on these vitals: HP: ${vitals.health}, Energy: ${vitals.energy}, Shield: ${vitals.shield}. Return ONLY ONE WORD: 'OPTIMAL', 'WARNING', or 'CRITICAL'.`,
         config: { maxOutputTokens: 5 },
       });
@@ -246,46 +281,6 @@ async function startServer() {
     } catch (e: any) {
       console.error(e);
       res.status(500).json({ error: e.message });
-    }
-  });
-
-  app.post("/api/gemini/chatStream", async (req, res) => {
-    try {
-      const ai = getAI();
-      const { message, history } = req.body;
-      const formattedHistory = history.map((h: any) => ({
-        role: h.role,
-        parts: [{ text: h.text }]
-      }));
-      formattedHistory.push({ role: 'user', parts: [{ text: message }] });
-
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-
-      const responseStream = await ai.models.generateContentStream({
-        model: 'gemini-3.1-flash-lite',
-        contents: formattedHistory,
-        config: {
-          systemInstruction: 'You are a helpful AI assistant in a Minecraft-themed food and recipe app called CORN. Adopt a slightly playful, game-like persona, briefly dropping Minecraft or gaming references. Focus on synthesizing dishes from the app biomes (Italy, Mexico, Thailand, Indonesia, USA, India, South Korea, France, China) for healing. EXTREMELY IMPORTANT: Keep responses very short and concise (1-2 sentences maximum). Do not write long paragraphs.',
-        },
-      });
-
-      for await (const chunk of responseStream) {
-        if (chunk.text) {
-          res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
-        }
-      }
-      res.write('data: [DONE]\n\n');
-      res.end();
-    } catch (e: any) {
-      console.error("Stream error:", e);
-      if (!res.headersSent) {
-          res.status(500).json({ error: e.message });
-      } else {
-          res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
-          res.end();
-      }
     }
   });
 

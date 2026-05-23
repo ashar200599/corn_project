@@ -53,7 +53,6 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
       }
       onClose();
     } catch (err: any) {
-      console.error("Email auth failed:", err);
       let errMsg = err.message || 'Authentication failed.';
       if (err.code === 'auth/email-already-in-use') {
         errMsg = 'Email is already taken. Please login instead.';
@@ -128,7 +127,7 @@ export function AuthModal({ onClose }: { onClose: () => void }) {
             type="submit" 
             className="w-full game-btn game-btn-primary block py-3 mt-4 text-center font-bold tracking-widest"
           >
-            {isRegistering ? 'INITIALIZE ACCOUNT' : 'AUTHENTICATE'}
+            {isRegistering ? 'INITIALIZE ACCOUNT' : 'LOGIN'}
           </button>
         </form>
 

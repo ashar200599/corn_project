@@ -64,49 +64,6 @@ export const generateRecipeFromIngredients = async (ingredients: string, prefere
   return data.text;
 };
 
-export const chatWithAIStream = async function*(message: string, history: {role: 'user' | 'model', text: string}[]) {
-  const res = await fetch("/api/gemini/chatStream", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, history })
-  });
-
-  if (!res.ok || !res.body) {
-    throw new Error("Failed to connect to stream");
-  }
-
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-    
-    // Process SSE messages
-    const lines = buffer.split('\\n\\n');
-    buffer = lines.pop() || "";
-
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        const dataStr = line.slice(6).trim();
-        if (dataStr === '[DONE]') {
-          return;
-        }
-        try {
-          const parsed = JSON.parse(dataStr);
-          if (parsed.error) throw new Error(parsed.error);
-          if (parsed.text) yield parsed.text;
-        } catch (e) {
-          console.error("Stream parse error", e, dataStr);
-        }
-      }
-    }
-  }
-};
-
 export const generateDishReview = async (dishName: string) => {
   const res = await fetch("/api/gemini/generateDishReview", {
     method: "POST",
